@@ -1,0 +1,59 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+*.tmp
+*.bak
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+replay_pid*
+
+# Eclipse 
+.classpath
+.project
+.settings/
+.metadata/
+bin/
+build/
+.recommenders/
+RemoteSystemsTempFiles/
+.tmp/
+.wtpmodules/
+*.HotPEP/
+allLines.txt
+Servers/
+ServerConfigurations/
+
+#Vscode
+*.vscode
+
+# OS Files
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
