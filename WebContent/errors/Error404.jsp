@@ -6,14 +6,16 @@
 
 <head>
 <meta charset="UTF-8">
-<link type="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
-<title>Error 404</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/error.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>Page Not Found - IronAxis</title>
 </head>
 
 <body>
-	<%-- <%@ include file="/fragments/header.jsp"%> --%>
+	<%@ include file="/fragments/header.jsp"%>
 
-	<%-- <%@ include file="/fragments/menu.jsp"%> --%>
+	<%@ include file="/fragments/menu.jsp"%>
 
 	<main class="error-container">
 		<div class="error-content">
@@ -24,7 +26,7 @@
 		</div>
 	</main>
 
-	<%-- <%@ include file="/fragments/footer.jsp"%> --%>
+	<%@ include file="/fragments/footer.jsp"%>
 </body>
 
 </html>
