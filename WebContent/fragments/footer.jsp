@@ -2,29 +2,30 @@
     <div class="footer-container">
         <div class="footer-section">
             <h3>Chi Siamo</h3>
-            <p>Siamo leader nella vendita di integratori<br>e attrezzatura sportiva di altissima qualità.<br>Raggiungi i tuoi obiettivi con Iron Axis.</p>
+            <p>Siamo leader nella vendita di integratori<br>e attrezzatura sportiva di altissima qualitï¿½.<br>Raggiungi i
+                tuoi obiettivi con Iron Axis.</p>
         </div>
-        
+
         <div class="footer-section">
             <h3>Prodotti</h3>
             <ul>
-                <li><a href="#">Proteine</a></li>
-                <li><a href="#">Vitamine</a></li>
-                <li><a href="#">Accessori & Abbigliamento</a></li>
+                <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=proteine">Proteine</a></li>
+                <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=vitamine">Vitamine</a></li>
+                <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=accessori-abbigliamento">Accessori & Abbigliamento</a></li>
             </ul>
         </div>
-        
+
         <div class="footer-section">
             <h3>Contatti</h3>
             <ul>
-                <li><a href="mailto:info@ironaxis.it">info@fitstore.it</a></li>
+                <li><a href="mailto:info@ironaxis.it">info@ironaxis.it</a></li>
                 <li><a href="tel:+390123456789">+39 012 345 6789</a></li>
-                <li><a href="assistenza.jsp">Assistenza Clienti</a></li>
-                <li><a href="spedizioni.jsp">Spedizioni e Resi</a></li>
+                <li><a href="${pageContext.request.contextPath}/assistenza.jsp">Assistenza Clienti</a></li>
+                <li><a href="${pageContext.request.contextPath}/spedizioni.jsp">Spedizioni & Resi</a></li>
             </ul>
         </div>
     </div>
-    
+
     <div class="footer-bottom">
         <div class="copyright">
             &copy; 2026 Iron Axis. Tutti i diritti riservati.

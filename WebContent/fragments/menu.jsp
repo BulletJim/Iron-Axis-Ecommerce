@@ -1,7 +1,7 @@
 <nav class="sidebar" id="sidebar">
     <ul class="sidebar-menu">
-        <li>
-            <a href="#">Proteine</a>
+        <li class="menu-item has-submenu">
+            <a href="#" class="submenu-toggle">Proteine<span class="arrow">▼</span></a>
             <ul class="submenu">
                 <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=proteine-latte">Proteine siero del latte</a></li>
                 <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=proteine-vegetali">Proteine vegetali</a></li>
@@ -10,17 +10,19 @@
             </ul>
         </li>
 
-        <li><a href="#">Energia & Resistenza</a>
+        <li class="menu-item has-submenu">
+            <a href="#" class="submenu-toggle">Energia & Resistenza<span class="arrow">▼</span></a>
             <ul class="submenu">
                 <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=energia-pre-workout">Pre-workout</a></li>
                 <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=energia-intra-workout">Intra-workout</a></li>
                 <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=energia-post-workout">Post-workout</a></li>
                 <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=energia-creatina">Creatina</a></li>
                 <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=energia-amminoacidi">Amminoacidi</a></li>
-            </ul>>
+            </ul>
         </li>
 
-        <li><a href="#">Vitamine e Macronutrienti</a>
+        <li class="menu-item has-submenu">
+            <a href="#" class="submenu-toggle">Vitamine e Macronutrienti<span class="arrow">▼</span></a>
             <ul class="submenu">
                 <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=vitamine-vitamine-minerali">Vitamine e minerali</a></li>
                 <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=vitamine-acidi-grassi">Acidi grassi</a></li>
@@ -28,8 +30,8 @@
             </ul>
         </li>
 
-        <li>
-            <a href="#">Obiettivi</a>
+        <li class="menu-item has-submenu">
+            <a href="#" class="submenu-toggle">Obiettivi<span class="arrow">▼</span></a>
             <ul class="submenu">
                 <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=obiettivi-crescita-muscolare">Crescita muscolare</a></li>
                 <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=obiettivi-dimagrimento">Dimagrimento</a></li>
@@ -37,8 +39,8 @@
             </ul>
         </li>
 
-        <li>
-            <a href="#">Accessori</a>
+        <li class="menu-item has-submenu">
+            <a href="#" class="submenu-toggle">Accessori<span class="arrow">▼</span></a>
             <ul class="submenu">
                 <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=accessori-attrezzatura-supporti">Attrezzatura e supporti</a></li>
                 <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=accessori-abbigliamento-uomo">Abbigliamento Uomo</a></li>
