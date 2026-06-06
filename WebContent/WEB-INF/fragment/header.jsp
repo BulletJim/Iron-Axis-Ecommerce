@@ -12,7 +12,7 @@
     </form>
 
     <div class="header-actions">
-        <a href="${pageContext.request.contextPath}/login.jsp" class="icon-btn" title="Login">
+        <a href="${pageContext.request.contextPath}/LoginServlet" class="icon-btn" title="Login">
             <i class="fas fa-user"></i>
         </a>
 

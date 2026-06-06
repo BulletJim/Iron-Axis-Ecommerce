@@ -1,10 +1,8 @@
-/* ==========================================================================
-   1. RESET, FONT E VARIABILI GLOBALI (Iron Axis)
-   ========================================================================== */
+/* RESET, FONT AND GLOBAL VARIABLES (Iron Axis) */
 :root {
-    --primary-color: #e53935;    /* Rosso/Arancio Fitness */
-    --dark-bg: #1a1a1a;          /* Sfondo scuro per Header/Footer */
-    --light-bg: #f8f9fa;         /* Sfondo chiaro per le pagine */
+    --primary-color: #e53935;    
+    --dark-bg: #1a1a1a;          
+    --light-bg: #f8f9fa;         
     --text-light: #ffffff;
     --text-dark: #212529;
     --border-color: #333333;
@@ -22,7 +20,7 @@ body {
     color: var(--text-dark);
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Forza il footer a stare sempre in fondo */
+    min-height: 100vh; 
 }
 
 a {
@@ -30,9 +28,7 @@ a {
     color: inherit;
 }
 
-/* ==========================================================================
-   2. SITE HEADER (Barra Superiore)
-   ========================================================================== */
+/* SITE HEADER */
 .site-header {
     background-color: var(--dark-bg);
     color: var(--text-light);
@@ -46,7 +42,7 @@ a {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Bottone Hamburger Menu */
+/* Hamburger Menu Button */
 .menu-btn {
     background: none;
     border: none;
@@ -70,20 +66,20 @@ a {
     text-transform: uppercase;
 }
 
-/* Barra di Ricerca */
+/* Search Bar */
 .search-bar {
     display: flex;
     align-items: center;
     width: 40%;
-    position: relative; /* Serve per ancorare la suggestions-box */
+    position: relative; 
 }
 
 .search-bar input {
     width: 100%;
     padding: 10px 15px;
-    padding-right: 45px; /* Spazio per non sovrapporsi al bottone lente */
+    padding-right: 45px; 
     border: 1px solid #444;
-    border-radius: 25px; /* Barra arrotondata moderna */
+    border-radius: 25px; 
     background-color: #2b2b2b;
     color: var(--text-light);
     font-size: 0.95rem;
@@ -112,7 +108,7 @@ a {
     color: var(--primary-color);
 }
 
-/* Box dei Suggerimenti della Ricerca (Ajax/Suggestions) */
+/* Ajax/Suggestions */
 .suggestions-box {
     position: absolute;
     top: 100%;
@@ -124,12 +120,12 @@ a {
     border-radius: 0 0 8px 8px;
     max-height: 250px;
     overflow-y: auto;
-    display: none; /* Verrà mostrato via JS quando l'utente scrive */
+    display: none; /* the suggestion box will be displayed via js*/
     z-index: 1010;
     box-shadow: 0 4px 8px rgba(0,0,0,0.5);
 }
 
-/* Icone Destre (Login e Carrello) */
+/* Login and Cart Icons */
 .header-actions {
     display: flex;
     align-items: center;
@@ -149,26 +145,21 @@ a {
 }
 
 
-/* ==========================================================================
-   3. SIDEBAR (Menu Laterale - Nascosto per ora)
-   ========================================================================== */
+/* SIDEBAR */
 .sidebar {
-    display: none; /* Come richiesto, lo nascondiamo completamente per il prototipo */
+    display: none; /* Hidden right now, must be implemented via js */
 }
 
-/* Lasciamo comunque pronte le classi interne per quando Carmine implementerà il JS */
 .sidebar-menu { list-style: none; }
 .menu-item { position: relative; }
 .submenu { list-style: none; display: none; }
 
 
-/* ==========================================================================
-   4. SITE FOOTER (Piè di Pagina)
-   ========================================================================== */
+/* FOOTER  */
 .site-footer {
     background-color: var(--dark-bg);
-    color: #b0b0b0; /* Testo leggermente grigio nel footer per eleganza */
-    margin-top: auto; /* Trucco Flexbox per spingere il footer in basso */
+    color: #b0b0b0; 
+    margin-top: auto;
     padding-top: 40px;
     font-size: 0.95rem;
     border-top: 3px solid var(--primary-color);
@@ -198,7 +189,7 @@ a {
     position: relative;
 }
 
-/* Linea decorativa sotto i titoli del footer */
+/* Decoration Line under the footer  */
 .footer-section h3::after {
     content: '';
     position: absolute;
@@ -229,7 +220,7 @@ a {
     color: var(--primary-color);
 }
 
-/* Parte Inferiore del Footer (Copyright e Pagamenti) */
+/* Copyright and Payment Methods */
 .footer-bottom {
     background-color: #111111;
     padding: 20px 40px;
@@ -258,10 +249,10 @@ a {
 }
 
 .payment-methods i:hover {
-    color: var(--text-light); /* Si illumina al passaggio del mouse */
+    color: var(--text-light);
 }
 
-/* Gestione Responsive Base per il Footer */
+/* Responsive Footer */
 @media (max-width: 768px) {
     .footer-container {
         flex-direction: column;

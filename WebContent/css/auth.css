@@ -1,0 +1,138 @@
+@charset "UTF-8";
+
+@import 'global.css';
+
+/* MAIN CONTAINER */
+.login-container, 
+.register-container {
+    max-width: 400px;
+    margin: 60px auto; 
+    padding: 40px 30px;
+    background-color: var(--text-light); 
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); 
+    border-top: 4px solid var(--primary-color); 
+}
+
+/* HEADINGS */
+.login-container h2, 
+.register-container h2 {
+    text-align: center;
+    color: var(--text-dark);
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 800; 
+}
+
+/* FORM GROUPS */
+.login-container .form-group, 
+.register-container .form-group {
+    margin-bottom: 15px;
+}
+
+.login-container label, 
+.register-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 0.9em;
+    color: var(--text-dark);
+}
+
+/* INPUT FIELDS */
+.login-container input[type="text"], 
+.login-container input[type="email"], 
+.login-container input[type="password"], 
+.login-container input[type="date"],
+.register-container input[type="text"], 
+.register-container input[type="email"], 
+.register-container input[type="password"], 
+.register-container input[type="date"] {
+    width: 100%;
+    padding: 12px; 
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; 
+    transition: border-color 0.3s, box-shadow 0.3s;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+}
+
+/* FOCUS STATE (While the user is writing) */
+.login-container input:focus, 
+.register-container input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15); 
+    outline: none;
+}
+
+/* SUBMIT BUTTON */
+.login-container button[type="submit"], 
+.register-container button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+/* HOVER & ACTIVE STATE */
+.login-container button[type="submit"]:hover, 
+.register-container button[type="submit"]:hover {
+    background-color: #c62828; 
+}
+
+.login-container button[type="submit"]:active, 
+.register-container button[type="submit"]:active {
+    transform: scale(0.98); 
+}
+
+/* JS ERROR MESSAGES */
+.login-container .error-message, 
+.register-container .error-message {
+    color: var(--primary-color); 
+    font-size: 0.85em;
+    margin-top: 4px;
+    display: block;
+    min-height: 1.2em; 
+    font-weight: 600;
+}
+
+/* JS RED ERROR BORDER */
+.login-container .input-error, 
+.register-container .input-error {
+    border: 2px solid var(--primary-color) !important;
+    background-color: #ffebee;
+}
+
+/* LOGIN/REGISTER LINK */
+.login-container .link-container, 
+.register-container p {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.login-container .link-container a, 
+.register-container p a {
+    color: var(--primary-color);
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+.login-container .link-container a:hover, 
+.register-container p a:hover {
+    color: #c62828;
+    text-decoration: underline;
+}
