@@ -8,25 +8,28 @@ public class InvoiceBean implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private long id;
-	private int number;
-	private LocalDateTime issueDate;    //Data emissione fattura 
-	private String holderName;          //Nome intestatario
-	private String vatNumber;           //Partita IVA dell'intestatario
-	private double netAmount;           //Totale netto (senza IVA)
-	private double taxAmount;           //Totale IVA 
-	private double totalAmount;         //Importo totale 
+	private String number;
+	private LocalDateTime issueDate;
+	private String holderFirstName;
+	private String holderLastName;
+	private AddressBean billingAddress;
+	private double netAmount;          
+	private double taxableAmount;
+	private double totalAmount;
 	
 	public InvoiceBean() {}
 
-	public InvoiceBean(long id, int number, LocalDateTime issueDate, String holderName, String vatNumber,
-			double netAmount, double taxAmount, double totalAmount) {
+	public InvoiceBean(long id, String number, LocalDateTime issueDate, 
+			String holderFirstName, String holderLastName, AddressBean billingAddress,
+			double netAmount, double taxableAmount, double totalAmount) {
 		this.id = id;
 		this.number = number;
 		this.issueDate = issueDate;
-		this.holderName = holderName;
-		this.vatNumber = vatNumber;
+		this.holderFirstName = holderFirstName;
+		this.holderLastName = holderLastName;
+		this.billingAddress = billingAddress;
 		this.netAmount = netAmount;
-		this.taxAmount = taxAmount;
+		this.taxableAmount = taxableAmount;
 		this.totalAmount = totalAmount;
 	}
 
@@ -38,11 +41,11 @@ public class InvoiceBean implements Serializable{
 		this.id = id;
 	}
 
-	public int getNumber() {
+	public String getNumber() {
 		return number;
 	}
 
-	public void setNumber(int number) {
+	public void setNumber(String number) {
 		this.number = number;
 	}
 
@@ -54,20 +57,28 @@ public class InvoiceBean implements Serializable{
 		this.issueDate = issueDate;
 	}
 
-	public String getHolderName() {
-		return holderName;
+	public String getHolderFirstName() {
+		return holderFirstName;
 	}
 
-	public void setHolderName(String holderName) {
-		this.holderName = holderName;
+	public void setHolderFirstName(String holderFirstName) {
+		this.holderFirstName = holderFirstName;
+	}
+	
+	public String getHolderLastName() {
+		return holderLastName;
 	}
 
-	public String getVatNumber() {
-		return vatNumber;
+	public void setHolderLastName(String holderLastName) {
+		this.holderLastName = holderLastName;
+	}
+	
+	public AddressBean getBillingAddress() {
+		return billingAddress;
 	}
 
-	public void setVatNumber(String vatNumber) {
-		this.vatNumber = vatNumber;
+	public void setBillingAddress(AddressBean billingAddress) {
+		this.billingAddress = billingAddress;
 	}
 
 	public double getNetAmount() {
@@ -78,12 +89,12 @@ public class InvoiceBean implements Serializable{
 		this.netAmount = netAmount;
 	}
 
-	public double getTaxAmount() {
-		return taxAmount;
+	public double getTaxableAmount() {
+		return taxableAmount;
 	}
 
-	public void setTaxAmount(double taxAmount) {
-		this.taxAmount = taxAmount;
+	public void setTaxableAmount(double taxableAmount) {
+		this.taxableAmount = taxableAmount;
 	}
 
 	public double getTotalAmount() {

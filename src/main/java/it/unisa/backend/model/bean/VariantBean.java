@@ -7,8 +7,10 @@ public class VariantBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private long id;
+	private long productId;
 	private String sku;
 	private String size;
+	private double vat;
 	private double price;
 	private int quantity;
 	private String flavour;
@@ -16,10 +18,13 @@ public class VariantBean implements Serializable {
 	
 	public VariantBean() {}
 
-	public VariantBean(long id, String sku, String size, double price, int quantity, String flavour, String imageUrl) {
+	public VariantBean(long id, long productId, String sku, String size, double vat,
+			double price, int quantity, String flavour, String imageUrl) {
 		this.id = id;
+		this.productId = productId;
 		this.sku = sku;
 		this.size = size;
+		this.vat = vat;
 		this.price = price;
 		this.quantity = quantity;
 		this.flavour = flavour;
@@ -32,6 +37,14 @@ public class VariantBean implements Serializable {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(long productId) {
+		this.productId = productId;
 	}
 
 	public String getSku() {
@@ -48,6 +61,14 @@ public class VariantBean implements Serializable {
 
 	public void setSize(String size) {
 		this.size = size;
+	}
+
+	public double getVat() {
+		return vat;
+	}
+
+	public void setVat(double vat) {
+		this.vat = vat;
 	}
 
 	public double getPrice() {

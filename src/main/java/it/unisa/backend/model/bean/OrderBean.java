@@ -4,6 +4,7 @@ import java.io.Serializable;
 import it.unisa.backend.model.bean.util.OrderStatus;
 import java.time.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class OrderBean implements Serializable{
 	
@@ -11,20 +12,21 @@ public class OrderBean implements Serializable{
 	
 	private long id;
 	private OrderStatus status;
-	private LocalDateTime createdAt;   //Data creazione ordine
+	private LocalDateTime createdAt;
 	private double totalAmount;
-	private UserBean user;            // L'utente che ha effettuato l'acquisto
-    private AddressBean shippingAddress; // L'indirizzo dove spedire la merce
-    private InvoiceBean invoice;      //Fattura associata
+	private UserBean user;            
+    private AddressBean shippingAddress;
+    private InvoiceBean invoice;
     private PaymentBean payment;
-    private ArrayList<OrderItemBean> items;
+    private List<OrderItemBean> items;
     
     public OrderBean() {
     	this.items = new ArrayList<>();
     }
 
-	public OrderBean(long id, OrderStatus status, LocalDateTime createdAt, double totalAmount, UserBean user,
-			AddressBean shippingAddress, InvoiceBean invoice, PaymentBean payment, ArrayList<OrderItemBean> items) {
+	public OrderBean(long id, OrderStatus status, LocalDateTime createdAt, 
+			double totalAmount, UserBean user, AddressBean shippingAddress, InvoiceBean invoice, 
+			PaymentBean payment, ArrayList<OrderItemBean> items) {
 		this.id = id;
 		this.status = status;
 		this.createdAt = createdAt;
@@ -100,11 +102,11 @@ public class OrderBean implements Serializable{
 		this.payment = payment;
 	}
 
-	public ArrayList<OrderItemBean> getItems() {
+	public List<OrderItemBean> getItems() {
 		return items;
 	}
 
-	public void setItems(ArrayList<OrderItemBean> items) {
+	public void setItems(List<OrderItemBean> items) {
 		this.items = items;
 	}
 	

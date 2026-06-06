@@ -2,21 +2,29 @@ package it.unisa.backend.model.bean;
 
 import java.io.Serializable;
 import java.time.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CartBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	private long id;
-	private double total_price;
+	private String userEmail;
+	private double totalPrice;
 	private LocalDateTime creationDate;
 	
-	public CartBean() {}
+	private Map<Integer, CartItemBean> variants;
+	
+	public CartBean() {this.variants = new HashMap<>();}
 
-	public CartBean(long id, double total_price, LocalDateTime creationDate) {
+	public CartBean(long id, String userEmail, double totalPrice, 
+			LocalDateTime creationDate, Map<Integer, CartItemBean> variants) {
 		this.id = id;
-		this.total_price = total_price;
+		this.userEmail = userEmail;
+		this.totalPrice = totalPrice;
 		this.creationDate = creationDate;
+		this.variants = variants;
 	}
 
 	public long getId() {
@@ -26,13 +34,21 @@ public class CartBean implements Serializable{
 	public void setId(long id) {
 		this.id = id;
 	}
-
-	public double getTotal_price() {
-		return total_price;
+	
+	public String getUserEmail() {
+		return userEmail;
 	}
 
-	public void setTotal_price(double total_price) {
-		this.total_price = total_price;
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(double totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 
 	public LocalDateTime getCreationDate() {
@@ -43,4 +59,12 @@ public class CartBean implements Serializable{
 		this.creationDate = creationDate;
 	}
 
+	public Map<Integer, CartItemBean> getVariants() {
+		return variants;
+	}
+
+	public void setVariants(Map<Integer, CartItemBean> variants) {
+		this.variants = variants;
+	}
+	
 }

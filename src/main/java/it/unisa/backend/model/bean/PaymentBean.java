@@ -9,22 +9,24 @@ public class PaymentBean implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private long id;
+	private long orderId;
 	private LocalDateTime paymentDate;
 	private String paymentMethod;
-	private String transactionCode;  // Il codice di transazione della banca/PayPal
+	private String transactionId;
 	private PaymentStatus status;
-	private double amount;
+	private double totalPrice;
 	
 	public PaymentBean() {}
 
-	public PaymentBean(long id, LocalDateTime paymentDate, String paymentMethod, String transactionCode,
-			PaymentStatus status, double amount) {
+	public PaymentBean(long id, long orderId, LocalDateTime paymentDate, 
+			String paymentMethod, String transactionId, PaymentStatus status, double totalPrice) {
 		this.id = id;
+		this.orderId = orderId;
 		this.paymentDate = paymentDate;
 		this.paymentMethod = paymentMethod;
-		this.transactionCode = transactionCode;
+		this.transactionId = transactionId;
 		this.status = status;
-		this.amount = amount;
+		this.totalPrice = totalPrice;
 	}
 
 	public long getId() {
@@ -33,6 +35,14 @@ public class PaymentBean implements Serializable{
 
 	public void setId(long id) {
 		this.id = id;
+	}
+	
+	public long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(long orderId) {
+		this.orderId = orderId;
 	}
 
 	public LocalDateTime getPaymentDate() {
@@ -51,12 +61,12 @@ public class PaymentBean implements Serializable{
 		this.paymentMethod = paymentMethod;
 	}
 
-	public String getTransactionCode() {
-		return transactionCode;
+	public String getTransactionId() {
+		return transactionId;
 	}
 
-	public void setTransactionCode(String transactionCode) {
-		this.transactionCode = transactionCode;
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 
 	public PaymentStatus getStatus() {
@@ -67,12 +77,12 @@ public class PaymentBean implements Serializable{
 		this.status = status;
 	}
 
-	public double getAmount() {
-		return amount;
+	public double getTotalPrice() {
+		return totalPrice;
 	}
 
-	public void setAmount(double amount) {
-		this.amount = amount;
+	public void setTotalPrice(double totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 
 }

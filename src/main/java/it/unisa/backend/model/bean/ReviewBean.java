@@ -7,18 +7,39 @@ public class ReviewBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
+	private String userEmail;
+	private long productId;
 	private String title;
 	private int score;
 	private String comment;
-	private LocalDateTime date;
+	private LocalDateTime reviewDate;
 	
 	public ReviewBean() {}
 
-	public ReviewBean(String title, int score, String comment, LocalDateTime date) {
+	public ReviewBean(String userEmail, long productId, String title, 
+			int score, String comment, LocalDateTime date) {
+		this.userEmail = userEmail;
+		this.productId = productId;
 		this.title = title;
 		this.score = score;
 		this.comment = comment;
-		this.date = date;
+		this.reviewDate = date;
+	}
+	
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(long productId) {
+		this.productId = productId;
 	}
 
 	public String getTitle() {
@@ -45,12 +66,12 @@ public class ReviewBean implements Serializable{
 		this.comment = comment;
 	}
 
-	public LocalDateTime getDate() {
-		return date;
+	public LocalDateTime getReviewDate() {
+		return reviewDate;
 	}
 
-	public void setDate(LocalDateTime date) {
-		this.date = date;
+	public void setReviewDate(LocalDateTime reviewDate) {
+		this.reviewDate = reviewDate;
 	}
 
 }

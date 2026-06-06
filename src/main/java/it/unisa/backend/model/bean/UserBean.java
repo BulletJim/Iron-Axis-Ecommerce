@@ -10,28 +10,33 @@ public class UserBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String email;
-	private String password;
+	private String passwordHash;
+	private String passwordSalt;
 	private String firstName;
 	private String lastName;
 	private String role;
 	private LocalDate birthDate;
 	private LocalDateTime registrationDate;
 	private List<AddressBean> addresses;
+	private List<PhoneBean> phones;
 	
 	public UserBean() {
 		this.addresses = new ArrayList<>();
 	}
 
-	public UserBean(String email, String password, String firstName, String lastName, String role, LocalDate birthDate,
-			LocalDateTime registrationDate, List<AddressBean> addresses) {
+	public UserBean(String email, String passwordHash, String passwordSalt, 
+			String firstName, String lastName, String role, LocalDate birthDate,
+			LocalDateTime registrationDate, List<AddressBean> addresses, List<PhoneBean> phones) {
 		this.email = email;
-		this.password = password;
+		this.passwordHash = passwordHash;
+		this.passwordSalt = passwordSalt;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.role = role;
 		this.birthDate = birthDate;
 		this.registrationDate = registrationDate;
 		this.addresses = addresses;
+		this.phones = phones;
 	}
 
 	public String getEmail() {
@@ -42,12 +47,20 @@ public class UserBean implements Serializable {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getPasswordHash() {
+		return passwordHash;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
+	}
+	
+	public String getPasswordSalt() {
+		return passwordSalt;
+	}
+
+	public void setPasswordSalt(String passwordSalt) {
+		this.passwordSalt = passwordSalt;
 	}
 
 	public String getFirstName() {
@@ -97,4 +110,13 @@ public class UserBean implements Serializable {
 	public void setAddresses(List<AddressBean> addresses) {
 		this.addresses = addresses;
 	}
+
+	public List<PhoneBean> getPhones() {
+		return phones;
+	}
+
+	public void setPhones(List<PhoneBean> phones) {
+		this.phones = phones;
+	}
+	
 }

@@ -7,14 +7,34 @@ public class PhoneBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
+	private long id;
+	private String userEmail;
 	private String phoneNumber;
 	private PhoneType type;
 	
 	public PhoneBean() {}
 
-	public PhoneBean(String phoneNumber, PhoneType type) {
+	public PhoneBean(long id, String userEmail, String phoneNumber, PhoneType type) {
+		this.id = id;
+		this.userEmail = userEmail;
 		this.phoneNumber = phoneNumber;
 		this.type = type;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
 
 	public String getPhoneNumber() {
@@ -32,6 +52,8 @@ public class PhoneBean implements Serializable {
 	public void setType(PhoneType type) {
 		this.type = type;
 	}
+
+	
 
 }
 
