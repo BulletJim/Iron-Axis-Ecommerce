@@ -13,9 +13,9 @@
 </head>
 
 <body>
-	<%@ include file="/fragments/header.jsp"%>
+	<%@ include file="/WEB-INF/fragment/header.jsp"%>
 
-	<%@ include file="/fragments/menu.jsp"%>
+	<%@ include file="/WEB-INF/fragment/menu.jsp"%>
 
 	<main class="error-container">
 		<div class="error-content">
@@ -26,7 +26,7 @@
 		</div>
 	</main>
 
-	<%@ include file="/fragments/footer.jsp"%>
+	<%@ include file="/WEB-INF/fragment/footer.jsp"%>
 </body>
 
 </html>

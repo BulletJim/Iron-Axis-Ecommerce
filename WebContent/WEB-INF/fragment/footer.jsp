@@ -2,7 +2,7 @@
     <div class="footer-container">
         <div class="footer-section">
             <h3>Chi Siamo</h3>
-            <p>Siamo leader nella vendita di integratori<br>e attrezzatura sportiva di altissima qualitï¿½.<br>Raggiungi i
+            <p>Siamo leader nella vendita di integratori<br>e attrezzatura sportiva di altissima qualità.<br>Raggiungi i
                 tuoi obiettivi con Iron Axis.</p>
         </div>
 
