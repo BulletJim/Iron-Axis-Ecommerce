@@ -1,4 +1,4 @@
-package it.unisa.backend.db;
+package it.unisa.backend.model.db;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
