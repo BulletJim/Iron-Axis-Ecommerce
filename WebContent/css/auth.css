@@ -136,3 +136,72 @@
     color: #c62828;
     text-decoration: underline;
 }
+
+/* Dynamic Fields */
+.dynamic-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 8px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.input-flex-2 { flex: 2; }
+.input-flex-1 { flex: 1; }
+.input-cap { max-width: 80px; }
+.input-prov { max-width: 70px; }
+
+/* intTel*/
+.iti {
+    flex: 1;
+    width: 100%;
+}
+
+.btn-add-dynamic {
+    background: none;
+    color: var(--primary-color);
+    border: none;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 600;
+    margin-top: 8px;
+    padding: 0;
+    text-align: left;
+}
+
+.btn-add-dynamic:hover {
+    text-decoration: underline;
+    color: #c62828; 
+}
+
+.btn-remove {
+    background-color: #777;
+    color: var(--text-light);
+    border: none;
+    border-radius: 4px;
+    width: 40px;
+    height: 42px; 
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-remove:hover {
+    background-color: var(--primary-color);
+}
+
+/* SERVER ERROR MESSAGES */
+.server-error-message {
+    color: var(--primary-color);
+    font-weight: 600;
+    text-align: center;
+    margin-top: 15px;
+}

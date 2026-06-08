@@ -34,7 +34,7 @@ if (passwordInput) {
             passwordError.textContent = "";
             passwordInput.classList.remove("input-error");
         } else if (!passwordRegex.test(passwordValue)) {
-            passwordError.textContent = "Usa 8- 25caratteri, con almeno una lettera e un numero.";
+            passwordError.textContent = "Usa 8-25 caratteri, con almeno una lettera e un numero.";
             passwordInput.classList.add("input-error");
         } else {
             passwordError.textContent = "";
@@ -65,7 +65,6 @@ if (confPasswordInput) {
     });
 }
 
-// 4. CONTROLLO FINALE AL CLICK SU "REGISTRATI"
 if (regForm) {
     regForm.addEventListener("submit", function(event) {
         if (emailInput) emailInput.dispatchEvent(new Event("input"));
@@ -81,3 +80,63 @@ if (regForm) {
         }
     });
 }
+
+document.addEventListener("DOMContentLoaded", function(){
+    
+    const phonesContainer = document.getElementById("phones-container");
+    const addPhoneBtn = document.getElementById("add-phone-btn");
+    
+    const addressesContainer = document.getElementById("addresses-container");
+    const addAddressBtn = document.getElementById("add-address-btn");
+    
+    function initPhoneInput(inputElement){
+        return window.intlTelInput(inputElement, {
+            initialCountry: "it",
+            preferredCountries: ["it", "us", "gb", "fr", "de", "es"],
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/utils.js"
+        });
+    }
+    
+    const defaultPhoneInput = document.querySelector(".phone-row .phone-number");
+    if(defaultPhoneInput){
+        initPhoneInput(defaultPhoneInput);
+    }
+    
+    if(addPhoneBtn){
+        addPhoneBtn.addEventListener("click", function(){
+            const newRow = document.createElement("div");
+            newRow.className = "dynamic-row phone-row";
+            
+            newRow.innerHTML = `
+            <input type="tel" name="phoneNumber" class="phone-number input-flex-1" placeholder="Inserisci il tuo numero" required>
+            <button type="button" class="btn-remove">-</button>
+            `;
+            
+            phonesContainer.appendChild(newRow);
+            
+            const newInput = newRow.querySelector(".phone-number");
+            initPhoneInput(newInput);
+        });
+    }
+    
+    if (addAddressBtn) {
+        addAddressBtn.addEventListener("click", function() {
+            const row = document.createElement("div");
+            row.className = "dynamic-row address-row";
+            row.innerHTML = `
+                <input type="text" name="street" placeholder="Via/Piazza" class="addr-street input-flex-2" required>
+                <input type="text" name="city" placeholder="Città" class="addr-city input-flex-1" required>
+                <input type="text" name="cap" placeholder="CAP" class="addr-cap input-cap" required>
+                <input type="text" name="prov" placeholder="Prov" class="addr-prov input-prov" required>
+                <button type="button" class="btn-remove" title="Rimuovi">-</button>
+            `;
+            addressesContainer.appendChild(row);
+        });
+    }
+
+    document.addEventListener("click", function(e){
+        if(e.target.classList.contains("btn-remove")){
+            e.target.closest(".dynamic-row").remove();
+        }
+    });
+});
