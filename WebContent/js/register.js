@@ -2,6 +2,8 @@ const regForm = document.getElementById("registerForm");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const confPasswordInput = document.getElementById("confirmPassword");
+const phoneInput = document.getElementById("phoneNumber");
+const phoneError = document.getElementById("phoneError");
 
 const emailError = document.getElementById("emailError");
 const passwordError = document.getElementById("passwordError");
@@ -24,6 +26,34 @@ if (emailInput) {
         }
     });
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("input", function(event) {
+        
+        if (event.target && event.target.name === "phoneNumber") {
+            const phoneInput = event.target;
+            const originalValue = phoneInput.value;
+
+            let sanitizedValue = originalValue.replace(/[^0-9]/g, '');
+
+            sanitizedValue = sanitizedValue.replace(/(?!^)\+/g, '');
+
+
+            if (originalValue !== sanitizedValue) {
+                phoneInput.value = sanitizedValue;
+                phoneInput.classList.add("input-error");
+
+                setTimeout(() => {
+                    phoneInput.classList.remove("input-error");
+                }, 500);
+
+            } else {
+                phoneInput.classList.remove("input-error");
+            }
+        }
+    });
+
+});
 
 if (passwordInput) {
     passwordInput.addEventListener("input", function() {

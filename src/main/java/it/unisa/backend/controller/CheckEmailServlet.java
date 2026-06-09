@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import it.unisa.backend.model.dao.impl.UserDAO;
+import it.unisa.backend.model.db.DBManager;
+
 
 @WebServlet("/CheckEmailServlet")
 public class CheckEmailServlet extends HttpServlet {
@@ -23,8 +26,19 @@ public class CheckEmailServlet extends HttpServlet {
 		String emailInput = request.getParameter("email");
 		boolean emailExists = false;
 		
-		if(emailInput != null && emailInput.trim().equalsIgnoreCase("test@test.com")) {
-			emailExists = true;
+		UserDAO userDao = new UserDAO(DBManager.getDataSource());
+		
+		if(emailInput != null && !emailInput.trim().isEmpty()) {
+			
+			emailInput = emailInput.trim();
+			
+			try {
+				if(userDao.isEmailExists(emailInput)) emailExists = true;
+			} catch (Exception e) {
+				e.printStackTrace();
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			}
+			
 		}
 		
 		response.setContentType("application/json");
@@ -41,7 +55,7 @@ public class CheckEmailServlet extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("/WEB-INF/error/error403.jsp").forward(request, response);
+		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "POST method not allowed");
 	}
 
 }

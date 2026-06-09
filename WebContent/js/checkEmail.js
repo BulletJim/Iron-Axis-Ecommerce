@@ -11,7 +11,12 @@ document.addEventListener("DOMContentLoaded", function() {
             const emailValue = emailInput.value.trim();
 
             if (emailValue == "") {
-                return;
+				emailInput.classList.remove("input-error");
+				if (emailError) emailError.textContent = "";
+				submitBtn.disabled = false;
+				submitBtn.style.opacity = "1";
+				submitBtn.style.cursor = "pointer";
+				return;
             }
 
             try {
