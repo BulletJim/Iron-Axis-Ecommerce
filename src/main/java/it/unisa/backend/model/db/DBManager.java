@@ -24,6 +24,15 @@ public final class DBManager {
 		}
 	}
 	
+	public static DataSource getDataSource() {
+	    if (ds == null) {
+	        throw new IllegalStateException("DataSource not initialized");
+	    }
+	    return ds;
+	}
+	
+	
+	// Utility testing method
 	public static Connection getConnection() throws SQLException {
 		if(ds == null) {
 			throw new SQLException("Datasource not initialized");

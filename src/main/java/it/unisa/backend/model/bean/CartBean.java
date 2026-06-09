@@ -14,12 +14,12 @@ public class CartBean implements Serializable{
 	private double totalPrice;
 	private LocalDateTime creationDate;
 	
-	private Map<Integer, CartItemBean> variants;
+	private Map<Long, CartItemBean> variants;
 	
 	public CartBean() {this.variants = new HashMap<>();}
 
 	public CartBean(long id, String userEmail, double totalPrice, 
-			LocalDateTime creationDate, Map<Integer, CartItemBean> variants) {
+			LocalDateTime creationDate, Map<Long, CartItemBean> variants) {
 		this.id = id;
 		this.userEmail = userEmail;
 		this.totalPrice = totalPrice;
@@ -59,11 +59,11 @@ public class CartBean implements Serializable{
 		this.creationDate = creationDate;
 	}
 
-	public Map<Integer, CartItemBean> getVariants() {
+	public Map<Long, CartItemBean> getVariants() {
 		return variants;
 	}
 
-	public void setVariants(Map<Integer, CartItemBean> variants) {
+	public void setVariants(Map<Long, CartItemBean> variants) {
 		this.variants = variants;
 	}
 	
