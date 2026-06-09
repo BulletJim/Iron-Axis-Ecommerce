@@ -108,7 +108,12 @@ document.addEventListener("DOMContentLoaded", function(){
             newRow.className = "dynamic-row phone-row";
             
             newRow.innerHTML = `
-            <input type="tel" name="phoneNumber" class="phone-number input-flex-1" placeholder="Inserisci il tuo numero" required>
+			<select name="phoneType" class="input-phone-type" required>
+				<option value="MOBILE">Cellulare</option>
+			    <option value="HOME">Casa</option>
+			    <option value="WORK">Lavoro</option>
+			</select>
+			<input type="tel" name="phoneNumber" class="phone-number" placeholder="Inserisci il tuo numero" required>
             <button type="button" class="btn-remove">-</button>
             `;
             
@@ -122,21 +127,38 @@ document.addEventListener("DOMContentLoaded", function(){
     if (addAddressBtn) {
         addAddressBtn.addEventListener("click", function() {
             const row = document.createElement("div");
-            row.className = "dynamic-row address-row";
+            row.className = "address-group";
             row.innerHTML = `
-                <input type="text" name="street" placeholder="Via/Piazza" class="addr-street input-flex-2" required>
-                <input type="text" name="city" placeholder="Città" class="addr-city input-flex-1" required>
-                <input type="text" name="cap" placeholder="CAP" class="addr-cap input-cap" required>
-                <input type="text" name="prov" placeholder="Prov" class="addr-prov input-prov" required>
-                <button type="button" class="btn-remove" title="Rimuovi">-</button>
+			<div class="input-row">
+			                    <input type="text" name="street" placeholder="Via/Piazza" class="addr-street input-flex-1" required>
+			                    <input type="number" name="streetNumber" placeholder="N°" class="addr-civic input-civic" min="0" onkeydown="if(event.key === '-') event.preventDefault()" required>
+			                </div>
+			                <div class="input-row">
+			                    <input type="text" name="city" placeholder="Città" class="addr-city input-flex-1" required>
+			                    <input type="text" name="prov" placeholder="Prov" class="addr-prov input-prov" required>
+			                </div>
+			                <div class="input-row">
+			                    <input type="text" name="zipCode" placeholder="CAP" class="addr-zip-code input-zip-code" required>
+			                    <input type="text" name="country" placeholder="Nazione" class="addr-country input-flex-1" required>
+			                </div>
+			                <button type="button" class="btn-remove" title="Rimuovi">-</button>
             `;
             addressesContainer.appendChild(row);
         });
     }
 
-    document.addEventListener("click", function(e){
-        if(e.target.classList.contains("btn-remove")){
-            e.target.closest(".dynamic-row").remove();
+    document.addEventListener("click", function(e) {
+        if (e.target.classList.contains("btn-remove")) {
+
+            const phoneRow = e.target.closest(".phone-row");
+            if (phoneRow) {
+                phoneRow.remove();
+            }
+
+            const addressGroup = e.target.closest(".address-group");
+            if (addressGroup) {
+                addressGroup.remove();
+            }
         }
     });
 });

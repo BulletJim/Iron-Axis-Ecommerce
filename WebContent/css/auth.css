@@ -48,7 +48,9 @@
 .register-container input[type="text"], 
 .register-container input[type="email"], 
 .register-container input[type="password"], 
-.register-container input[type="date"] {
+.register-container input[type="date"],
+.register-container input[type="tel"],
+.register-container input[type="number"] {
     width: 100%;
     padding: 12px; 
     border: 1px solid #ccc;
@@ -58,6 +60,26 @@
     font-family: inherit;
     font-size: 0.95rem;
     color: var(--text-dark);
+}
+
+.input-phone-type {
+    height: 44.4px; 
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: var(--text-dark);
+    font-family: inherit;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    outline: none;
+}
+
+.input-phone-type:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15);
 }
 
 /* FOCUS STATE (While the user is writing) */
@@ -146,6 +168,19 @@
     animation: fadeIn 0.3s ease-in-out;
 }
 
+.address-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border: 1px dashed #ccc;
+    border-radius: 6px;
+    margin-top: 10px;
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
@@ -153,13 +188,44 @@
 
 .input-flex-2 { flex: 2; }
 .input-flex-1 { flex: 1; }
-.input-cap { max-width: 80px; }
+.input-zip-code { max-width: 90px; }
 .input-prov { max-width: 70px; }
+.input-civic { max-width: 70px; }
+
 
 /* intTel*/
-.iti {
-    flex: 1;
-    width: 100%;
+.iti--allow-dropdown input[type="tel"], 
+.iti--separate-dial-code input[type="tel"], 
+.iti input[type="tel"] {
+    height: 44.4px !important; 
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+    background-color: #fff !important;
+    box-sizing: border-box !important;
+    
+
+    font-family: inherit !important;
+    font-size: 0.95rem !important;
+    color: var(--text-dark) !important;
+    
+
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+.iti--allow-dropdown input[type="tel"]:focus, 
+.iti--separate-dial-code input[type="tel"]:focus, 
+.iti input[type="tel"]:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15) !important;
+    outline: none !important;
+}
+
+.address-group .btn-remove {
+    align-self: flex-end; 
+    margin-top: 5px;
 }
 
 .btn-add-dynamic {
@@ -185,7 +251,7 @@
     border: none;
     border-radius: 4px;
     width: 40px;
-    height: 42px; 
+    height: 44px; 
     font-size: 1.2em;
     cursor: pointer;
     transition: background-color 0.2s;
