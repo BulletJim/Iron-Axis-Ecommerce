@@ -11,11 +11,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductDaoImpl implements ProductDaoInterface {
+public class ProductDAO implements ProductDaoInterface {
 
     private final DataSource dataSource;
 
-    public ProductDaoImpl(DataSource dataSource) {
+    public ProductDAO(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -53,13 +53,7 @@ public class ProductDaoImpl implements ProductDaoInterface {
             
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    product = new ProductBean();
-                    product.setId(resultSet.getLong("id"));
-                    product.setName(resultSet.getString("name"));
-                    product.setDescription(resultSet.getString("description"));
-                    product.setCategory(findCategoryById(connection, resultSet.getLong("category_id")));
-                    product.setVariants(findVariantsByProductId(connection, product.getId()));
-                    product.setReviews(findReviewsByProductId(connection, product.getId()));
+                    product = extractProductFromResultSet(resultSet, connection);
                 }
             }
         } 
@@ -80,15 +74,7 @@ public class ProductDaoImpl implements ProductDaoInterface {
              ResultSet resultSet = preparedStatement.executeQuery()) {
             
             while (resultSet.next()) {
-                ProductBean product = new ProductBean();
-                product.setId(resultSet.getLong("id"));
-                product.setName(resultSet.getString("name"));
-                product.setDescription(resultSet.getString("description"));
-                product.setCategory(findCategoryById(connection, resultSet.getLong("category_id")));
-                product.setVariants(findVariantsByProductId(connection, product.getId()));
-                product.setReviews(findReviewsByProductId(connection, product.getId()));
-                
-                products.add(product);
+                products.add(extractProductFromResultSet(resultSet, connection));
             }
         } 
         catch (SQLException e) {
@@ -152,15 +138,7 @@ public class ProductDaoImpl implements ProductDaoInterface {
             
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    ProductBean product = new ProductBean();
-                    product.setId(resultSet.getLong("id"));
-                    product.setName(resultSet.getString("name"));
-                    product.setDescription(resultSet.getString("description"));
-                    product.setCategory(findCategoryById(connection, categoryId));
-                    product.setVariants(findVariantsByProductId(connection, product.getId()));
-                    product.setReviews(findReviewsByProductId(connection, product.getId()));
-                    
-                    products.add(product);
+                    products.add(extractProductFromResultSet(resultSet, connection));
                 }
             }
         } 
@@ -180,22 +158,14 @@ public class ProductDaoImpl implements ProductDaoInterface {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             
-            String searchPattern = "%" + searchQuery + "%";   //Il carattere "%" serve per la clausola Like
+            String searchPattern = "%" + searchQuery + "%";
             
             preparedStatement.setString(1, searchPattern);
             preparedStatement.setString(2, searchPattern);
             
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
-                	
-                    ProductBean product = new ProductBean();
-                    product.setId(resultSet.getLong("id"));
-                    product.setName(resultSet.getString("name"));
-                    product.setDescription(resultSet.getString("description")); 
-                    product.setCategory(findCategoryById(connection, resultSet.getLong("category_id")));
-                    product.setVariants(findVariantsByProductId(connection, product.getId()));
-                    
-                    products.add(product);
+                    products.add(extractProductFromResultSet(resultSet, connection));
                 }
             }
         } 
@@ -203,6 +173,19 @@ public class ProductDaoImpl implements ProductDaoInterface {
             e.printStackTrace();
         }
         return products;
+    }
+    
+    
+    // Utility method 
+    private ProductBean extractProductFromResultSet(ResultSet resultSet, Connection connection) throws SQLException {
+        ProductBean product = new ProductBean();
+        product.setId(resultSet.getLong("id"));
+        product.setName(resultSet.getString("name"));
+        product.setDescription(resultSet.getString("description"));
+        product.setCategory(findCategoryById(connection, resultSet.getLong("category_id")));
+        product.setVariants(findVariantsByProductId(connection, product.getId()));
+        product.setReviews(findReviewsByProductId(connection, product.getId()));
+        return product;
     }
 
     private CategoryBean findCategoryById(Connection connection, long categoryId) throws SQLException{

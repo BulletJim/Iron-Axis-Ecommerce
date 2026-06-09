@@ -11,78 +11,56 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CartDaoImpl implements CartDaoInterface{
+public class CartDAO implements CartDaoInterface{
 
     private final DataSource dataSource;
 
-    public CartDaoImpl(DataSource dataSource){
+    public CartDAO(DataSource dataSource){
         this.dataSource = dataSource;
     }
 
     @Override
     public boolean save(CartBean cart){
     	
-        Connection connection = null;
-        
-        try {
-            connection = dataSource.getConnection();
+    	String queryCart = "INSERT INTO carts (user_email, total_price) VALUES (?, ?)";
+        String queryItems = "INSERT INTO cart_variants (cart_id, variant_id, quantity) VALUES (?, ?, ?)";
+
+        try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false); 
 
-            String queryCart = "INSERT INTO carts (user_email, total_price) VALUES (?, ?)";
-            
-            try (PreparedStatement psCart = connection.prepareStatement(queryCart, Statement.RETURN_GENERATED_KEYS)){
+            try (PreparedStatement psCart = connection.prepareStatement(queryCart, Statement.RETURN_GENERATED_KEYS);
+                 PreparedStatement psItems = connection.prepareStatement(queryItems)) {
+                
                 psCart.setString(1, cart.getUserEmail());
                 psCart.setDouble(2, cart.getTotalPrice());
                 psCart.executeUpdate();
                 
-                try (ResultSet rs = psCart.getGeneratedKeys()){
-                	
-                    if (rs.next()){
+                try (ResultSet rs = psCart.getGeneratedKeys()) {
+                    if (rs.next()) {
                         cart.setId(rs.getLong(1));
                     }
                 }
-            }
 
-            String queryItems = "INSERT INTO cart_variants (cart_id, variant_id, quantity) VALUES (?, ?, ?)";
-            
-            try (PreparedStatement psItems = connection.prepareStatement(queryItems)){
-            	
-                for (CartItemBean item : cart.getVariants().values()){
-                	
-                    psItems.setLong(1, cart.getId());
-                    psItems.setLong(2, item.getVariant().getId());
-                    psItems.setInt(3, item.getSelectedQuantity());
-                    psItems.addBatch();
+                if (cart.getVariants() != null) {
+                    for (CartItemBean item : cart.getVariants().values()) {
+                        psItems.setLong(1, cart.getId());
+                        psItems.setLong(2, item.getVariant().getId());
+                        psItems.setInt(3, item.getSelectedQuantity());
+                        psItems.addBatch();
+                    }
+                    psItems.executeBatch();
                 }
-                psItems.executeBatch();
+
+                connection.commit();
+                return true;
+
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
             }
-
-            connection.commit();
-            
-            return true;
-
-        } 
-        catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
-            
-            if (connection != null) try{ 
-            	connection.rollback();
-            	}
-            
-            catch (SQLException ex){
-            	ex.printStackTrace(); 
-            	}
-            
             return false;
-            
-        } finally{
-            if (connection != null) try { 
-            	connection.setAutoCommit(true); 
-            	connection.close();
-            	} 
-            catch (SQLException e){
-            	e.printStackTrace(); 
-            	}
         }
     }
 
@@ -122,36 +100,26 @@ public class CartDaoImpl implements CartDaoInterface{
     @Override
     public boolean update(CartBean cart){
     	
-        Connection connection = null;
-        
-        try {
-            connection = dataSource.getConnection();
+    	String queryCart = "UPDATE carts SET total_price = ? WHERE id = ?";
+        String queryDeleteOld = "DELETE FROM cart_variants WHERE cart_id = ?";
+        String queryItems = "INSERT INTO cart_variants (cart_id, variant_id, quantity) VALUES (?, ?, ?)";
+
+        try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false); 
 
-            String queryCart = "UPDATE carts SET total_price = ? WHERE id = ?";
-            
-            try (PreparedStatement psCart = connection.prepareStatement(queryCart)){
-            	
+            try (PreparedStatement psCart = connection.prepareStatement(queryCart);
+                 PreparedStatement psDelete = connection.prepareStatement(queryDeleteOld);
+                 PreparedStatement psItems = connection.prepareStatement(queryItems)) {
+                
                 psCart.setDouble(1, cart.getTotalPrice());
                 psCart.setLong(2, cart.getId());
                 psCart.executeUpdate();
-            }
 
-            String queryDeleteOld = "DELETE FROM cart_variants WHERE cart_id = ?";
-            
-            try (PreparedStatement psDelete = connection.prepareStatement(queryDeleteOld)){
                 psDelete.setLong(1, cart.getId());
                 psDelete.executeUpdate();
-            }
 
-            if (!cart.getVariants().isEmpty()){
-            	
-                String queryItems = "INSERT INTO cart_variants (cart_id, variant_id, quantity) VALUES (?, ?, ?)";
-                
-                try (PreparedStatement psItems = connection.prepareStatement(queryItems)){
-                	
-                    for (CartItemBean item : cart.getVariants().values()){
-                    	
+                if (cart.getVariants() != null && !cart.getVariants().isEmpty()) {
+                    for (CartItemBean item : cart.getVariants().values()) {
                         psItems.setLong(1, cart.getId());
                         psItems.setLong(2, item.getVariant().getId());
                         psItems.setInt(3, item.getSelectedQuantity());
@@ -159,37 +127,17 @@ public class CartDaoImpl implements CartDaoInterface{
                     }
                     psItems.executeBatch();
                 }
+
+                connection.commit();
+                return true;
+
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
             }
-
-            connection.commit();
-            
-            return true;
-
-        } 
-        catch (SQLException e){
-        	
+        } catch (SQLException e) {
             e.printStackTrace();
-            
-            if (connection != null) try { 
-            	connection.rollback();
-            	} 
-            
-            catch (SQLException ex){
-            	ex.printStackTrace();
-            	}
-            
             return false;
-            
-        } finally{
-        	
-            if (connection != null) try { 
-            	connection.setAutoCommit(true); 
-            	connection.close(); 
-            	}
-            
-            catch (SQLException e){
-            	e.printStackTrace(); 
-            	}
         }
     }
 
@@ -216,23 +164,30 @@ public class CartDaoImpl implements CartDaoInterface{
     @Override
     public boolean clearCart(long cartId){
     	
-        String query = "DELETE FROM cart_variants WHERE cart_id = ?";
-        
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(query)){
-            ps.setLong(1, cartId);
-            ps.executeUpdate();
-            
-            try (PreparedStatement psUpdate = connection.prepareStatement("UPDATE carts SET total_price = 0.0 WHERE id = ?")){
-                psUpdate.setLong(1, cartId);
+    	String queryDelete = "DELETE FROM cart_variants WHERE cart_id = ?";
+        String queryUpdate = "UPDATE carts SET total_price = 0.0 WHERE id = ?";
+
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement psDelete = connection.prepareStatement(queryDelete);
+                 PreparedStatement psUpdate = connection.prepareStatement(queryUpdate)) {
                 
-                return psUpdate.executeUpdate() > 0;
+                psDelete.setLong(1, cartId);
+                psDelete.executeUpdate();
+                
+                psUpdate.setLong(1, cartId);
+                psUpdate.executeUpdate();
+
+                connection.commit();
+                return true;
+
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
             }
-        } 
-        catch (SQLException e){
-        	
+        } catch (SQLException e) {
             e.printStackTrace();
-            
             return false;
         }
     }
@@ -247,11 +202,11 @@ public class CartDaoImpl implements CartDaoInterface{
     	return new ArrayList<>(); 
     	}
 
-    private Map<Integer, CartItemBean> findCartItemsByCartId(Connection connection, long cartId) throws SQLException{
+    private Map<Long, CartItemBean> findCartItemsByCartId(Connection connection, long cartId) throws SQLException{
 
         String query = "SELECT cv.quantity as selected_qty, v.* FROM cart_variants cv JOIN variants v ON cv.variant_id = v.id WHERE cv.cart_id = ?";
         
-        Map<Integer, CartItemBean> itemsMap = new HashMap<>();
+        Map<Long, CartItemBean> itemsMap = new HashMap<>();
         
         try (PreparedStatement ps = connection.prepareStatement(query)){
             ps.setLong(1, cartId);
@@ -272,7 +227,7 @@ public class CartDaoImpl implements CartDaoInterface{
                     
                     CartItemBean item = new CartItemBean(variant, rs.getInt("selected_qty"));
                     
-                    itemsMap.put((int) variant.getId(), item);
+                    itemsMap.put(variant.getId(), item);
                 }
             }
         }

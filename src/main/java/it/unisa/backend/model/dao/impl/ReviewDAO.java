@@ -7,11 +7,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReviewDaoImpl implements ReviewDaoInterface{
+public class ReviewDAO implements ReviewDaoInterface{
 
     private final DataSource dataSource;
 
-    public ReviewDaoImpl(DataSource dataSource){
+    public ReviewDAO(DataSource dataSource){
         this.dataSource = dataSource;
     }
 

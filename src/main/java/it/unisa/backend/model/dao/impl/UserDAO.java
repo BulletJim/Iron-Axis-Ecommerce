@@ -10,11 +10,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDaoImpl implements UserDaoInterface{
+public class UserDAO implements UserDaoInterface{
 
     private final DataSource dataSource;
 
-    public UserDaoImpl(DataSource dataSource) {
+    public UserDAO(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -73,32 +73,72 @@ public class UserDaoImpl implements UserDaoInterface{
 
     @Override
     public boolean save(UserBean user) {
-        String query = "INSERT INTO users (email, first_name, last_name, password_hash, password_salt, role, date_of_birth) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String userQuery = "INSERT INTO users (email, first_name, last_name, password_hash, password_salt, role, date_of_birth) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String addressQuery = "INSERT INTO addresses (user_email, zip_code, city, street, street_number, province, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String phoneQuery = "INSERT INTO phones (user_email, number, type) VALUES (?, ?, ?)";
         
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = dataSource.getConnection()) {
+        	
+        	connection.setAutoCommit(false);
+        	
+			try (PreparedStatement userStmt = connection.prepareStatement(userQuery);
+				 PreparedStatement addrStmt = connection.prepareStatement(addressQuery);
+				 PreparedStatement phoneStmt = connection.prepareStatement(phoneQuery)) {
+
+				userStmt.setString(1, user.getEmail());
+				userStmt.setString(2, user.getFirstName());
+				userStmt.setString(3, user.getLastName());
+				userStmt.setString(4, user.getPasswordHash());
+				userStmt.setString(5, user.getPasswordSalt());
+				userStmt.setString(6, user.getRole() != null ? user.getRole() : "user");
+				
+				if (user.getBirthDate() != null) {
+	                userStmt.setDate(7, Date.valueOf(user.getBirthDate()));
+	            } 
+	            else {
+	                userStmt.setNull(7, Types.DATE);
+	            }
+	            
+	            userStmt.executeQuery();
+	            
+                if (user.getAddresses() != null && !user.getAddresses().isEmpty()) {
+                    for (AddressBean addr : user.getAddresses()) {
+                        addrStmt.setString(1, user.getEmail());
+                        addrStmt.setString(2, addr.getZipCode());
+                        addrStmt.setString(3, addr.getCity());
+                        addrStmt.setString(4, addr.getStreet());
+                        addrStmt.setInt(5, addr.getStreetNumber());
+                        addrStmt.setString(6, addr.getProvince()); 
+                        addrStmt.setString(7, addr.getCountry());
+                        addrStmt.addBatch(); 
+                    }
+                    addrStmt.executeBatch();
+                }
+                
+                if (user.getPhones() != null && !user.getPhones().isEmpty()) {
+                    for (PhoneBean phone : user.getPhones()) {
+                        phoneStmt.setString(1, user.getEmail());
+                        phoneStmt.setString(2, phone.getPhoneNumber());
+                        phoneStmt.setString(3, phone.getType() != null ? phone.getType().name() : "MOBILE");
+                        phoneStmt.addBatch();
+                    }
+                    phoneStmt.executeBatch();
+
+                }
+                
+                connection.commit();
+                return true;
             
-            preparedStatement.setString(1, user.getEmail());
-            preparedStatement.setString(2, user.getFirstName());
-            preparedStatement.setString(3, user.getLastName());
-            preparedStatement.setString(4, user.getPasswordHash());
-            preparedStatement.setString(5, user.getPasswordSalt());
-            preparedStatement.setString(6, user.getRole() != null ? user.getRole() : "user");
-            
-            if (user.getBirthDate() != null) {
-                preparedStatement.setDate(7, Date.valueOf(user.getBirthDate()));
-            } 
-            else {
-                preparedStatement.setNull(7, Types.DATE);
-            }
-            
-            return preparedStatement.executeUpdate() > 0;
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+			} catch (SQLException e) {
+				connection.rollback();
+				e.printStackTrace();
+				return false;
+			}
+        } catch(SQLException e) {
+        	e.printStackTrace();
+        	return false;
+        }     
+    }   
 
     @Override
     public UserBean findById(String id) {
@@ -220,10 +260,11 @@ public class UserDaoImpl implements UserDaoInterface{
             preparedStatement.setString(1, email);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
+                	PhoneType type;
+                	type = PhoneType.valueOf(resultSet.getString("type"));
                     phones.add(new PhoneBean(
                         resultSet.getLong("id"), resultSet.getString("user_email"),
-                        resultSet.getString("number"), PhoneType.valueOf(resultSet.getString("type"))
-                    ));
+                        resultSet.getString("number"), type));
                 }
             }
         }
