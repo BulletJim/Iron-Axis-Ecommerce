@@ -44,8 +44,8 @@
 
 			<div class="form-group">
 				<label for="email">Email:</label> <input type="email" id="email"
-					name="email" placeholder="Inserisci la tua email"> <span
-					id="emailError" class="error-message"></span>
+					name="email" placeholder="Inserisci la tua email"> 
+					<span id="emailError" class="error-message"></span>
 			</div>
 
 			<div class="form-group">
@@ -98,17 +98,17 @@
 			</div>
 
 			<div class="form-group">
-				<label for="LastName">Password:</label> <input type="password"
+				<label for="password">Password:</label> <input type="password"
 					id="password" name="password" maxlength="20"
-					placeholder="Inserisci la tua password"> <span
-					id="passwordError" class="error-message"></span>
+					placeholder="Inserisci la tua password"> 
+					<span id="passwordError" class="error-message"></span>
 			</div>
 
 			<div class="form-group">
 				<label for="confirmPassword">Conferma Password:</label> <input
 					type="password" id="confirmPassword" name="confirmPassword"
-					maxlength="20" placeholder="Conferma la tua password"> <span
-					id="confirmPasswordError" class="error-message"></span>
+					maxlength="20" placeholder="Conferma la tua password"> 
+					<span id="confirmPasswordError" class="error-message"></span>
 			</div>
 
 			<button type="submit">Registrati</button>
@@ -126,7 +126,7 @@
             %>
                 <p class="error-message"><%= sessError %></p>
             <%
-                session.removeAttribute("error");
+                session.removeAttribute("errorMessage");
             }
             %>
 
