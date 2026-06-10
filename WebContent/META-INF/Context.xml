@@ -10,7 +10,7 @@
         username="root" 
         password="admin"
         driverClassName="com.mysql.cj.jdbc.Driver"
-        url="jdbc:mysql://localhost:3306/ironaxis?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC"      
+        url="jdbc:mysql://localhost:3306/ecommerce_IronAxis?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC"      
      />
 	
 </Context>
