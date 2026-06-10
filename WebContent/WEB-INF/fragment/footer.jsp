@@ -38,3 +38,5 @@
         </div>
     </div>
 </footer>
+
+<script src="${pageContext.request.contextPath}/js/menu.js"></script>
