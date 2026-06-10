@@ -20,8 +20,8 @@
             <ul>
                 <li><a href="mailto:info@ironaxis.it">info@ironaxis.it</a></li>
                 <li><a href="tel:+390123456789">+39 012 345 6789</a></li>
-                <li><a href="${pageContext.request.contextPath}/assistenza.jsp">Assistenza Clienti</a></li>
-                <li><a href="${pageContext.request.contextPath}/spedizioni.jsp">Spedizioni & Resi</a></li>
+                <li><a href="${pageContext.request.contextPath}/assistance.jsp">Assistenza Clienti</a></li>
+                <li><a href="${pageContext.request.contextPath}/ordersinfo.jsp">Spedizioni & Resi</a></li>
             </ul>
         </div>
     </div>
@@ -38,3 +38,5 @@
         </div>
     </div>
 </footer>
+
+<script src="${pageContext.request.contextPath}/js/menu.js"></script>
