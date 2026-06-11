@@ -222,7 +222,8 @@ public class CartDAO implements CartDaoInterface{
                         rs.getDouble("price"),
                         rs.getInt("quantity"),
                         rs.getString("flavour"),
-                        rs.getString("url_image")
+                        rs.getString("url_image"),
+                        rs.getString("nutr_tabl_url")
                     );
                     
                     CartItemBean item = new CartItemBean(variant, rs.getInt("selected_qty"));
