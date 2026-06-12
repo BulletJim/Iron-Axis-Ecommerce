@@ -1,7 +1,7 @@
 <%@ page import="it.unisa.backend.model.bean.UserBean" %>
 <%
     // Recuperiamo l'utente dalla sessione
-    UserBean loggedUser = (UserBean) session.getAttribute("user");
+    UserBean loggedUser = (UserBean) session.getAttribute("loggedUser");
 %>
 
 <header class="site-header">
