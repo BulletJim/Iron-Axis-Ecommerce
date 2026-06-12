@@ -32,4 +32,14 @@
   	<error-code>403</error-code>
   	<location>/error/error403.jsp</location>
   </error-page>
+  <!-- Bad Request -->
+  <error-page>
+    <error-code>400</error-code>
+    <location>/error400.jsp</location>
+</error-page>
+<!-- Method Not Allowed -->
+<error-page>
+    <error-code>405</error-code>
+    <location>/error405.jsp</location>
+</error-page>
 </web-app>
