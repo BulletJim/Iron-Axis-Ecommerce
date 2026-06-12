@@ -196,8 +196,8 @@ public class ProductDAO implements ProductDaoInterface {
     											resultSet.getDouble("price"),
     											resultSet.getInt("quantity"),
     											resultSet.getString("flavour"),
-    											resultSet.getString("url_image"),
-    											resultSet.getString("nutr_tabl_image")
+    											resultSet.getString("image_url"),
+    											resultSet.getString("nutr_tabl_url")
     										 );
     				
     			}
@@ -259,7 +259,7 @@ public class ProductDAO implements ProductDaoInterface {
                         rs.getDouble("price"),
                         rs.getInt("quantity"),
                         rs.getString("flavour"), 
-                        rs.getString("url_image"),
+                        rs.getString("image_url"),
                         rs.getString("nutr_tabl_url")
                     ));
                 }

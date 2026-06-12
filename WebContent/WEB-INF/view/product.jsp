@@ -181,8 +181,12 @@
 			<% } %>
 			
 			<form action="${pageContext.request.contextPath}/CartServlet" method="POST">
-				<input type="hidden" id="selected-sku" name="productSku" value="">
+				<input type="hidden" id="selected-sku" name="productSku" value="" required>
 				<input type="hidden" name="action" value="add">
+				<div class="quantity-wrapper">
+        			<label for="quantity-input">Quantità:</label>
+        			<input type="number" id="quantity-input" name="quantity" value="1" min="1" max="10" required>
+    			</div>
 				<button class="add-cart-btn" id="add-to-cart-btn" type="submit">Aggiungi al carrello</button>
 			</form>
 			
