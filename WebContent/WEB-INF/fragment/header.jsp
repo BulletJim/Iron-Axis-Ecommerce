@@ -44,3 +44,5 @@
         </a>
     </div>
 </header>
+
+<script src="${pageContext.request.contextPath}/js/searchbar.js" defer></script>
