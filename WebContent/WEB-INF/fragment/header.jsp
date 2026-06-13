@@ -69,4 +69,8 @@
         </a>
     </div>
     <script type="text/javascript" src="${pageContext.request.contextPath}/js/toastBannerController.js" defer></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/searchbar.js" defer></script>
 </header>
+
+
+

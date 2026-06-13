@@ -125,6 +125,25 @@ a {
     box-shadow: 0 4px 8px rgba(0,0,0,0.5);
 }
 
+.suggestions-item {
+	padding: 12px 15px;
+	color: var(--text-light); 
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border-bottom: 1px solid #3a3a3a;     /* Linea che va a dividere i prodotti */
+    text-align: left; 
+}
+
+.suggestion-item:last-child {   /*Rimuove la linea di divisione all'ultimo suggerimento in fondo */
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background-color: var(--primary-color); 
+    color: #ffffff;
+}
+
 /* Login and Cart Icons */
 .header-actions {
     display: flex;
