@@ -113,23 +113,6 @@
 
 			<button type="submit">Registrati</button>
 
-			<%
-            String reqError = (String) request.getAttribute("errorMessage");
-            if (reqError != null) {
-            %>
-                <p class="error-message"><%= reqError %></p>
-            <%
-            }
-            
-            String sessError = (String) session.getAttribute("errorMessage");
-            if (sessError != null) {
-            %>
-                <p class="error-message"><%= sessError %></p>
-            <%
-                session.removeAttribute("errorMessage");
-            }
-            %>
-
 		</form>
 
 		<div class="link-container">

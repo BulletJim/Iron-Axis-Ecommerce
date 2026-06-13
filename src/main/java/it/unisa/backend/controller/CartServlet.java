@@ -74,70 +74,181 @@ public class CartServlet extends HttpServlet {
 		
 		String sku = request.getParameter("productSku");
 		String action = request.getParameter("action");
-		int quantity = Integer.parseInt(request.getParameter("quantity"));
+		int quantity = Integer.parseInt(request.getParameter("quantity") != null ? request.getParameter("quantity") : "0");
 		
 		UserBean loggedUser = (UserBean) request.getSession().getAttribute("loggedUser");
 		
 		try {
-
-			if ("add".equals(action)) {
-
-				VariantBean variant = productDao.findVariantBySku(sku);
-
-				if (variant != null) {
-
-					if (loggedUser != null) {
-						// logged user
-						CartBean cart = cartDao.findByUserEmail(loggedUser.getEmail());
-						if (cart == null) {
-							// no cart associated
-							cart = createEmptyCart(loggedUser.getEmail());
-							cartDao.save(cart);
-							cart = cartDao.findByUserEmail(loggedUser.getEmail());
-						}
-
-						Map<Long, CartItemBean> variants = cart.getVariants();
-						// if the variant is present in the cart
-						if (variants.containsKey(variant.getId())) {
-							// increase the quantity selected
-							CartItemBean item = variants.get(variant.getId());
-							item.setSelectedQuantity(item.getSelectedQuantity() + quantity);
-						} else {
-							// add the variant to the cart
-							variants.put(variant.getId(), new CartItemBean(variant, quantity));
-						}
-
-						recalculateAndSetTotal(cart);
-						cartDao.update(cart);
-
-					} else {
-						// Guest cart
-						ObjectMapper mapper = new ObjectMapper();
-						List<GuestCartItemDTO> guestItems = readGuestCartCookie(request, mapper);
-						boolean found = false;
-						for(GuestCartItemDTO item : guestItems) {
-							if (item.getSku().equals(sku)) {
-								item.setQuantity(item.getQuantity() + quantity);
-								found = true;
-								break;
-							}
-						}
-						if (!found) {
-							guestItems.add(new GuestCartItemDTO(sku, quantity));
-						}
-
-						saveGuestCartCookie(response, guestItems, mapper);
-					}
-				}
-
+			
+			switch(action) {
+			
+			case "add" -> addToCart(request, response, loggedUser, sku, quantity);
+			case "remove" -> removeFromCart(request, response, loggedUser, sku);
+			case "updateQuantity" -> updateCartItemQuantity(request, response, loggedUser, sku, quantity);
+			
 			}
-				response.sendRedirect(request.getContextPath() + "/CartServlet?action=view");
+			
 			
 		} catch(Exception e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
-		}
+		}		
 	}
+	
+	// SWITCH METHODS
+	
+	// Add to cart
+	private void addToCart(HttpServletRequest request, HttpServletResponse response, UserBean loggedUser, String sku,
+			int quantity) throws Exception {
+		
+		VariantBean variant = productDao.findVariantBySku(sku);
+
+		if (variant != null) {
+
+			if (loggedUser != null) {
+				// logged user
+				CartBean cart = cartDao.findByUserEmail(loggedUser.getEmail());
+				
+				if (cart == null) {
+					// no cart associated
+					cart = createEmptyCart(loggedUser.getEmail());
+					cartDao.save(cart);
+					cart = cartDao.findByUserEmail(loggedUser.getEmail());
+				}
+
+				Map<Long, CartItemBean> variants = cart.getVariants();
+				// if the variant is present in the cart
+				if (variants.containsKey(variant.getId())) {
+					// increase the quantity selected
+					CartItemBean item = variants.get(variant.getId());
+					item.setSelectedQuantity(item.getSelectedQuantity() + quantity);
+				} else {
+					// add the variant to the cart
+					variants.put(variant.getId(), new CartItemBean(variant, quantity));
+				}
+
+				recalculateAndSetTotal(cart);
+				cartDao.update(cart);
+
+			} else {
+				// Guest cart
+				ObjectMapper mapper = new ObjectMapper();
+				List<GuestCartItemDTO> guestItems = readGuestCartCookie(request, mapper);
+				boolean found = false;
+				for (GuestCartItemDTO item : guestItems) {
+					if (item.getSku().equals(sku)) {
+						item.setQuantity(item.getQuantity() + quantity);
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					guestItems.add(new GuestCartItemDTO(sku, quantity));
+				}
+
+				saveGuestCartCookie(response, guestItems, mapper);
+			}
+		}
+		request.getSession().setAttribute("successMessage", "Articolo aggiunto al carrello");
+		response.sendRedirect(request.getContextPath() + "/CartServlet?action=view");
+	}
+	
+	// Remove from cart
+	private void removeFromCart(HttpServletRequest request, HttpServletResponse response, UserBean loggedUser, String sku) throws Exception {
+		VariantBean variant = productDao.findVariantBySku(sku);
+		if(variant != null) {
+			
+			if(loggedUser != null) {
+				
+				CartBean cart = cartDao.findByUserEmail(loggedUser.getEmail());
+				
+				if(cart == null) {
+					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Did the cart come out the magician cylinder?!");
+				}
+				
+				Map<Long, CartItemBean> variants = cart.getVariants();
+				if(variants.containsKey(variant.getId())) {
+					variants.remove(variant.getId());
+				}
+				
+				recalculateAndSetTotal(cart);
+				cartDao.update(cart);
+				
+			} else {
+				ObjectMapper mapper = new ObjectMapper();
+				List<GuestCartItemDTO> guestItems = readGuestCartCookie(request, mapper);
+				boolean found = false;
+				int index = 0;
+				for (GuestCartItemDTO item : guestItems) {
+					if (item.getSku().equals(sku)) {
+						found = true;
+						break;
+					}
+					index++;
+				}
+				if(!found) {
+					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+				}
+				
+				guestItems.remove(index);
+				updateGuestCartCookie(request, response, guestItems, mapper);
+				
+			}
+			
+		}
+		request.getSession().setAttribute("successMessage", "Articolo rimosso dal carrello");
+		response.sendRedirect(request.getContextPath() + "/CartServlet?action=view");
+	}
+	
+	// Update item quantity
+	private void updateCartItemQuantity(HttpServletRequest request, HttpServletResponse response, UserBean loggedUser, String sku,
+			int newQuantity) throws Exception {
+		if(newQuantity == 0) {
+			removeFromCart(request, response, loggedUser, sku);
+			return;
+		}
+		
+		VariantBean variant = productDao.findVariantBySku(sku);
+		if(variant != null) {
+			
+			if(loggedUser != null) {
+				CartBean cart = cartDao.findByUserEmail(loggedUser.getEmail());
+				if(cart == null) {
+					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Did the cart come out the magician cylinder?!");
+				}
+				
+				Map<Long, CartItemBean> variants = cart.getVariants();
+				if(variants.containsKey(variant.getId())) {
+					CartItemBean item = variants.get(variant.getId());
+					item.setSelectedQuantity(newQuantity);
+					
+				}
+				
+				recalculateAndSetTotal(cart);
+				cartDao.update(cart);
+			} else {
+				ObjectMapper mapper = new ObjectMapper();
+				List<GuestCartItemDTO> guestItems = readGuestCartCookie(request, mapper);
+				boolean found = false;
+				for(GuestCartItemDTO item : guestItems) {
+					if(item.getSku().equals(sku)) {
+						item.setQuantity(newQuantity);
+						found = true;
+						break;
+					}
+				}
+				
+				if(!found) {
+					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+				}
+				
+				updateGuestCartCookie(request, response, guestItems, mapper);
+			}
+		}
+		
+		response.sendRedirect(request.getContextPath() + "/CartServlet?action=view");
+	}
+	
 	
 	// Utility Methods
 	private CartBean createEmptyCart(String email) {
@@ -174,10 +285,28 @@ public class CartServlet extends HttpServlet {
     	String cartJson = mapper.writeValueAsString(guestCart);
     	String encodedJson = URLEncoder.encode(cartJson, "UTF-8");
     	
-    	Cookie cookie = new Cookie("cart_guest", encodedJson);
-    	cookie.setPath("/");
+    	Cookie cookie = new Cookie("guest_cart", encodedJson);
+    	cookie.setPath("/iron-axis");
     	cookie.setMaxAge(60 * 60 * 24 * 7); // Expires in 7 days
     	response.addCookie(cookie);
+    }
+    
+    private void updateGuestCartCookie(HttpServletRequest request, HttpServletResponse response, List<GuestCartItemDTO> guestCart, ObjectMapper mapper) throws IOException{
+    	Cookie[] cookies = request.getCookies();
+    	Cookie selectedCookie = null;
+    	if(cookies != null) {
+    		for(Cookie cookie : cookies) {
+    			if("guest_cart".equals(cookie.getName()) && !cookie.getName().isEmpty()){
+    				selectedCookie = cookie;
+    			}
+    		}
+    	} else {
+    		return;
+    	}
+    	String cartJson = mapper.writeValueAsString(guestCart);
+    	String encodedJson = URLEncoder.encode(cartJson, "UTF-8");
+    	selectedCookie.setValue(encodedJson);
+    	response.addCookie(selectedCookie);	
     }
     
     private CartBean getCartFromCookie(HttpServletRequest request) throws IOException {

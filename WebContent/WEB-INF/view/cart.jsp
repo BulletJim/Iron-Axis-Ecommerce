@@ -53,7 +53,7 @@
                                     <div class="product-info">
                                         <img src="${pageContext.request.contextPath}/<%= variant.getImageUrl() %>" alt="Immagine Prodotto" class="product-img">
                                         <div class="product-details">
-                                            <h4>SKU: <%= variant.getSku() %></h4>
+                                            <h4> <%= variant.getSku() %></h4>
                                             <p>Gusto: <%= variant.getFlavour() != null ? variant.getFlavour() : "N/D" %></p>
                                             <p>Formato: <%= variant.getSize() != null ? variant.getSize() : "N/D" %></p>
                                         </div>
@@ -67,7 +67,7 @@
                                 <td data-label="Quantità">
                                     <form action="${pageContext.request.contextPath}/CartServlet" method="POST">
                                         <input type="hidden" name="action" value="updateQuantity">
-                                        <input type="hidden" name="sku" value="<%= variant.getSku() %>">
+                                        <input type="hidden" name="productSku" value="<%= variant.getSku() %>">
                                         <input type="number" name="quantity" value="<%= item.getSelectedQuantity() %>" min="1" max="<%= variant.getQuantity() %>" class="quantity-input" onchange="this.form.submit()">
                                     </form>
                                 </td>
@@ -79,7 +79,7 @@
                                 <td data-label="Azioni">
                                     <form action="${pageContext.request.contextPath}/CartServlet" method="POST">
                                         <input type="hidden" name="action" value="remove">
-                                        <input type="hidden" name="sku" value="<%= variant.getSku() %>">
+                                        <input type="hidden" name="productSku" value="<%= variant.getSku() %>">
                                         <button type="submit" class="remove-btn"><i class="fa-solid fa-trash"></i> Rimuovi</button>
                                     </form>
                                 </td>

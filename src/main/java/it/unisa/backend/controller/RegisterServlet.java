@@ -125,7 +125,7 @@ public class RegisterServlet extends HttpServlet {
 				cart.setCreationDate(LocalDateTime.now());
 				
 				if(cartDao.save(cart)) {
-					request.setAttribute("successMessage", "Registrazione completata con successo!");
+					request.getSession().setAttribute("successMessage", "Registrazione completata con successo!");
 					response.setStatus(HttpServletResponse.SC_CREATED);
 			        request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request, response);
 			        

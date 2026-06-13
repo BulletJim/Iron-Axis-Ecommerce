@@ -5,6 +5,31 @@
 %>
 
 <header class="site-header">
+    
+    <%
+    	String successMessage = (String) session.getAttribute("successMessage");
+    	if (successMessage != null && !successMessage.isEmpty()) {
+	%>
+    <div class="toast-banner toast-success" id="toast-message">
+        <%= successMessage %>
+    </div>
+	<%
+        	session.removeAttribute("successMessage");
+    	}
+	%>
+
+	<%
+    	String errorMessage = (String) session.getAttribute("errorMessage");
+    	if (errorMessage != null && !errorMessage.isEmpty()) {
+	%>
+    <div class="toast-banner toast-error" id="toast-message">
+        <%= errorMessage %>
+    </div>
+	<%
+        	session.removeAttribute("errorMessage");
+    	}
+	%>
+    
     <button class="menu-btn" id="menuToggle" aria-label="Apri menu">
         <i class="fas fa-bars"></i>
     </button>
@@ -43,4 +68,5 @@
             <i class="fas fa-shopping-cart"></i>
         </a>
     </div>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/toastBannerController.js" defer></script>
 </header>
