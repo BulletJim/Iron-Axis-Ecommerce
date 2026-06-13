@@ -263,11 +263,3 @@
 .btn-remove:hover {
     background-color: var(--primary-color);
 }
-
-/* SERVER ERROR MESSAGES */
-.server-error-message {
-    color: var(--primary-color);
-    font-weight: 600;
-    text-align: center;
-    margin-top: 15px;
-}

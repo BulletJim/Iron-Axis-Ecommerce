@@ -15,11 +15,12 @@ public class VariantBean implements Serializable {
 	private int quantity;
 	private String flavour;
 	private String imageUrl;
+	private String nutrTablUrl;
 	
 	public VariantBean() {}
 
 	public VariantBean(long id, long productId, String sku, String size, double vat,
-			double price, int quantity, String flavour, String imageUrl) {
+			double price, int quantity, String flavour, String imageUrl, String nutrTablUrl) {
 		this.id = id;
 		this.productId = productId;
 		this.sku = sku;
@@ -29,6 +30,7 @@ public class VariantBean implements Serializable {
 		this.quantity = quantity;
 		this.flavour = flavour;
 		this.imageUrl = imageUrl;
+		this.nutrTablUrl = nutrTablUrl;
 	}
 
 	public long getId() {
@@ -101,6 +103,14 @@ public class VariantBean implements Serializable {
 
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+
+	public String getNutrTablUrl() {
+		return nutrTablUrl;
+	}
+
+	public void setNutrTablUrl(String nutrTablUrl) {
+		this.nutrTablUrl = nutrTablUrl;
 	}
 	
 }
