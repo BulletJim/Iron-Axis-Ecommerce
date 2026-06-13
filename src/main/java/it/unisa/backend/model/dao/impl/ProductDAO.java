@@ -175,6 +175,39 @@ public class ProductDAO implements ProductDaoInterface {
         return products;
     }
     
+    @Override
+    public VariantBean findVariantBySku(String sku) {
+    	
+    	String query = "SELECT * FROM variants WHERE sku = ?;";
+    	VariantBean variant = null;
+    	
+    	try(Connection connection = dataSource.getConnection();
+    		PreparedStatement preparedStatement = connection.prepareStatement(query)){
+    		
+    		preparedStatement.setString(1, sku);
+    		
+    		try(ResultSet resultSet = preparedStatement.executeQuery()){
+    			if(resultSet.next()) {
+    				variant = new VariantBean(resultSet.getLong("id"),
+    											resultSet.getLong("product_id"),
+    											resultSet.getString("sku"),
+    											resultSet.getString("size"),
+    											resultSet.getDouble("vat"),
+    											resultSet.getDouble("price"),
+    											resultSet.getInt("quantity"),
+    											resultSet.getString("flavour"),
+    											resultSet.getString("image_url"),
+    											resultSet.getString("nutr_tabl_url")
+    										 );
+    				
+    			}
+    		}
+    	} catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	return variant;
+    }
+    
     
     // Utility method 
     private ProductBean extractProductFromResultSet(ResultSet resultSet, Connection connection) throws SQLException {
@@ -226,7 +259,8 @@ public class ProductDAO implements ProductDaoInterface {
                         rs.getDouble("price"),
                         rs.getInt("quantity"),
                         rs.getString("flavour"), 
-                        rs.getString("url_image")
+                        rs.getString("image_url"),
+                        rs.getString("nutr_tabl_url")
                     ));
                 }
             }

@@ -30,14 +30,9 @@
 			<div class="form-group">
 				<label for="password">Password:</label>
 				<input type="password" id="password" name="password" placeholder="Inserisci la tua password">
-				<span id="passwordError" class="error-message"></span>
 			</div>
 			
 			<button type="submit">Accedi</button>
-			
-			<% if (request.getAttribute("error") != null){ %>
-			<p class="error-message"><%= request.getAttribute("error") %></p>
-			<% } %>
 		
 		</form>
 		

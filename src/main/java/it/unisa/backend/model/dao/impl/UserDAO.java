@@ -99,7 +99,7 @@ public class UserDAO implements UserDaoInterface{
 	                userStmt.setNull(7, Types.DATE);
 	            }
 	            
-	            userStmt.executeQuery();
+	            userStmt.executeUpdate();
 	            
                 if (user.getAddresses() != null && !user.getAddresses().isEmpty()) {
                     for (AddressBean addr : user.getAddresses()) {
@@ -127,10 +127,21 @@ public class UserDAO implements UserDaoInterface{
                 }
                 
                 connection.commit();
+                try {
+                    connection.setAutoCommit(true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+               
                 return true;
             
 			} catch (SQLException e) {
-				connection.rollback();
+				try {
+                    connection.rollback();
+                } catch (SQLException rollbackEx) {
+                    System.err.println("Rollback error!");
+                    rollbackEx.printStackTrace();
+                }
 				e.printStackTrace();
 				return false;
 			}
