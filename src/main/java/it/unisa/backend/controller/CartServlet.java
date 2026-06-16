@@ -60,7 +60,7 @@ public class CartServlet extends HttpServlet {
 					cart = getCartFromCookie(request);
 				}
 			}
-			request.setAttribute("cart", cart);
+			request.getSession().setAttribute("cart", cart);
 			request.getRequestDispatcher("/WEB-INF/view/cart.jsp").forward(request, response);
 			
 		} catch(Exception e) {
@@ -80,13 +80,20 @@ public class CartServlet extends HttpServlet {
 		
 		try {
 			
-			switch(action) {
-			
-			case "add" -> addToCart(request, response, loggedUser, sku, quantity);
-			case "remove" -> removeFromCart(request, response, loggedUser, sku);
-			case "updateQuantity" -> updateCartItemQuantity(request, response, loggedUser, sku, quantity);
-			
-			}
+			switch (action) {
+		    case "add":
+		        addToCart(request, response, loggedUser, sku, quantity);
+		        break;
+		    case "remove":
+		        removeFromCart(request, response, loggedUser, sku);
+		        break;
+		    case "updateQuantity":
+		        updateCartItemQuantity(request, response, loggedUser, sku, quantity);
+		        break;
+		    default:
+		        
+		        break;
+		}
 			
 			
 		} catch(Exception e) {
@@ -146,7 +153,7 @@ public class CartServlet extends HttpServlet {
 					guestItems.add(new GuestCartItemDTO(sku, quantity));
 				}
 
-				saveGuestCartCookie(response, guestItems, mapper);
+				saveGuestCartCookie(request, response, guestItems, mapper);
 			}
 		}
 		request.getSession().setAttribute("successMessage", "Articolo aggiunto al carrello");
@@ -226,6 +233,7 @@ public class CartServlet extends HttpServlet {
 				
 				recalculateAndSetTotal(cart);
 				cartDao.update(cart);
+				request.getSession().setAttribute("cart", cart);
 			} else {
 				ObjectMapper mapper = new ObjectMapper();
 				List<GuestCartItemDTO> guestItems = readGuestCartCookie(request, mapper);
@@ -281,14 +289,17 @@ public class CartServlet extends HttpServlet {
     	return new ArrayList<>();
     }
     
-    private void saveGuestCartCookie(HttpServletResponse response, List<GuestCartItemDTO> guestCart, ObjectMapper mapper) throws IOException{
-    	String cartJson = mapper.writeValueAsString(guestCart);
-    	String encodedJson = URLEncoder.encode(cartJson, "UTF-8");
-    	
-    	Cookie cookie = new Cookie("guest_cart", encodedJson);
-    	cookie.setPath("/iron-axis");
-    	cookie.setMaxAge(60 * 60 * 24 * 7); // Expires in 7 days
-    	response.addCookie(cookie);
+    private void saveGuestCartCookie(HttpServletRequest request, HttpServletResponse response, List<GuestCartItemDTO> guestCart, ObjectMapper mapper) throws IOException{
+        String cartJson = mapper.writeValueAsString(guestCart);
+        String encodedJson = URLEncoder.encode(cartJson, "UTF-8");
+
+        Cookie cookie = new Cookie("guest_cart", encodedJson);
+        
+        String contextPath = request.getContextPath();
+        cookie.setPath(contextPath.isEmpty() ? "/" : contextPath);
+
+        cookie.setMaxAge(60 * 24 * 60 * 7); 
+        response.addCookie(cookie);
     }
     
     private void updateGuestCartCookie(HttpServletRequest request, HttpServletResponse response, List<GuestCartItemDTO> guestCart, ObjectMapper mapper) throws IOException{

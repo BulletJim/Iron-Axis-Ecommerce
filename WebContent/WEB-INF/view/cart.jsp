@@ -3,7 +3,7 @@
 <%@ page import="it.unisa.backend.model.bean.CartItemBean" %>
 <%@ page import="it.unisa.backend.model.bean.VariantBean" %>
 <%
-    CartBean cart = (CartBean) request.getAttribute("cart");
+    CartBean cart = (CartBean) session.getAttribute("cart");
     boolean isCartEmpty = (cart == null || cart.getVariants() == null || cart.getVariants().isEmpty());
 %>
 <!DOCTYPE html>
