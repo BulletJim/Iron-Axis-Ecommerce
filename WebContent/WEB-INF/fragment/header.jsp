@@ -4,6 +4,8 @@
     UserBean loggedUser = (UserBean) session.getAttribute("loggedUser");
 %>
 
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/account.css">
+
 <header class="site-header">
     
     <%
@@ -44,19 +46,31 @@
 
     <div class="header-actions">
         <% if (loggedUser != null) { %>
-            <% if ("admin".equalsIgnoreCase(loggedUser.getRole())) { %>
-                <a href="${pageContext.request.contextPath}/admin/dashboard.jsp" class="icon-btn" title="Pannello Admin">
-                    <i class="fas fa-cogs"></i>
-                </a>
-            <% } %>
-
-            <a href="${pageContext.request.contextPath}/profile.jsp" class="icon-btn" title="Ciao, <%= loggedUser.getFirstName() %>">
-                <i class="fas fa-user-check"></i>
-            </a>
-
-            <a href="${pageContext.request.contextPath}/LogoutServlet" class="icon-btn" title="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-            </a>
+            <div class="user-dropdown">
+                <button class="icon-btn dropbtn" title="Ciao, <%= loggedUser.getFirstName() %>">
+                    <i class="fas fa-user-check"></i>
+                </button>
+                
+                <div class="dropdown-content">
+                    <div class="dropdown-welcome">Ciao, <strong><%= loggedUser.getFirstName() %></strong></div>
+                    
+                    <a href="${pageContext.request.contextPath}/profile.jsp">
+                        <i class="fas fa-user-cog"></i> Il mio Profilo
+                    </a>
+                    
+                    <% if ("admin".equalsIgnoreCase(loggedUser.getRole())) { %>
+                        <a href="${pageContext.request.contextPath}/admin/dashboard.jsp" class="admin-link">
+                            <i class="fas fa-cogs"></i> Gestione Sito (Admin)
+                        </a>
+                    <% } %>
+                    
+                    <div class="dropdown-divider"></div>
+                    
+                    <a href="${pageContext.request.contextPath}/LogoutServlet" class="logout-link">
+                        <i class="fas fa-sign-out-alt"></i> Esci
+                    </a>
+                </div>
+            </div>
 
         <% } else { %>
             <a href="${pageContext.request.contextPath}/LoginServlet" class="icon-btn" title="Login o Registrati">
