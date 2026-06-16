@@ -61,7 +61,7 @@
                                 </td>
                                 
                                 <td data-label="Prezzo Unitario">
-                                    &euro; <%= String.format("%.2f", variant.getPrice()) %>
+                                    <%= String.format("%.2f", variant.getPrice()) %> &euro;
                                 </td>
                                 
                                 <td data-label="Quantità">
@@ -73,7 +73,7 @@
                                 </td>
                                 
                                 <td data-label="Totale">
-                                    <strong>&euro; <%= String.format("%.2f", itemTotal) %></strong>
+                                    <strong> <%= String.format("%.2f", itemTotal) %> &euro;</strong>
                                 </td>
                                 
                                 <td data-label="Azioni">
@@ -90,7 +90,7 @@
 
                 <div class="cart-summary">
                     <div class="total-price">
-                        Totale Carrello: &euro; <%= String.format("%.2f", cart.getTotalPrice()) %>
+                        Totale Carrello: <%= String.format("%.2f", cart.getTotalPrice()) %> &euro;
                     </div>
                     <div>
                         <a href="${pageContext.request.contextPath}/CheckoutServlet" class="btn">Procedi al Checkout</a>
