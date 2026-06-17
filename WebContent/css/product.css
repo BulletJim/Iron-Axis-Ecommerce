@@ -229,7 +229,7 @@
 .tab-content.active { display: block; }
 .d-none { display: none !important; }
 .stock-available { color: #27ae60; }
-.stock-out { color: #e74c3c; }
+.stock-out { color: rgba(0, 0, 0, 0.5); }
 
 @media (min-width: 768px) {
     .product-container {
