@@ -13,4 +13,10 @@ public interface ProductDaoInterface extends CrudDao<ProductBean, Long> {
 	
 	VariantBean findVariantBySku(String sku);
 
+	List<ProductBean> getProductsByFilters(Long categoryId, Double maxPrice, String sortBy, boolean onlyAvailable);
+	
+	List<ProductBean> doRetrieveSuggested(int limit);
+
+	List<ProductBean> doRetrieveTopRated(int limit);
+
 }
