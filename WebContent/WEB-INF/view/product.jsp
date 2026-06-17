@@ -162,7 +162,7 @@
 	
 		<div class="add-cart-container">
 			<div class="price-box">
-				<span class="currency">€<span id="product-price">0.00</span></span>
+				<span class="currency"><span id="product-price">0.00</span> &euro;</span>
 				<p id="stock-status" class="stock-info"></p>
 			</div>
 			

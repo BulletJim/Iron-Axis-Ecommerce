@@ -71,6 +71,8 @@ document.addEventListener("DOMContentLoaded", function(){
 				
 				if(addToCartBtn){
 					addToCartBtn.disabled= false;
+					addToCartBtn.style.backgroundColor = "#e44d26";
+					addToCartBtn.style.color = "white";
 					addToCartBtn.textContent = "Aggiungi Al Carrello";
 				}
 			} else{
@@ -80,6 +82,8 @@ document.addEventListener("DOMContentLoaded", function(){
 				
 				if(addToCartBtn){
 					addToCartBtn.disabled = true;
+					addToCartBtn.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+					addToCartBtn.style.color = "black";
 					addToCartBtn.textContent = "Esaurito";
 				}
 			}	
