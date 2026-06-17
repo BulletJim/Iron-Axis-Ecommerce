@@ -85,15 +85,23 @@
     border: 1px solid #eaeaea;
 }
 
-.product-details h4 {
-    margin: 0 0 5px 0;
-    color: var(--dark-bg);
-}
-
 .product-details p {
     margin: 0;
     color: #6c757d;
     font-size: 0.9rem;
+}
+
+.product-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.product-title:hover {
+    color: var(--primary-color);
 }
 
 .quantity-input {

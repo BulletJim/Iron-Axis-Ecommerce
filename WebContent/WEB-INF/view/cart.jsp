@@ -53,7 +53,7 @@
                                     <div class="product-info">
                                         <img src="${pageContext.request.contextPath}/<%= variant.getImageUrl() %>" alt="Immagine Prodotto" class="product-img">
                                         <div class="product-details">
-                                            <h4> <%= variant.getSku() %></h4>
+                                            <a class="product-title" href="ProductServlet?id=<%= variant.getProductId() %>"><%= variant.getSku() %></a>
                                             <p>Gusto: <%= variant.getFlavour() != null ? variant.getFlavour() : "N/D" %></p>
                                             <p>Formato: <%= variant.getSize() != null ? variant.getSize() : "N/D" %></p>
                                         </div>
