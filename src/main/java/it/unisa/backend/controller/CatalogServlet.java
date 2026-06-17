@@ -44,7 +44,6 @@ public class CatalogServlet extends HttpServlet {
 		
 		boolean onlyAvailable = "true".equals(onlyAvailableStr);
 
-
 		ProductDAO productDao = new ProductDAO(DBManager.getDataSource());
 		List<ProductBean> products = productDao.getProductsByFilters(categoryId, maxPrice, sortBy, onlyAvailable);
 		
@@ -52,8 +51,6 @@ public class CatalogServlet extends HttpServlet {
 		request.setAttribute("selectedCategoryId", categoryId);
 
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("/WEB-INF/view/catalog.jsp").forward(request, response);
 		if ("true".equals(isAjax)) {
 			request.getRequestDispatcher("/WEB-INF/fragment/productGridSnippet.jsp").forward(request, response);
 		} else {
