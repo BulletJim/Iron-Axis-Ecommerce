@@ -141,9 +141,22 @@
     padding-bottom: 15px;
 }
 
-.currency { font-size: 1.5em; font-weight: bold; color: #e44d26; }
-#product-price { font-size: 2.5em; font-weight: bold; color: #e44d26; }
-.stock-info { font-weight: bold; margin-top: 5px; }
+.currency { 
+    font-size: 2.5em; 
+    font-weight: bold; 
+    color: #e44d26; 
+}
+
+#product-price { 
+    font-size: 1em; 
+    font-weight: bold; 
+    color: #e44d26; 
+}
+
+.stock-info { 
+    font-weight: bold; 
+    margin-top: 5px; 
+}
 
 .add-cart-container label {
     display: block;
@@ -216,7 +229,7 @@
 .tab-content.active { display: block; }
 .d-none { display: none !important; }
 .stock-available { color: #27ae60; }
-.stock-out { color: #e74c3c; }
+.stock-out { color: rgba(0, 0, 0, 0.5); }
 
 @media (min-width: 768px) {
     .product-container {

@@ -9,9 +9,9 @@
         <div class="footer-section">
             <h3>Prodotti</h3>
             <ul>
-                <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=proteine">Proteine</a></li>
-                <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=vitamine">Vitamine</a></li>
-                <li><a href="${pageContext.request.contextPath}/CatalogServlet?category=accessori-abbigliamento">Accessori & Abbigliamento</a></li>
+                <li><a href="${pageContext.request.contextPath}/CatalogServlet?categoryId=1">Proteine</a></li>
+                <li><a href="${pageContext.request.contextPath}/CatalogServlet?categoryId=10">Vitamine</a></li>
+                <li><a href="${pageContext.request.contextPath}/CatalogServlet?categoryId=16">Accessori</a></li>
             </ul>
         </div>
 

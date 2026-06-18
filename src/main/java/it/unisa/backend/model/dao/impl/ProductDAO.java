@@ -208,6 +208,126 @@ public class ProductDAO implements ProductDaoInterface {
     	return variant;
     }
     
+    @Override
+    public List<ProductBean> getProductsByFilters(Long categoryId, Double maxPrice, String sortBy, boolean onlyAvailable) {
+        List<ProductBean> products = new ArrayList<>();
+        
+        StringBuilder sql = new StringBuilder(
+            "SELECT p.* " +
+            "FROM products p " +
+            "JOIN categories c ON p.category_id = c.id " +
+            "JOIN variants v ON p.id = v.product_id " +
+            "WHERE p.is_deleted = false"
+        );
+
+        if (categoryId != null && categoryId > 0) {
+            sql.append(" AND c.id = ?");
+        }
+        
+        if (maxPrice != null) {
+            sql.append(" AND v.price <= ?");
+        }
+        
+        if (onlyAvailable) {
+            sql.append(" AND v.quantity > 0");
+        }
+        
+        sql.append(" GROUP BY p.id");
+
+        if (sortBy != null) {
+            switch (sortBy) {
+                case "price_asc":
+                    sql.append(" ORDER BY MIN(v.price) ASC");
+                    break;
+                case "price_desc":
+                    sql.append(" ORDER BY MIN(v.price) DESC");
+                    break;
+                case "rating":
+                    this.doRetrieveTopRated(5);
+                    break;
+                case "default":
+                default:
+                    sql.append(" ORDER BY p.id DESC");
+                    break;
+            }
+        }
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql.toString())) {
+
+            int paramIndex = 1;
+            
+            if (categoryId != null && categoryId > 0) {
+                preparedStatement.setLong(paramIndex++, categoryId);
+            }
+            
+            if (maxPrice != null) {
+                preparedStatement.setDouble(paramIndex++, maxPrice);
+            }
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    products.add(extractProductFromResultSet(resultSet, connection));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); 
+        }
+
+        return products;
+    }
+    
+    
+    @Override
+    public List<ProductBean> doRetrieveTopRated(int limit) {
+        List<ProductBean> products = new ArrayList<>();
+        String query = "SELECT p.*, AVG(r.score) as media_voti " +
+                       "FROM products p " +
+                       "JOIN reviews r ON p.id = r.product_id " +
+                       "WHERE p.is_deleted = false " +
+                       "GROUP BY p.id " +
+                       "ORDER BY media_voti DESC " +
+                       "LIMIT ?";
+
+        try (Connection con = dataSource.getConnection(); 
+             PreparedStatement ps = con.prepareStatement(query)) {
+             
+        	ps.setInt(1, limit);
+        	try (ResultSet resultSet = ps.executeQuery()) {
+                while (resultSet.next()) {
+                    products.add(extractProductFromResultSet(resultSet, con));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); 
+        }
+
+        return products;
+    }
+    
+    @Override
+    public List<ProductBean> doRetrieveSuggested(int limit) {
+        List<ProductBean> products = new ArrayList<>();
+        String query = "SELECT * FROM products WHERE is_deleted = false ORDER BY RAND() LIMIT ?";
+
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+             
+            ps.setInt(1, limit);
+            try (ResultSet resultSet = ps.executeQuery()) {
+                while (resultSet.next()) {
+                    products.add(extractProductFromResultSet(resultSet, con));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); 
+        }
+
+        return products;
+    }
     
     // Utility method 
     private ProductBean extractProductFromResultSet(ResultSet resultSet, Connection connection) throws SQLException {
