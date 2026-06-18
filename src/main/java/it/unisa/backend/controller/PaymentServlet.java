@@ -95,10 +95,7 @@ public class PaymentServlet extends HttpServlet {
     	
     	request.getSession().setAttribute("pendingOrder", order);
     	response.sendRedirect(request.getContextPath() + "/PaymentServlet");
-    	
-    	
-    	
-    	
+ 	
     }
     
 

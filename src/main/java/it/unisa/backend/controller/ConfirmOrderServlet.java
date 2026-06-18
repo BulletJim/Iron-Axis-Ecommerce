@@ -1,117 +1,133 @@
 package it.unisa.backend.controller;
 
-import it.unisa.backend.model.bean.*;
+import it.unisa.backend.model.bean.CartBean;
+import it.unisa.backend.model.bean.InvoiceBean;
+import it.unisa.backend.model.bean.OrderBean;
+import it.unisa.backend.model.bean.OrderItemBean;
+import it.unisa.backend.model.bean.PaymentBean;
+import it.unisa.backend.model.bean.UserBean;
 import it.unisa.backend.model.bean.util.OrderStatus;
 import it.unisa.backend.model.bean.util.PaymentStatus;
+import it.unisa.backend.model.dao.impl.CartDAO;
 import it.unisa.backend.model.dao.impl.OrderDAO;
 import it.unisa.backend.model.db.DBManager;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.UUID;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
 
 @WebServlet("/ConfirmOrderServlet")
 public class ConfirmOrderServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    private OrderDAO orderDao;
+    private CartDAO cartDao;
+
     @Override
+	public void init() throws ServletException {
+		orderDao = new OrderDAO(DBManager.getDataSource());
+		cartDao = new CartDAO(DBManager.getDataSource());
+	}
+    
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		String result = request.getParameter("result");
+		if("success".equals(result)) {
+			request.setAttribute("successMessage", "Ordine Effettua Con Successo");
+			request.getRequestDispatcher("/WEB-INF/view/success.jsp").forward(request, response);
+			return;
+		}
+		if("failed".equals(result)) {
+			request.setAttribute("errorMessage", "L'ordine non è stato effettuato");
+			request.getRequestDispatcher("/WEB-INF/view/failed.jsp").forward(request, response);
+			return;
+		}
+		
+		response.sendRedirect(request.getContextPath() + "/index.jsp");
+	}
+
+	@Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
     	
-        HttpSession session = request.getSession();
-        UserBean user = (UserBean) session.getAttribute("loggedUser");
-        CartBean cart = (CartBean) session.getAttribute("cart");
-
-        if (user == null || cart == null || cart.getVariants() == null || cart.getVariants().isEmpty()) {
-            response.sendRedirect(request.getContextPath() + "/CartServlet");
-            
-            return;
-        }
-
-        String paymentMethod = request.getParameter("paymentMethod");
-        String cardHolder = request.getParameter("cardHolder");
-
-        OrderBean order = new OrderBean();
-        order.setUser(user);
-        order.setStatus(OrderStatus.PENDING);
-        order.setCreatedAt(LocalDateTime.now());
-        order.setTotalAmount(cart.getTotalPrice());
-
-        if (user.getAddresses() != null && !user.getAddresses().isEmpty()){
-            order.setShippingAddress(user.getAddresses().get(0));
-            
-        } 
-        else {
-            AddressBean fallbackAddress = new AddressBean();
-            
-            fallbackAddress.setId(1L); 
-            order.setShippingAddress(fallbackAddress);
-        }
-
-        ArrayList<OrderItemBean> orderItems = new ArrayList<>();
+       OrderBean pendingOrder = (OrderBean) request.getSession().getAttribute("pendingOrder");
+       UserBean loggedUser = (UserBean) request.getSession().getAttribute("loggedUser");
+       
+       if (loggedUser == null || pendingOrder == null) {
+           response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad Request");
+           return;
+       }
+       
+       String paymentMethod = request.getParameter("paymentMethod");
+       if(paymentMethod == null || paymentMethod.isEmpty()) {
+    	   response.sendRedirect(request.getContextPath() + "/PaymentServlet");
+    	   return;
+       }
+       
+       // Prepare Payment
+       PaymentBean payment = new PaymentBean();
+       payment.setPaymentDate(LocalDateTime.now());
+       payment.setPaymentMethod(paymentMethod.trim());
+       payment.setStatus(PaymentStatus.COMPLETED);
+       payment.setTransactionId(UUID.randomUUID().toString());
+       payment.setTotalPrice(pendingOrder.getTotalAmount());
         
-        for (CartItemBean cartItem : cart.getVariants().values()) {
-        	
-            OrderItemBean orderItem = new OrderItemBean();
-            orderItem.setVariant(cartItem.getVariant());
-            orderItem.setQuantity(cartItem.getSelectedQuantity());
-            
-            orderItem.setPriceAtPurchase(cartItem.getVariant().getPrice());
-            orderItem.setVat(cartItem.getVariant().getVat());
-            orderItems.add(orderItem);
-        }
-        order.setItems(orderItems);
+       pendingOrder.setPayment(payment);
+       pendingOrder.setStatus(OrderStatus.PROCESSING);
+       
+       // Prepare Invoice
+       InvoiceBean invoice = new InvoiceBean();
+       invoice.setNumber("FATT-" + java.time.Year.now().getValue() + "-" + pendingOrder.getId());
+       invoice.setIssueDate(LocalDateTime.now());
+       invoice.setHolderFirstName(loggedUser.getFirstName());
+       invoice.setHolderLastName(loggedUser.getLastName());       
+       invoice.setBillingAddress(pendingOrder.getShippingAddress());
+       
+       double totalGross = 0.0;
+       double totalTaxable = 0.0;
 
-        PaymentBean payment = new PaymentBean();
-        
-        payment.setPaymentMethod(paymentMethod != null ? paymentMethod : "Carta di credito");
-        payment.setTransactionId("TXN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        payment.setTotalPrice(cart.getTotalPrice());
-        payment.setPaymentDate(LocalDateTime.now());
-        payment.setStatus(PaymentStatus.COMPLETED);
-        order.setPayment(payment);
+       for (OrderItemBean item : pendingOrder.getItems()) {
+           double priceGross = item.getPriceAtPurchase(); 
+           int quantity = item.getQuantity();
+           double vatRate = item.getVat();               
+           
+           double lineGross = priceGross * quantity;
+           
+           double vatDivider = 1 + (vatRate / 100.0);
+           double lineTaxable = lineGross / vatDivider;
+           
+           totalGross += lineGross;
+           totalTaxable += lineTaxable;
+       }
 
-        InvoiceBean invoice = new InvoiceBean();
-        invoice.setNumber("INV-" + System.currentTimeMillis());
-        
-        if (cardHolder != null && cardHolder.contains(" ")) {
-        	
-            String[] parts = cardHolder.split(" ", 2);
-            invoice.setHolderFirstName(parts[0]);
-            invoice.setHolderLastName(parts[1]);
-        } 
-        else {
-            invoice.setHolderFirstName(user.getFirstName());
-            invoice.setHolderLastName(user.getLastName());
-        }
-        
-        invoice.setBillingAddress(order.getShippingAddress());
-        invoice.setTotalAmount(cart.getTotalPrice());
-        invoice.setTaxableAmount(cart.getTotalPrice() / 1.22); 
-        order.setInvoice(invoice);
-        
-        OrderDAO orderDAO = new OrderDAO(DBManager.getDataSource());
-        boolean success = orderDAO.save(order);
+       totalGross = Math.round(totalGross * 100.0) / 100.0;
+       totalTaxable = Math.round(totalTaxable * 100.0) / 100.0;
 
-        if (success) {
-            session.removeAttribute("cart"); 
-
-            String msg = "Pagamento completato con successo! Il tuo numero d'ordine è: <strong>" + invoice.getNumber() + "</strong>";
-            session.setAttribute("successMessage", msg);
-            response.sendRedirect(request.getContextPath() + "/SuccessServlet");
-            
-            return;
-        }
-        else {
-            request.getRequestDispatcher("/error/error500.jsp").forward(request, response);
-        }
-        
+       invoice.setTotalAmount(totalGross);
+       invoice.setTaxableAmount(totalTaxable);
+       
+       pendingOrder.setInvoice(invoice);
+       
+       if (orderDao.save(pendingOrder)) {
+           request.getSession().removeAttribute("pendingOrder");
+           
+           CartBean cart = cartDao.findByUserEmail(loggedUser.getEmail());
+           if (cart != null) {
+               cartDao.clearCart(cart.getId());
+           }
+           
+           response.sendRedirect(request.getContextPath() + "/ConfirmOrderServlet?result=failed");
+       } else {
+           response.sendRedirect(request.getContextPath() + "/ConfirmOrderServlet?result=failed");
+       }
+       
     }
     
 }

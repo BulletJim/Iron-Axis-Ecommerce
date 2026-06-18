@@ -113,11 +113,7 @@ public class OrderDAO implements OrderDaoInterface{
              ResultSet rs = ps.executeQuery()){
         	
             while (rs.next()) {
-                OrderBean order = new OrderBean();
-                order.setId(rs.getLong("id"));
-                order.setTotalAmount(rs.getDouble("total_price"));
-               
-                orders.add(order);
+                orders.add(extractOrderFromResultSet(rs, connection));
             }
         }
         catch (SQLException e) {
@@ -251,7 +247,7 @@ public class OrderDAO implements OrderDaoInterface{
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     OrderItemBean item = new OrderItemBean();
-                    item.setOrderId(rs.getLong("id"));
+                    item.setOrderId(rs.getLong("order_id"));
                     item.setQuantity(rs.getInt("quantity"));
                     item.setPriceAtPurchase(rs.getDouble("purchase_price"));
                     item.setVat(rs.getDouble("vat"));
@@ -280,15 +276,13 @@ public class OrderDAO implements OrderDaoInterface{
     }
 
     private void saveInvoice(Connection connection, OrderBean order) throws SQLException {
-        String queryInvoice = "INSERT INTO invoices (order_id, invoice_number, holder_first_name, holder_last_name, billing_address, taxable_total, total) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String queryInvoice = "INSERT INTO invoices (order_id, invoice_number, holder_first_name, holder_last_name, billing_address_id, taxable_total, total) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement psInvoice = connection.prepareStatement(queryInvoice)) {
             psInvoice.setLong(1, order.getId());
             psInvoice.setString(2, order.getInvoice().getNumber());
             psInvoice.setString(3, order.getInvoice().getHolderFirstName());
             psInvoice.setString(4, order.getInvoice().getHolderLastName());
-            
-            String addr = order.getInvoice().getBillingAddress().getStreet() + " " + order.getInvoice().getBillingAddress().getCity();
-            psInvoice.setString(5, addr); 
+            psInvoice.setLong(5, order.getInvoice().getBillingAddress().getId()); 
             psInvoice.setDouble(6, order.getInvoice().getTaxableAmount());
             psInvoice.setDouble(7, order.getInvoice().getTotalAmount());
             psInvoice.executeUpdate();
