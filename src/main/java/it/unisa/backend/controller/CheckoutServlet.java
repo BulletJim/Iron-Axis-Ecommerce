@@ -4,6 +4,7 @@ import it.unisa.backend.model.bean.AddressBean;
 import it.unisa.backend.model.bean.CartBean;
 import it.unisa.backend.model.bean.UserBean;
 import it.unisa.backend.model.dao.impl.CartDAO;
+import it.unisa.backend.model.dao.impl.UserDAO;
 import it.unisa.backend.model.db.DBManager;
 
 import java.io.IOException;
@@ -24,10 +25,12 @@ public class CheckoutServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private CartDAO cartDao;
+    private UserDAO userDao;
     
     @Override
 	public void init() throws ServletException {
     	 cartDao = new CartDAO(DBManager.getDataSource());
+    	 userDao = new UserDAO(DBManager.getDataSource());
 	}
 
 	@Override
@@ -62,7 +65,11 @@ public class CheckoutServlet extends HttpServlet {
 
 		        formattedDeliveryDate = formattedDeliveryDate.substring(0, 1).toUpperCase() + formattedDeliveryDate.substring(1);
 
-		        request.setAttribute("userAddresses", userAddresses);
+		        // Fetch user addresses by updating the session
+		        UserBean updatedUser = userDao.findByEmail(loggedUser.getEmail());
+		        List<AddressBean> fetchedAddresses = updatedUser.getAddresses();
+		        
+		        request.setAttribute("userAddresses", fetchedAddresses);
 		        request.setAttribute("estimatedDelivery", formattedDeliveryDate);
 		        request.setAttribute("cart", cart);
 		        

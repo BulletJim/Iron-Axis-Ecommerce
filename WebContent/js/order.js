@@ -33,10 +33,11 @@ document.addEventListener("DOMContentLoaded", function() {
             submitBtn.disabled = true;
             submitBtn.textContent = "Salvataggio...";
 
+			const contextPath = ajaxForm.getAttribute("data-context");
             const formData = new URLSearchParams(new FormData(ajaxForm));
 
             try {
-                const response = await fetch("<%= request.getContextPath() %>/AddressServlet", {
+                const response = await fetch(contextPath + "/AddressServlet", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"

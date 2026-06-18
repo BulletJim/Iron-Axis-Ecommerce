@@ -19,7 +19,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riepilogo Ordine - IronAxis</title>
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/global.css">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/order.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -84,8 +83,8 @@
 
                     <div id="inlineAddressFormContainer" class="inline-form-container is-hidden">
                         <h4>Inserisci Nuovo Indirizzo</h4>
-                        <form id="ajaxAddAddressForm">
-                            <input type="hidden" name="action" value="ajaxAdd">
+                        <form id="ajaxAddAddressForm" data-context="<%= request.getContextPath() %>">
+                            <input type="hidden" name="action" value="add">
 
                             <div class="form-row">
                                 <input type="text" name="street" placeholder="Via/Piazza (es. Via Roma)" required> 
