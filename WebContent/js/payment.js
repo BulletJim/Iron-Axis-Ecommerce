@@ -1,146 +1,101 @@
-document.addEventListener("DOMContentLoaded", function () {
-	
-    const paymentForm = document.getElementById("paymentForm");
-	
-    if(!paymentForm)
-		 return;
-
-    const methodOptions = document.querySelectorAll(".method-option");
-    const creditCardFields = document.getElementById("creditCardFields");
-    
-    const cardHolder = document.getElementById("cardHolder");
-    const cardNumber = document.getElementById("cardNumber");
-    const expDate = document.getElementById("expDate");
-    const cvv = document.getElementById("cvv");
-
-    const errHolder = document.getElementById("errHolder");
-    const errCard = document.getElementById("errCard");
-    const errExp = document.getElementById("errExp");
-    const errCvv = document.getElementById("errCvv");
+document.addEventListener('DOMContentLoaded', () => {
+    const methodOptions = document.querySelectorAll('.method-option');
+    const creditCardFields = document.getElementById('creditCardFields');
+    const paymentForm = document.getElementById('paymentForm');
 
     methodOptions.forEach(option => {
-		
-        option.addEventListener("click", function () {
-            methodOptions.forEach(opt => opt.classList.remove("active"));
-            this.classList.add("active");
-			
-            const radioBtn = this.querySelector("input[type='radio']");
-            radioBtn.checked = true;
+        option.addEventListener('click', () => {
+            methodOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            const radio = option.querySelector('input[type="radio"]');
+            radio.checked = true;
 
-            if (radioBtn.value === "PayPal") {
-                creditCardFields.style.display = "none";
-            } 
-			else {
-                creditCardFields.style.display = "block";
-                cardHolder.focus();
+            if (radio.value === 'PayPal') {
+                creditCardFields.classList.add('is-hidden');
+            } else {
+                creditCardFields.classList.remove('is-hidden');
             }
         });
     });
 
-    paymentForm.addEventListener("submit", function (event) {
-        const selectedMethod = document.querySelector("input[name='paymentMethod']:checked").value;
-        
-        if (selectedMethod === "PayPal"){
-            return; 
-        }
+    const cardNumberInput = document.getElementById('cardNumber');
+    const expDateInput = document.getElementById('expDate');
+    const cvvInput = document.getElementById('cvv');
 
-        let isValid = true;
-
-        errHolder.style.display = "none";
-        errCard.style.display = "none";
-        errExp.style.display = "none";
-        errCvv.style.display = "none";
-
-        const holderValue = cardHolder.value.trim();
-        const holderRegex = /^[A-Za-zÀ-ù\s]{3,}\s[A-Za-zÀ-ù\s]{2,}$/;
-		
-        if (!holderRegex.test(holderValue)){
-			
-            errHolder.style.display = "block";
-            cardHolder.focus();
-            isValid = false;
-        }
-
-        const cardValue = cardNumber.value.trim();
-        const cardRegex = /^\d{16}$/;
-		
-        if (!cardRegex.test(cardValue)) {
-            if (isValid) {
-                errCard.style.display = "block";
-                cardNumber.focus();
+    if(cardNumberInput) {
+        cardNumberInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            let formattedValue = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) formattedValue += ' ';
+                formattedValue += value[i];
             }
-			 else {
-                errCard.style.display = "block";
-            }
-            isValid = false;
-        }
+            e.target.value = formattedValue;
+        });
+    }
 
-        const expValue = expDate.value.trim();
-        const expRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
-		
-        if (!expRegex.test(expValue)){
-            if (isValid) {
-                errExp.style.display = "block";
-                expDate.focus();
-            } 
-			else {
-                errExp.style.display = "block";
+    if(expDateInput) {
+        expDateInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
             }
-            isValid = false;
-        } 
-		else {
-            const matches = expValue.match(expRegex);
-            const month = parseInt(matches[1], 10);
-            const year = parseInt("20" + matches[2], 10);
+            e.target.value = value;
+        });
+    }
+    
+    if(cvvInput) {
+        cvvInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+    }
+
+    if(paymentForm) {
+        paymentForm.addEventListener('submit', (e) => {
+            const isCardSelected = document.querySelector('input[name="paymentMethod"]:checked').value === 'Carta di Credito';
             
-            const now = new Date();
-            const currentMonth = now.getMonth() + 1; 
-            const currentYear = now.getFullYear();
-
-            if (year < currentYear || (year === currentYear && month < currentMonth)){
-				
-                if (isValid){
-                    errExp.innerHTML = "La carta di credito inserita risulta scaduta!";
-                    errExp.style.display = "block";
-                    expDate.focus();
-                } 
-				else {
-                    errExp.innerHTML = "La carta di credito inserita risulta scaduta!";
-                    errExp.style.display = "block";
+            if (isCardSelected) {
+                let isValid = true;
+                
+                const cardHolder = document.getElementById('cardHolder');
+                const errHolder = document.getElementById('errHolder');
+                if (cardHolder.value.trim().length < 3) {
+                    errHolder.style.display = 'block';
+                    isValid = false;
+                } else {
+                    errHolder.style.display = 'none';
                 }
-                isValid = false;
-            }
-        }
 
-        const cvvValue = cvv.value.trim();
-        const cvvRegex = /^\d{3}$/;
-		
-        if (!cvvRegex.test(cvvValue)) {
-            if (isValid) {
-                errCvv.style.display = "block";
-                cvv.focus();
-            } 
-			else {
-                errCvv.style.display = "block";
-            }
-            isValid = false;
-        }
+                const cardNumber = document.getElementById('cardNumber');
+                const errCard = document.getElementById('errCard');
+                if (cardNumber.value.replace(/\s/g, '').length !== 16) {
+                    errCard.style.display = 'block';
+                    isValid = false;
+                } else {
+                    errCard.style.display = 'none';
+                }
 
-        if (!isValid) {
-            event.preventDefault();
-        }
-    });
+                const expDate = document.getElementById('expDate');
+                const errExp = document.getElementById('errExp');
+                if (expDate.value.length !== 5) {
+                    errExp.style.display = 'block';
+                    isValid = false;
+                } else {
+                    errExp.style.display = 'none';
+                }
 
-    if(expDate) {
-		
-        expDate.addEventListener("input", function () {
-            let cleanInput = this.value.replace(/\D/g, ''); 
-			
-            if (cleanInput.length > 2) {
-                this.value = cleanInput.substring(0, 2) + '/' + cleanInput.substring(2, 4);
-            }
-			 else {
-                this.value = cleanInput;
+                const cvv = document.getElementById('cvv');
+                const errCvv = document.getElementById('errCvv');
+                if (cvv.value.length !== 3) {
+                    errCvv.style.display = 'block';
+                    isValid = false;
+                } else {
+                    errCvv.style.display = 'none';
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                }
             }
         });
     }

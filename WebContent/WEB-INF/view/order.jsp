@@ -40,7 +40,7 @@
                 <section class="info-section-standard">
                     <h3><i class="fa-solid fa-location-dot"></i> Scegli l'Indirizzo di Spedizione</h3>
                     
-                    <form id="checkoutForm" action="<%= request.getContextPath() %>/PaymentServlet" method="GET">
+                    <form id="checkoutForm" action="<%= request.getContextPath() %>/PaymentServlet" method="POST">
                         <div class="address-grid">
                             <%
                                 if (userAddresses != null && !userAddresses.isEmpty()) {

@@ -10,6 +10,8 @@ public interface UserDaoInterface extends CrudDao<UserBean, String> {
     boolean isEmailExists(String email);
     
     boolean addAddressToUserByEmail(String email, AddressBean address);
+
+	AddressBean findAddressById(long id);
 }
 
 

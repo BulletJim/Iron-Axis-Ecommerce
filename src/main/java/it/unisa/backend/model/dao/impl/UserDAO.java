@@ -266,6 +266,37 @@ public class UserDAO implements UserDaoInterface{
     	
 
 	}
+    
+    @Override
+    public AddressBean findAddressById(long id) {
+    	
+    	String query = "SELECT id, user_email, zip_code, city, street, street_number, province, country FROM addresses WHERE id = ?";
+    	AddressBean address = null;
+    	
+    	try(Connection conn = dataSource.getConnection();
+    		PreparedStatement preparedStatement = conn.prepareStatement(query)){
+    		
+    		preparedStatement.setLong(1, id);
+    		
+    		try(ResultSet result = preparedStatement.executeQuery()){
+    			while(result.next()) {
+    				address = new AddressBean();
+    				address.setId(result.getLong("id"));
+    				address.setUserEmail(result.getString("user_email"));
+    				address.setStreet(result.getString("street"));
+    				address.setStreetNumber(result.getInt("street_number"));
+    				address.setCity(result.getString("city"));
+    				address.setZipCode(result.getString("zip_code"));
+    				address.setProvince(result.getString("province"));
+    				address.setCountry(result.getString("country"));
+    				
+    			}
+    		}
+    	} catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	return address;
+    }
 
 	private List<AddressBean> findAddressesByEmail(Connection connection, String email) throws SQLException {
         String query = "SELECT id, user_email, zip_code, city, street, street_number, province, country FROM addresses WHERE user_email = ?";
