@@ -59,8 +59,8 @@
                     </a>
                     
                     <% if ("admin".equalsIgnoreCase(loggedUser.getRole())) { %>
-                        <a href="${pageContext.request.contextPath}/admin/dashboard.jsp" class="admin-link">
-                            <i class="fas fa-cogs"></i> Gestione Sito (Admin)
+                        <a href="${pageContext.request.contextPath}/AdminProductServlet" class="admin-link">
+                            <i class="fas fa-cogs"></i> Gestione sito (Admin)
                         </a>
                     <% } %>
                     
