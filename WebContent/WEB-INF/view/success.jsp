@@ -20,6 +20,20 @@
             <h2>Ordine ricevuto!</h2>
             <p>Puoi controllare lo stato della spedizione in qualsiasi momento all'interno della tua area personale.</p>
 
+            <%
+                Long lastOrderId = (Long) session.getAttribute("lastOrderId");
+                if (lastOrderId != null) {
+            %>
+                <div class="invoice-download-section">
+                    <p>La tua fattura è già disponibile.</p>
+                    <a href="<%= request.getContextPath() %>/DownloadInvoiceServlet" class="btn-home">
+                        <i class="fa-solid fa-file-pdf"></i> Scarica Fattura PDF
+                    </a>
+                </div>
+            <%
+                }
+            %>
+
             <a href="<%= request.getContextPath() %>/index.jsp" class="btn-home">Torna al negozio</a>
         </div>
     </main>

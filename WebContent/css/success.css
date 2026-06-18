@@ -42,19 +42,48 @@
     margin-bottom: 35px;
 }
 
+
+.invoice-download-section {
+    margin: 25px 0;
+}
+
+.invoice-download-section p {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
 .btn-home {
     display: inline-block;
     padding: 14px 32px;
-    background-color: var(--dark-bg);
-    color: var(--text-light);
+    background-color: var(--primary-color, #10b981);
+    color: var(--text-light, #ffffff);
     border-radius: 6px;
     font-weight: 700;
     font-size: 1rem;
+    text-decoration: none;
     transition: background-color 0.3s, transform 0.2s;
 }
 
 .btn-home:hover {
-    background-color: var(--primary-color);
+    background-color: var(--primary-color-dark, #0e9f6e);
+    transform: translateY(-2px);
+}
+
+.btn-invoice {
+    display: inline-block;
+    padding: 14px 32px;
+    background-color: #d9534f;
+    color: #ffffff;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-bottom: 20px;
+}
+
+.btn-invoice:hover {
+    background-color: #c9302c; 
     transform: translateY(-2px);
 }
 

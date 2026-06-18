@@ -84,7 +84,7 @@ public class ConfirmOrderServlet extends HttpServlet {
        
        // Prepare Invoice
        InvoiceBean invoice = new InvoiceBean();
-       invoice.setNumber("FATT-" + java.time.Year.now().getValue() + "-" + pendingOrder.getId());
+       invoice.setNumber("FATT-" + java.time.Year.now().getValue() + "-" + System.currentTimeMillis());
        invoice.setIssueDate(LocalDateTime.now());
        invoice.setHolderFirstName(loggedUser.getFirstName());
        invoice.setHolderLastName(loggedUser.getLastName());       
@@ -116,14 +116,16 @@ public class ConfirmOrderServlet extends HttpServlet {
        pendingOrder.setInvoice(invoice);
        
        if (orderDao.save(pendingOrder)) {
-           request.getSession().removeAttribute("pendingOrder");
+           
+    	   request.getSession().setAttribute("lastOrderId", pendingOrder.getId());
+    	   request.getSession().removeAttribute("pendingOrder");
            
            CartBean cart = cartDao.findByUserEmail(loggedUser.getEmail());
            if (cart != null) {
                cartDao.clearCart(cart.getId());
            }
            
-           response.sendRedirect(request.getContextPath() + "/ConfirmOrderServlet?result=failed");
+           response.sendRedirect(request.getContextPath() + "/ConfirmOrderServlet?result=success");
        } else {
            response.sendRedirect(request.getContextPath() + "/ConfirmOrderServlet?result=failed");
        }
