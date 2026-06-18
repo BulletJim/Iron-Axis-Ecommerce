@@ -54,7 +54,7 @@
                 <div class="dropdown-content">
                     <div class="dropdown-welcome">Ciao, <strong><%= loggedUser.getFirstName() %></strong></div>
                     
-                    <a href="${pageContext.request.contextPath}/profile.jsp">
+                    <a href="${pageContext.request.contextPath}/ProfileServlet">
                         <i class="fas fa-user-cog"></i> Il mio Profilo
                     </a>
                     
