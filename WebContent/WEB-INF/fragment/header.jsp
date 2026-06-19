@@ -58,9 +58,15 @@
                         <i class="fas fa-user-cog"></i> Il mio Profilo
                     </a>
                     
+					<% if (!"admin".equalsIgnoreCase(loggedUser.getRole())) { %>
+					    <a href="${pageContext.request.contextPath}/MyOrderServlet">
+					        <i class="fas fa-box-open"></i> I miei Ordini
+					    </a>
+					<% } %>
+                    
                     <% if ("admin".equalsIgnoreCase(loggedUser.getRole())) { %>
-                        <a href="${pageContext.request.contextPath}/admin/dashboard.jsp" class="admin-link">
-                            <i class="fas fa-cogs"></i> Gestione Sito (Admin)
+                        <a href="${pageContext.request.contextPath}/AdminProductServlet" class="admin-link">
+                            <i class="fas fa-cogs"></i> Gestione sito (Admin)
                         </a>
                     <% } %>
                     
