@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let isAmexGlobal = false;
 
-    // Gestione Selezione Metodo
+
     methodOptions.forEach(option => {
         option.addEventListener('click', () => {
             methodOptions.forEach(opt => opt.classList.remove('active'));
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Funzione Algoritmo di Luhn
+
     function luhnCheck(cardNumber) {
         let sum = 0;
         let isSecond = false;
@@ -52,13 +52,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const cvvInput = document.getElementById('cvv');
     const cardMessage = document.getElementById('errCard');
 
-    // Gestione Numero Carta
+
     if(cardNumberInput) {
         cardNumberInput.addEventListener('input', (e) => {
             let value = e.target.value.replace(/\D/g, '');
             let formattedValue = '';
             
-            // 1. Identificazione Circuito
+
             let isVisa = value.startsWith('4');
             let isMastercard = /^5[1-5]/.test(value) || /^2[2-7]/.test(value);
             let isAmex = /^3[47]/.test(value);
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 			
-            // 2. Cambio Icona
+
             if (isVisa) {
                 cardIcon.className = 'fa-brands fa-cc-visa';
                 cardIcon.style.color = '#1a1f71';
@@ -92,16 +92,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 cardIcon.style.color = '';
             }
             
-            // 3. Formattazione
+
             if (isAmex) {
-                // Formato Amex (4-6-5)
                 let parts = [];
                 if (value.length > 0) parts.push(value.substring(0, 4));
                 if (value.length > 4) parts.push(value.substring(4, 10));
                 if (value.length > 10) parts.push(value.substring(10, 15));
                 formattedValue = parts.join(' ');
             } else {
-                // Formato Classico (4-4-4-4)
                 for (let i = 0; i < value.length; i++) {
                     if (i > 0 && i % 4 === 0) formattedValue += ' ';
                     formattedValue += value[i];
@@ -109,7 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             e.target.value = formattedValue;
 
-            // 4. Validazione Real-Time
             let targetLength = isAmex ? 15 : 16;
 
             if (value.length === 0) {
@@ -135,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Gestione Scadenza
     if(expDateInput) {
         expDateInput.addEventListener('input', (e) => {
             let value = e.target.value.replace(/\D/g, '');
@@ -146,14 +142,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Gestione CVV
     if(cvvInput) {
         cvvInput.addEventListener('input', (e) => {
             e.target.value = e.target.value.replace(/\D/g, '');
         });
     }
 
-    // Validazione Finale (Submit)
     if(paymentForm) {
         paymentForm.addEventListener('submit', (e) => {
             const isCardSelected = document.querySelector('input[name="paymentMethod"]:checked').value === 'Carta di Credito';
@@ -161,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isCardSelected) {
                 let isValid = true;
                 
-                // Controllo Titolare
                 const cardHolder = document.getElementById('cardHolder');
                 const errHolder = document.getElementById('errHolder');
                 if (cardHolder.value.trim().length < 3) {
@@ -171,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     errHolder.style.display = 'none';
                 }
 
-                // Controllo Numero Carta
                 const cardNumber = document.getElementById('cardNumber');
                 const errCard = document.getElementById('errCard');
                 let cleanNumber = cardNumber.value.replace(/\s/g, '');
@@ -185,7 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     errCard.style.display = 'none';
                 }
 
-                // Controllo Scadenza
                 const expDate = document.getElementById('expDate');
                 const errExp = document.getElementById('errExp');
                 if (expDate.value.length !== 5) {
@@ -195,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     errExp.style.display = 'none';
                 }
 
-                // Controllo CVV
                 const cvv = document.getElementById('cvv');
                 const errCvv = document.getElementById('errCvv');
                 let requiredCvvLength = isAmexGlobal ? 4 : 3;
@@ -208,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     errCvv.style.display = 'none';
                 }
 
-                // Blocca l'invio se ci sono errori
                 if (!isValid) {
                     e.preventDefault();
                 }
