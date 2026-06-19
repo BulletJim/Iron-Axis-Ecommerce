@@ -274,7 +274,7 @@
 	background: rgba(33, 150, 243, 0.1);
     color: var(--btn-edit-color); 
     }
-    
+
 .btn-edit:hover { 
 	background: var(--btn-edit-color); 
 	color: white;
@@ -284,12 +284,12 @@
 	background: rgba(244, 67, 54, 0.1);
 	 color: var(--btn-delete-color); 
 	 }
-	 
+
 .btn-delete:hover { 
 	background: var(--btn-delete-color);
 	 color: white; 
 	 }
-	
+
 /* ALLINEAMENTO FILTRO IN TABELLA */
 .table-header-flex {
     display: flex;
@@ -340,16 +340,154 @@
 	background: rgba(255, 152, 0, 0.15);
 	 color: #ff9800; 
 	 } 
-	 
+
 .cat-3 { 
 	background: rgba(76, 175, 80, 0.15); 
 	color: #4caf50; 
 	}  
-	
+
 .cat-4 { 
 	background: rgba(158, 158, 158, 0.15); 
 	color: #9e9e9e; 
 	} 
+	
+#orderFilterForm {
+    background-color: var(--iron-card);
+    border: 1px solid var(--iron-border);
+    padding: 25px;
+    border-radius: 8px;
+    margin-bottom: 35px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+#orderFilterForm .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#orderFilterForm .form-group.full-width {
+    grid-column: span 2;
+}
+
+#orderFilterForm label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--iron-muted);
+    letter-spacing: 0.5px;
+}
+
+#orderFilterForm input[type="date"],
+#orderFilterForm input[type="text"] {
+    background-color: var(--iron-dark);
+    border: 1px solid var(--iron-border);
+    color: var(--iron-text);
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#orderFilterForm input::placeholder {
+    color: var(--iron-muted);
+    opacity: 0.6;
+    font-size: 0.9rem;
+}
+
+#orderFilterForm input[type="date"]:focus,
+#orderFilterForm input[type="text"]:focus {
+    border-color: var(--iron-orange);
+    box-shadow: 0 0 8px rgba(255, 87, 34, 0.4);
+}
+
+#orderFilterForm .error-inline {
+    grid-column: span 2;
+    font-size: 0.85rem;
+    color: var(--btn-delete-color); 
+    font-weight: 600;
+    min-height: 18px;
+    display: block;
+    margin-top: -5px;
+}
+
+#orderFilterForm .form-actions {
+    grid-column: span 2;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+#orderFilterForm .btn-submit {
+    background-color: var(--iron-orange);
+    color: var(--iron-text);
+    border: none;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#orderFilterForm .btn-submit:hover {
+    background-color: var(--iron-orange-hover);
+}
+
+#orderFilterForm .btn-submit:active {
+    transform: scale(0.98);
+}
+
+#orderFilterForm .btn-cancel {
+    background-color: transparent;
+    color: var(--iron-muted);
+    border: 1px solid var(--iron-border);
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 6px;
+    text-align: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#orderFilterForm .btn-cancel:hover {
+    background-color: var(--iron-border);
+    color: var(--iron-text);
+}
+
+@media (max-width: 768px) {
+    #orderFilterForm {
+        grid-template-columns: 1fr; 
+        padding: 15px;
+    }
+    
+    #orderFilterForm .form-group.full-width,
+    #orderFilterForm .error-inline,
+    #orderFilterForm .form-actions {
+        grid-column: span 1;
+    }
+    
+    #orderFilterForm .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    #orderFilterForm .btn-submit,
+    #orderFilterForm .btn-cancel {
+        width: 100%;
+    }
+}
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
@@ -357,15 +495,15 @@
 }
 
 @media(max-width: 768px) {
-	
+
     .hub-navigation { 
     grid-template-columns: 1fr;
      }
-     
+
     .admin-form {
      grid-template-columns: 1fr; 
      }
-     
+
     .form-group.full-width, .form-actions {
      grid-column: span 1;
       }

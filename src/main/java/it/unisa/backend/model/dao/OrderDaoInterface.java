@@ -9,5 +9,7 @@ public interface OrderDaoInterface extends CrudDao<OrderBean, Long>{
 	List<OrderBean> findByUserEmail(String email);   //Metodo per lo storico ordini a un utente specifico
 	
 	List<OrderBean> findOrdersByDateRange(LocalDateTime startDate, LocalDateTime endDate);  
+	
+	List<OrderBean> findOrdersByFilters(String startDate, String endDate, String customerQuery);
 
 }

@@ -1,9 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, it.unisa.backend.model.bean.ProductBean" %>
+<%@ page import="java.util.List, it.unisa.backend.model.bean.ProductBean, it.unisa.backend.model.bean.OrderBean" %>
 <%
     List<ProductBean> products = (List<ProductBean>) request.getAttribute("products");
     ProductBean editProduct = (ProductBean) request.getAttribute("productToEdit");
     boolean isEdit = (editProduct != null);
+    
+    // Recupero dello storico ordini e della persistenza del tab attivo inviati dalla Servlet
+    List<OrderBean> ordersList = (List<OrderBean>) request.getAttribute("orders");
+    String activePanel = (String) request.getAttribute("activePanel");
+    if (activePanel == null) {
+        activePanel = "panel-add"; // Pannello iniziale predefinito
+    }
 %>
 <!DOCTYPE html>
 <html lang="it">
@@ -14,7 +21,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="admin-body">
+<body class="admin-body" data-active-panel="<%= activePanel %>">
 
     <%@ include file="/WEB-INF/fragment/header.jsp" %>
     <%@ include file="/WEB-INF/fragment/menu.jsp" %>
@@ -26,21 +33,25 @@
         </div>
 
         <div class="hub-navigation">
-            <button class="hub-btn active" onclick="switchTab('panel-add')">
+            <button class="hub-btn <%= "panel-add".equals(activePanel) ? "active" : "" %>" onclick="switchTab('panel-add')">
                 <i class="fas <%= isEdit ? "fa-pen-square" : "fa-plus-circle" %>"></i>
                 <span><%= isEdit ? "Modifica Prodotto" : "Nuovo Prodotto" %></span>
             </button>
-            <button class="hub-btn" onclick="switchTab('panel-variant')">
+            <button class="hub-btn <%= "panel-variant".equals(activePanel) ? "active" : "" %>" onclick="switchTab('panel-variant')">
                 <i class="fas fa-cubes"></i>
                 <span>Aggiungi variante</span>
             </button>
-            <button class="hub-btn" onclick="switchTab('panel-list')">
+            <button class="hub-btn <%= "panel-list".equals(activePanel) ? "active" : "" %>" onclick="switchTab('panel-list')">
                 <i class="fas fa-list-alt"></i>
                 <span>Elenco & Modifiche</span>
             </button>
+            <button class="hub-btn <%= "panel-orders".equals(activePanel) ? "active" : "" %>" onclick="switchTab('panel-orders')">
+                <i class="fas fa-box-open"></i>
+                <span>Storico ordini</span>
+            </button>
         </div>
 
-        <div id="panel-add" class="hub-panel active">
+        <div id="panel-add" class="hub-panel <%= "panel-add".equals(activePanel) ? "active" : "" %>">
             <div class="admin-card">
                 <h2><%= isEdit ? "Modifica Prodotto Base (ID: #" + editProduct.getId() + ")" : "Inserimento Nuovo Prodotto Base" %></h2>
                 <form id="productForm" action="${pageContext.request.contextPath}/AdminProductServlet" method="POST" class="admin-form" novalidate>
@@ -80,7 +91,7 @@
             </div>
         </div>
 
-        <div id="panel-variant" class="hub-panel">
+        <div id="panel-variant" class="hub-panel <%= "panel-variant".equals(activePanel) ? "active" : "" %>">
             <div class="admin-card">
                 <h2>Associa variante specifiche a un prodotto</h2>
                 <form id="variantForm" action="${pageContext.request.contextPath}/AdminProductServlet" method="POST" enctype="multipart/form-data" class="admin-form" novalidate>
@@ -144,11 +155,11 @@
             </div>
         </div>
 
-        <div id="panel-list" class="hub-panel">
+        <div id="panel-list" class="hub-panel <%= "panel-list".equals(activePanel) ? "active" : "" %>">
             <div class="admin-card">
                 <div class="table-header-flex">
                     <h2>Catalogo generale prodotti registrati</h2>
-                    
+
                     <div class="filter-wrapper">
                         <label for="tableCategoryFilter"><i class="fas fa-filter"></i> Filtra categoria:</label>
                         <select id="tableCategoryFilter" onchange="filterTableByCategory()">
@@ -168,7 +179,7 @@
                                 <th>ID Auto</th>
                                 <th>Nome prodotto</th>
                                 <th>Categoria collegata</th>
-                                <th style="text-align: center;">Azioni correnti</th>
+                                <th style="text-align: center;">Azioni corrents</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -210,10 +221,74 @@
                 </div>
             </div>
         </div>
+
+        <div id="panel-orders" class="hub-panel <%= "panel-orders".equals(activePanel) ? "active" : "" %>">
+            <div class="admin-card">
+                <h2>Filtra e monitora lo storico ordini</h2>
+                <p style="color: var(--iron-muted); font-size: 0.9rem; margin-bottom: 25px;">Utilizza i filtri combinati sottostanti per analizzare e ispezionare gli ordini effettuati dai clienti della piattaforma.</p>
+                
+                <form id="orderFilterForm" action="${pageContext.request.contextPath}/AdminOrderServlet" method="GET" class="admin-form" novalidate>
+                    <div class="form-group">
+                        <label for="startDate">Data inizio intervallo</label>
+                        <input type="date" id="startDate" name="startDate" placeholder="Seleziona la data iniziale">
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">Data fine intervallo</label>
+                        <input type="date" id="endDate" name="endDate" placeholder="Seleziona la data finale">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="customerQuery">Filtro cliente (Email, Nome o Cognome)</label>
+                        <input type="text" id="customerQuery" name="customerQuery" placeholder="Inserisci parte dell'email o del nome del cliente per effettuare la ricerca...">
+                    </div>
+                    
+                    <span id="orderFilterError" class="error-inline"></span>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit"><i class="fas fa-filter"></i> Applica Filtri</button>
+                        <a href="${pageContext.request.contextPath}/AdminOrderServlet" class="btn-cancel"><i class="fas fa-undo"></i> Ripristina</a>
+                    </div>
+                </form>
+
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID ordine</th>
+                                <th>Data transazione</th>
+                                <th>Email utente</th>
+                                <th style="text-align: right;">Totale transato</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% 
+                            if (ordersList != null && !ordersList.isEmpty()) { 
+                                for(OrderBean o : ordersList) { 
+                            %>
+                                    <tr>
+                                        <td><strong>#<%= o.getId() %></strong></td>
+                                        <td><%= o.getCreatedAt() != null ? o.getCreatedAt().toLocalDate() : "N/A" %></td>
+                                        <td><%= o.getUser() != null ? o.getUser().getEmail() : "N/A" %></td>
+                                        <td style="text-align: right; font-weight: 700; color: var(--iron-orange);">&euro; <%= String.format("%.2f", o.getTotalAmount()) %></td>
+                                    </tr>
+                            <%  } 
+                            } else { %>
+                                <tr>
+                                    <td colspan="4" style="text-align:center; padding: 40px; color: var(--iron-muted);">
+                                        <i class="fas fa-search" style="font-size: 1.5rem; margin-bottom: 10px; display: block; opacity: 0.5;"></i>
+                                        Nessun ordine trovato. Inizializza o modifica i filtri di ricerca.
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
     </main>
 
     <%@ include file="/WEB-INF/fragment/footer.jsp" %>
-    
+
     <script src="${pageContext.request.contextPath}/js/admin-dashboard.js" defer></script>
 </body>
 </html>
