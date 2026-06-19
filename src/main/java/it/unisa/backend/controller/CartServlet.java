@@ -201,52 +201,66 @@ public class CartServlet extends HttpServlet {
 	}
 	
 	// Update item quantity
-	private void updateCartItemQuantity(HttpServletRequest request, HttpServletResponse response, UserBean loggedUser, String sku,
-			int newQuantity) throws Exception {
-		if(newQuantity == 0) {
-			removeFromCart(request, response, loggedUser, sku);
-			return;
-		}
-		
-		VariantBean variant = productDao.findVariantBySku(sku);
-		if(variant != null) {
-			
-			if(loggedUser != null) {
-				CartBean cart = cartDao.findByUserEmail(loggedUser.getEmail());
-				if(cart == null) {
-					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Did the cart come out the magician cylinder?!");
-				}
-				
-				Map<Long, CartItemBean> variants = cart.getVariants();
-				if(variants.containsKey(variant.getId())) {
-					CartItemBean item = variants.get(variant.getId());
-					item.setSelectedQuantity(newQuantity);
-					
-				}
-				
-				recalculateAndSetTotal(cart);
-				cartDao.update(cart);
-			} else {
-				ObjectMapper mapper = new ObjectMapper();
-				List<GuestCartItemDTO> guestItems = readGuestCartCookie(request, mapper);
-				boolean found = false;
-				for(GuestCartItemDTO item : guestItems) {
-					if(item.getSku().equals(sku)) {
-						item.setQuantity(newQuantity);
-						found = true;
-						break;
-					}
-				}
-				
-				if(!found) {
-					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
-				}
-				
-				updateGuestCartCookie(request, response, guestItems, mapper);
-			}
-		}
-		
-		response.sendRedirect(request.getContextPath() + "/CartServlet?action=view");
+	private void updateCartItemQuantity(HttpServletRequest request, HttpServletResponse response, UserBean loggedUser, String sku, int newQuantity) throws Exception {
+	    
+	    if(newQuantity == 0) {
+	        removeFromCart(request, response, loggedUser, sku);
+	        return;
+	    }
+	    
+	    VariantBean variant = productDao.findVariantBySku(sku);
+	    if(variant != null) {
+	        
+	        if(loggedUser != null) {
+	            CartBean cart = cartDao.findByUserEmail(loggedUser.getEmail());
+	            if(cart == null) {
+	                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Did the cart come out the magician cylinder?!");
+	            }
+	            
+	            Map<Long, CartItemBean> variants = cart.getVariants();
+	            if(variants.containsKey(variant.getId())) {
+	                CartItemBean item = variants.get(variant.getId());
+	                item.setSelectedQuantity(newQuantity);
+	            }
+	            
+	            recalculateAndSetTotal(cart);
+	            cartDao.update(cart);
+	        } else {
+	            ObjectMapper mapper = new ObjectMapper();
+	            List<GuestCartItemDTO> guestItems = readGuestCartCookie(request, mapper);
+	            boolean found = false;
+	            for(GuestCartItemDTO item : guestItems) {
+	                if(item.getSku().equals(sku)) {
+	                    item.setQuantity(newQuantity);
+	                    found = true;
+	                    break;
+	                }
+	            }
+	            
+	            if(!found) {
+	                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+	            }
+	            
+	            updateGuestCartCookie(request, response, guestItems, mapper);
+	        }
+	    }
+	    
+
+	    boolean isAjax = "true".equals(request.getParameter("ajax"));
+	    
+	    if (isAjax) {
+	        response.setContentType("application/json");
+	        response.setCharacterEncoding("UTF-8");
+	        
+	        Map<String, Object> jsonResponse = new HashMap<>();
+	        jsonResponse.put("status", "success");
+	        ObjectMapper mapper = new ObjectMapper();
+	        mapper.writeValue(response.getWriter(), jsonResponse);
+	        
+	        return;
+	    }
+	    
+	    response.sendRedirect(request.getContextPath() + "/CartServlet?action=view");
 	}
 	
 	
