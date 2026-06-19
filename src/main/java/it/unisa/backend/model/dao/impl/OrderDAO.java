@@ -212,6 +212,66 @@ public class OrderDAO implements OrderDaoInterface{
         return orders;
     }
     
+    @Override
+    public List<OrderBean> findOrdersByFilters(String startDate, String endDate, String customerQuery) {
+        List<OrderBean> orders = new ArrayList<>();
+        
+        StringBuilder query = new StringBuilder("SELECT o.* FROM orders o JOIN users u ON o.user_email = u.email WHERE 1=1");
+        
+        boolean hasDateFilter = (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty());
+        boolean hasCustomerFilter = (customerQuery != null && !customerQuery.trim().isEmpty());
+
+        if (hasDateFilter) {
+            query.append(" AND DATE(o.order_date) BETWEEN ? AND ?");
+        }
+        if (hasCustomerFilter) {
+            query.append(" AND (o.user_email LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ?)");
+        }
+        
+        query.append(" ORDER BY o.order_date DESC");
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(query.toString())) {
+             
+            int paramIndex = 1;
+            
+            if (hasDateFilter) {
+                ps.setString(paramIndex++, startDate);
+                ps.setString(paramIndex++, endDate);
+            }
+            if (hasCustomerFilter) {
+            	
+                String searchPattern = "%" + customerQuery.trim() + "%";
+                ps.setString(paramIndex++, searchPattern);
+                ps.setString(paramIndex++, searchPattern);
+                ps.setString(paramIndex++, searchPattern);
+            }
+            
+            try (ResultSet rs = ps.executeQuery()) {
+            	
+                while (rs.next()) {
+                	
+                    OrderBean order = new OrderBean();
+                    order.setId(rs.getLong("id"));
+                    order.setTotalAmount(rs.getDouble("total_price"));
+                    
+                    Timestamp ts = rs.getTimestamp("order_date");
+                    if (ts != null) order.setCreatedAt(ts.toLocalDateTime());
+                    
+                    UserBean user = new UserBean();
+                    user.setEmail(rs.getString("user_email"));
+                    order.setUser(user);
+                    
+                    orders.add(order);
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
+    
     private OrderBean extractOrderFromResultSet(ResultSet rs, Connection connection) throws SQLException {
         OrderBean order = new OrderBean();
         order.setId(rs.getLong("id"));
