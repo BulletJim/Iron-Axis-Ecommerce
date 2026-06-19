@@ -148,30 +148,30 @@ public class ProductDAO implements ProductDaoInterface {
         return products;
     }
 
-    @Override
     public List<ProductBean> searchProducts(String searchQuery) {
-      
-        String query = "SELECT * FROM products WHERE (name LIKE ? OR description LIKE ?) AND is_deleted = false";
-        
         List<ProductBean> products = new ArrayList<>();
-
+        
+        String query = "SELECT * FROM products WHERE name LIKE ? AND is_deleted = false LIMIT 6";
+        
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             
-            String searchPattern = "%" + searchQuery + "%";
+            preparedStatement.setString(1, "%" + searchQuery + "%");
             
-            preparedStatement.setString(1, searchPattern);
-            preparedStatement.setString(2, searchPattern);
-            
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    products.add(extractProductFromResultSet(resultSet, connection));
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+            	
+                while (rs.next()) {
+                    ProductBean product = new ProductBean();
+                    product.setId(rs.getLong("id"));
+                    product.setName(rs.getString("name"));
+                    
+                    products.add(product);
                 }
             }
-        } 
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
+        
         return products;
     }
     
