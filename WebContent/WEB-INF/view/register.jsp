@@ -49,52 +49,46 @@
 			</div>
 
 			<div class="form-group">
-				<label for="dateOfBirth">Data di Nascita:</label> <input type="date"
-					id="dateOfBirth" name="dateOfBirth"
-					placeholder="Inserisci la tua data di nascita" required>
+    			<label for="dob">Data di Nascita:</label>
+    			<input type="text" id="dob" name="dob" placeholder="GG/MM/AAAA" maxlength="10" required>
+    			<span id="dobError" class="error-message"></span>
 			</div>
 
-			<div class="form-group">	
-				<label>Telefono:</label>		
-				<div id="phones-container">			
-					<div class="dynamic-row phone-row">
-						<select name="phoneType" class="input-phone-type" required>
+			<div class="form-group">
+				<label>Numero di Telefono:</label>
+				<div id="phones-container">
+					<div class="phone-row">
+						<select name="phoneType" required>
 							<option value="MOBILE">Cellulare</option>
 							<option value="HOME">Casa</option>
 							<option value="WORK">Lavoro</option>
 						</select> 
-						<input type="tel" name ="phoneNumber" class="phone-number input-flex-1" placeholder="Inserisci il tuo numero" required>
+						<input type="tel" name="phoneNumber" class="phone-input" placeholder="Inserisci il tuo numero" required>
 					</div>
 				</div>
-				<button type="button" id="add-phone-btn" class="btn-add-dynamic">+ Aggiungi un altro telefono</button>
-			
+				<span class="error-message phone-error"></span>
+				<button type="button" id="add-phone-btn" class="btn-add-dynamic">+ Aggiungi un altro numero</button>
 			</div>
 
 			<div class="form-group">
-				<label>Indirizzo:</label>
+				<label>Indirizzo di Spedizione:</label>
 				<div id="addresses-container">
 					<div class="address-group">
 						<div class="input-row">
-							<input type="text" name="street" placeholder="Via/Piazza"
-								class="addr-street input-flex-1" required> 
-							<input type="number"name="streetNumber" placeholder="N°"
-								class="addr-civic input-civic" min="0" onkeydown="if(event.key === '-') event.preventDefault()" required>
+							<input type="text" name="street" placeholder="Via/Piazza" class="addr-street input-flex-1" required>
+							<input type="number" name="streetNumber" placeholder="N°" class="addr-civic input-civic" min="0" onkeydown="if(event.key === '-') event.preventDefault()" required>
 						</div>
 						<div class="input-row">
-							<input type="text" name="city" placeholder="Città"
-								class="addr-city input-flex-1" required> 
+							<input type="text" name="city" placeholder="Città" class="addr-city input-flex-1" required>
 							<input type="text" name="prov" placeholder="Prov" class="addr-prov input-prov" required>
 						</div>
 						<div class="input-row">
-							<input type="text" name="zipCode" placeholder="CAP"
-								class="addr-zip-code input-zip-code" required> 
-							<input type="text" name="country" placeholder="Nazione"
-								class="addr-country input-flex-1" required>
+							<input type="text" name="zipCode" placeholder="CAP" class="addr-zip-code input-zip-code" required> 
+							<input type="text" name="country" placeholder="Nazione" class="addr-country input-flex-1" required>
 						</div>
 					</div>
 				</div>
-				<button type="button" id="add-address-btn" class="btn-add-dynamic">+
-					Aggiungi un altro indirizzo</button>
+				<button type="button" id="add-address-btn" class="btn-add-dynamic">+ Aggiungi un altro indirizzo</button>
 			</div>
 
 			<div class="form-group">
