@@ -70,6 +70,37 @@ public class ConfirmOrderServlet extends HttpServlet {
     	   response.sendRedirect(request.getContextPath() + "/PaymentServlet");
     	   return;
        }
+       String cardCircuit = null;
+       String lastFourDigits = null;
+       
+       
+       if("CreditCard".equals(paymentMethod.trim())) {
+    	   String cardNumber = request.getParameter("cardNumber");
+           if (cardNumber != null && !cardNumber.isEmpty()) {
+               String cleanNumber = cardNumber.replaceAll("\\s+", "");
+               
+               if (cleanNumber.length() >= 4) {
+                   lastFourDigits = cleanNumber.substring(cleanNumber.length() - 4);
+               }
+               if (cleanNumber.startsWith("4")) {
+                   cardCircuit = "Visa";
+               } else if (cleanNumber.matches("^5[1-5].*") || cleanNumber.matches("^2[2-7].*")) {
+                   cardCircuit = "MasterCard";
+               } else if (cleanNumber.matches("^3[47].*")) {
+                   cardCircuit = "AmericanExpress";
+               } else {
+                   cardCircuit = "Generic"; 
+               }
+           }
+       // This section is simulated because there is no payment provider request
+       } else if ("PayPal".equals(paymentMethod.trim())) {
+    	   cardCircuit = "PayPal";
+    	   lastFourDigits = "1234";
+       } else if ("ApplePay".equals(paymentMethod.trim())) {
+    	   cardCircuit = "ApplePay";
+    	   lastFourDigits = "1234";
+    	   
+       }
        
        // Prepare Payment
        PaymentBean payment = new PaymentBean();
@@ -78,6 +109,8 @@ public class ConfirmOrderServlet extends HttpServlet {
        payment.setStatus(PaymentStatus.COMPLETED);
        payment.setTransactionId(UUID.randomUUID().toString());
        payment.setTotalPrice(pendingOrder.getTotalAmount());
+       payment.setCardCircuit(cardCircuit);
+       payment.setLastFourDigits(lastFourDigits);
         
        pendingOrder.setPayment(payment);
        pendingOrder.setStatus(OrderStatus.PROCESSING);

@@ -51,6 +51,14 @@ public class PaymentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
     	String addressIdParam = request.getParameter("selectedAddressId");
+    	String shippingCost = request.getParameter("shippingCost");
+    	double parsedShippingCost;
+    	if(shippingCost == null) {
+    		parsedShippingCost = 0.00f;
+    	} else {
+    		parsedShippingCost = Double.parseDouble(shippingCost);
+    	}
+    		
     	long addressId = Long.parseLong(addressIdParam);
     	
     	 final UserBean loggedUser = (UserBean)request.getSession().getAttribute("loggedUser");
@@ -69,18 +77,17 @@ public class PaymentServlet extends HttpServlet {
     	order.setShippingAddress(address);
     	order.setStatus(OrderStatus.PENDING);
     	order.setCreatedAt(LocalDateTime.now());
-    	
-    	// Add Shipping costs if total is below 50
+    	order.setShippingCosts(parsedShippingCost);
     	double cartSubtotal = cart.getTotalPrice();
-    	double shippingCosts = (cartSubtotal >= 50 || cartSubtotal == 0) ? 0.0 : 5.90;
+
     	
-    	order.setTotalAmount(cartSubtotal + shippingCosts);
+    	order.setTotalAmount(cartSubtotal + parsedShippingCost);
     	
     	// Build OrderItem
     	final Map<Long, CartItemBean> cartItems = cart.getVariants();
     	List<OrderItemBean> orderItems = new ArrayList<>();
     	
-    	cartItems.forEach((key, value) ->{
+    	cartItems.forEach((key, value) -> {
     		OrderItemBean orderItem = new OrderItemBean();
     		orderItem.setPriceAtPurchase(value.getVariant().getPrice());
     		orderItem.setQuantity(value.getSelectedQuantity());

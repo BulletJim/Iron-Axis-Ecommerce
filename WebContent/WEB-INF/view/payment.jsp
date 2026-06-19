@@ -5,7 +5,6 @@
 <%@ page import="java.text.DecimalFormat" %>
 <%
     OrderBean order = (OrderBean)request.getSession().getAttribute("pendingOrder");
-    double totalAmount = order != null ? order.getTotalAmount() : 0.0;
 %>
 <!DOCTYPE html>
 <html lang="it">
@@ -29,20 +28,24 @@
             
             <div class="total-banner">
                 <span>Importo totale:</span>
-                <span class="total-amount">€ <%= String.format(Locale.US, "%.2f", totalAmount) %></span>
+                <span class="total-amount">€ <%= String.format(Locale.US, "%.2f", order.getTotalAmount()) %></span>
             </div>
 
             <form id="paymentForm" method="POST" action="<%= request.getContextPath() %>/ConfirmOrderServlet">
                 
                 <div class="method-selector">
                     <label class="method-option active" id="labelCard">
-                        <input type="radio" name="paymentMethod" value="Carta di Credito" checked>
+                        <input type="radio" name="paymentMethod" value="CreditCard" checked>
                         <i class="fa-regular fa-credit-card"></i> Carta di credito
                     </label>
                     <label class="method-option" id="labelPaypal">
                         <input type="radio" name="paymentMethod" value="PayPal">
                         <i class="fa-brands fa-paypal"></i> PayPal
                     </label>
+                    <label class="method-option" id="labelApplePay">
+        				<input type="radio" name="paymentMethod" value="ApplePay">
+        				<i class="fa-brands fa-apple"></i> Apple Pay
+   					 </label>
                 </div>
 
                 <div id="creditCardFields" class="form-section">
@@ -56,9 +59,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="cardNumber">Numero della carta</label>
+                        <label for="cardNumber">Numero carta</label>
                         <div class="input-wrapper">
-                            <i class="fa-regular fa-credit-card"></i>
+                            <i id="cardIcon" class="fa-regular fa-credit-card"></i>
                             <input type="text" id="cardNumber" name="cardNumber" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19">
                         </div>
                         <div class="error-msg" id="errCard">Inserisci un numero di carta valido.</div>

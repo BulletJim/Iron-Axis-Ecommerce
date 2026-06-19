@@ -12,22 +12,30 @@ public class PaymentBean implements Serializable{
 	private long orderId;
 	private LocalDateTime paymentDate;
 	private String paymentMethod;
+	private String cardCircuit;
+	private String lastFourDigits;
 	private String transactionId;
 	private PaymentStatus status;
 	private double totalPrice;
 	
 	public PaymentBean() {}
 
-	public PaymentBean(long id, long orderId, LocalDateTime paymentDate, 
-			String paymentMethod, String transactionId, PaymentStatus status, double totalPrice) {
+	
+
+	public PaymentBean(long id, long orderId, LocalDateTime paymentDate, String paymentMethod, String cardCircuit,
+			String lastFourDigits, String transactionId, PaymentStatus status, double totalPrice) {
 		this.id = id;
 		this.orderId = orderId;
 		this.paymentDate = paymentDate;
 		this.paymentMethod = paymentMethod;
+		this.cardCircuit = cardCircuit;
+		this.lastFourDigits = lastFourDigits;
 		this.transactionId = transactionId;
 		this.status = status;
 		this.totalPrice = totalPrice;
 	}
+
+
 
 	public long getId() {
 		return id;
@@ -85,4 +93,20 @@ public class PaymentBean implements Serializable{
 		this.totalPrice = totalPrice;
 	}
 
+	public String getCardCircuit() {
+		return cardCircuit;
+	}
+
+	public void setCardCircuit(String cardCircuit) {
+		this.cardCircuit = cardCircuit;
+	}
+
+	public String getLastFourDigits() {
+		return lastFourDigits;
+	}
+
+	public void setLastFourDigits(String lastFourDigits) {
+		this.lastFourDigits = lastFourDigits;
+	}
+	
 }

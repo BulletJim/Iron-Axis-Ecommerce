@@ -41,6 +41,8 @@
                     <h3><i class="fa-solid fa-location-dot"></i> Scegli l'Indirizzo di Spedizione</h3>
                     
                     <form id="checkoutForm" action="<%= request.getContextPath() %>/PaymentServlet" method="POST">
+                        <input type="hidden" name="shippingCost" value="<%= shippingCost %>">
+                        
                         <div class="address-grid">
                             <%
                                 if (userAddresses != null && !userAddresses.isEmpty()) {

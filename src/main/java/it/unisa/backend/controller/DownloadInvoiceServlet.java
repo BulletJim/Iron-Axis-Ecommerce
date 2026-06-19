@@ -3,7 +3,6 @@ package it.unisa.backend.controller;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import javax.servlet.ServletException;
@@ -212,12 +211,16 @@ public class DownloadInvoiceServlet extends HttpServlet {
             double taxable = order.getInvoice().getTaxableAmount();
             double total = order.getInvoice().getTotalAmount();
             double vat = total - taxable; 
+            double shippingCost = order.getShippingCosts();
 
             addNoBorderCell(accountingInfoTable, "Imponibile:", normalFont, Element.ALIGN_RIGHT);
             addNoBorderCell(accountingInfoTable, String.format("%.2f €", taxable), normalFont, Element.ALIGN_RIGHT);
 
             addNoBorderCell(accountingInfoTable, "Totale IVA:", normalFont, Element.ALIGN_RIGHT);
             addNoBorderCell(accountingInfoTable, String.format("%.2f €", vat), normalFont, Element.ALIGN_RIGHT);
+            
+            addNoBorderCell(accountingInfoTable, "Spedizione:", normalFont, Element.ALIGN_RIGHT);
+            addNoBorderCell(accountingInfoTable, String.format("%.2f €", shippingCost), normalFont, Element.ALIGN_RIGHT);
 
             // Total Row
             PdfPCell totalLabel = new PdfPCell(new Phrase("TOTALE:", totalFont));
@@ -228,13 +231,14 @@ public class DownloadInvoiceServlet extends HttpServlet {
             totalLabel.setPaddingTop(10f);
             accountingInfoTable.addCell(totalLabel);
 
-            PdfPCell totalValue = new PdfPCell(new Phrase(String.format("€ %.2f", total), totalFont));
+            PdfPCell totalValue = new PdfPCell(new Phrase(String.format("%.2f €", total), totalFont));
             totalValue.setHorizontalAlignment(Element.ALIGN_RIGHT);
             totalValue.setBorder(PdfPCell.TOP);
             totalValue.setBorderColorTop(primaryColour);
             totalValue.setBorderWidthTop(2f);
             totalValue.setPaddingTop(10f);
             accountingInfoTable.addCell(totalValue);
+            
 
             contentWrapper.addElement(accountingInfoTable);
             
@@ -257,12 +261,15 @@ public class DownloadInvoiceServlet extends HttpServlet {
             paymentDetails.setPaddingTop(8f);
             
             String pMethod = order.getPayment().getPaymentMethod() != null ? order.getPayment().getPaymentMethod() : "N/A";
+            String cardCircuit = order.getPayment().getCardCircuit() != null ? order.getPayment().getCardCircuit() : "N/A";
+            String lastFourDigits = order.getPayment().getLastFourDigits() != null ? order.getPayment().getLastFourDigits() : "N/A";
             String pTransId = order.getPayment().getTransactionId() != null ? order.getPayment().getTransactionId() : "N/A";
             String pStatus = order.getPayment().getStatus() != null ? order.getPayment().getStatus().toString() : "N/A";
             String paymentDate = order.getPayment().getPaymentDate() != null ? DateTimeFormatter.ofPattern("dd/MM/yyyy")
             		.format(order.getPayment().getPaymentDate()) : "N/A";
             
-            paymentDetails.addElement(new Paragraph("Metodo di pagamento: " + pMethod, normalFont));
+            paymentDetails.addElement(new Paragraph("Metodo di pagamento: " + pMethod + " - " + cardCircuit + " ****" + lastFourDigits, normalFont));
+
             paymentDetails.addElement(new Paragraph("ID Transazione: " + pTransId, normalFont));
             paymentDetails.addElement(new Paragraph("Stato del pagamento: " + pStatus, normalFont));
             paymentDetails.addElement(new Paragraph("Data di esecuzione: " + paymentDate, normalFont));

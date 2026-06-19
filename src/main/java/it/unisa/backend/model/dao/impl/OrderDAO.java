@@ -22,7 +22,7 @@ public class OrderDAO implements OrderDaoInterface{
     @Override
     public boolean save(OrderBean order){
     	
-    	String queryOrder = "INSERT INTO orders (user_email, shipping_address_id, status, total_items, total_price) VALUES (?, ?, ?, ?, ?)";
+    	String queryOrder = "INSERT INTO orders (user_email, shipping_address_id, status, total_items, total_price, shipping_costs) VALUES (?, ?, ?, ?, ?, ?)";
         String queryDetails = "INSERT INTO order_details (order_id, variant_id, quantity, purchase_price, vat) VALUES (?, ?, ?, ?, ?)";
         
         try (Connection connection = dataSource.getConnection()) {
@@ -38,6 +38,7 @@ public class OrderDAO implements OrderDaoInterface{
                 int totalItems = order.getItems().stream().mapToInt(OrderItemBean::getQuantity).sum();
                 psOrder.setInt(4, totalItems);
                 psOrder.setDouble(5, order.getTotalAmount());
+                psOrder.setDouble(6, order.getShippingCosts());
                 psOrder.executeUpdate();
                 
                 try (ResultSet rs = psOrder.getGeneratedKeys()) {
@@ -215,6 +216,7 @@ public class OrderDAO implements OrderDaoInterface{
         OrderBean order = new OrderBean();
         order.setId(rs.getLong("id"));
         order.setTotalAmount(rs.getDouble("total_price"));
+        order.setShippingCosts(rs.getDouble("shipping_costs"));
         
         try {
             order.setStatus(OrderStatus.valueOf(rs.getString("status").toUpperCase().trim()));
@@ -286,6 +288,8 @@ public class OrderDAO implements OrderDaoInterface{
                     PaymentBean payment = new PaymentBean();
                     payment.setId(rs.getLong("id"));
                     payment.setPaymentMethod(rs.getString("payment_method"));
+                    payment.setCardCircuit(rs.getString("card_circuit"));
+                    payment.setLastFourDigits(rs.getString("last_four_digits"));
                     payment.setTransactionId(rs.getString("transaction_id"));
                     payment.setTotalPrice(rs.getDouble("total_price"));
                     String statusStr = rs.getString("payment_status");
@@ -366,13 +370,15 @@ public class OrderDAO implements OrderDaoInterface{
     }
 
     private void savePayment(Connection connection, OrderBean order) throws SQLException {
-        String queryPayment = "INSERT INTO payments (order_id, payment_method, transaction_id, total_price, payment_status) VALUES (?, ?, ?, ?, ?)";
+        String queryPayment = "INSERT INTO payments (order_id, payment_method, last_four_digits, card_circuit, transaction_id, total_price, payment_status) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement psPayment = connection.prepareStatement(queryPayment)) {
             psPayment.setLong(1, order.getId());
             psPayment.setString(2, order.getPayment().getPaymentMethod());
-            psPayment.setString(3, order.getPayment().getTransactionId());
-            psPayment.setDouble(4, order.getPayment().getTotalPrice());
-            psPayment.setString(5, "COMPLETED"); 
+            psPayment.setString(3, order.getPayment().getLastFourDigits());
+            psPayment.setString(4, order.getPayment().getCardCircuit());
+            psPayment.setString(5, order.getPayment().getTransactionId());
+            psPayment.setDouble(6, order.getPayment().getTotalPrice());
+            psPayment.setString(7, "COMPLETED"); 
             psPayment.executeUpdate();
         }
     }

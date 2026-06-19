@@ -44,8 +44,6 @@ public class CheckoutServlet extends HttpServlet {
 					throw new Exception("The user has no cart");
 				}
 				
-				List<AddressBean> userAddresses = loggedUser.getAddresses();
-				
 				// Process Delivery date
 				LocalDate deliveryDate = LocalDate.now();     
 		        int workingDaysToAdd = 3;
@@ -87,6 +85,6 @@ public class CheckoutServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+        response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Method Not Allowed");
     }
 }
