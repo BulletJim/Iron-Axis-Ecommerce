@@ -12,23 +12,20 @@ public class InvoiceBean implements Serializable{
 	private LocalDateTime issueDate;
 	private String holderFirstName;
 	private String holderLastName;
-	private AddressBean billingAddress;
-	private double netAmount;          
+	private AddressBean billingAddress;         
 	private double taxableAmount;
 	private double totalAmount;
 	
 	public InvoiceBean() {}
 
 	public InvoiceBean(long id, String number, LocalDateTime issueDate, 
-			String holderFirstName, String holderLastName, AddressBean billingAddress,
-			double netAmount, double taxableAmount, double totalAmount) {
+			String holderFirstName, String holderLastName, AddressBean billingAddress, double taxableAmount, double totalAmount) {
 		this.id = id;
 		this.number = number;
 		this.issueDate = issueDate;
 		this.holderFirstName = holderFirstName;
 		this.holderLastName = holderLastName;
 		this.billingAddress = billingAddress;
-		this.netAmount = netAmount;
 		this.taxableAmount = taxableAmount;
 		this.totalAmount = totalAmount;
 	}
@@ -79,14 +76,6 @@ public class InvoiceBean implements Serializable{
 
 	public void setBillingAddress(AddressBean billingAddress) {
 		this.billingAddress = billingAddress;
-	}
-
-	public double getNetAmount() {
-		return netAmount;
-	}
-
-	public void setNetAmount(double netAmount) {
-		this.netAmount = netAmount;
 	}
 
 	public double getTaxableAmount() {

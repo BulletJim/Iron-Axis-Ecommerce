@@ -1,0 +1,99 @@
+@charset "UTF-8";
+@import "global.css";
+
+.success-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px;
+    background-color: var(--light-bg);
+    flex-grow: 1;
+}
+
+.success-card {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+    padding: 50px 40px;
+    text-align: center;
+    border-top: 5px solid #10b981;
+}
+
+.success-icon {
+    font-size: 4.5rem;
+    color: #10b981;
+    margin-bottom: 20px;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.success-card h2 {
+    font-size: 1.8rem;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.success-card p {
+    color: #555555;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 35px;
+}
+
+
+.invoice-download-section {
+    margin: 25px 0;
+}
+
+.invoice-download-section p {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.btn-home {
+    display: inline-block;
+    padding: 14px 32px;
+    background-color: var(--primary-color, #10b981);
+    color: var(--text-light, #ffffff);
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-home:hover {
+    background-color: var(--primary-color-dark, #0e9f6e);
+    transform: translateY(-2px);
+}
+
+.btn-invoice {
+    display: inline-block;
+    padding: 14px 32px;
+    background-color: #d9534f;
+    color: #ffffff;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-bottom: 20px;
+}
+
+.btn-invoice:hover {
+    background-color: #c9302c; 
+    transform: translateY(-2px);
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@media (max-width: 576px) {
+    .success-card {
+        padding: 35px 20px;
+    }
+}

@@ -3,6 +3,7 @@ package it.unisa.backend.model.dao.impl;
 import it.unisa.backend.model.dao.OrderDaoInterface;
 import it.unisa.backend.model.bean.*;
 import it.unisa.backend.model.bean.util.OrderStatus;
+import it.unisa.backend.model.bean.util.PaymentStatus;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -21,7 +22,7 @@ public class OrderDAO implements OrderDaoInterface{
     @Override
     public boolean save(OrderBean order){
     	
-    	String queryOrder = "INSERT INTO orders (user_email, shipping_address_id, status, total_items, total_price) VALUES (?, ?, ?, ?, ?)";
+    	String queryOrder = "INSERT INTO orders (user_email, shipping_address_id, status, total_items, total_price, shipping_costs) VALUES (?, ?, ?, ?, ?, ?)";
         String queryDetails = "INSERT INTO order_details (order_id, variant_id, quantity, purchase_price, vat) VALUES (?, ?, ?, ?, ?)";
         
         try (Connection connection = dataSource.getConnection()) {
@@ -37,6 +38,7 @@ public class OrderDAO implements OrderDaoInterface{
                 int totalItems = order.getItems().stream().mapToInt(OrderItemBean::getQuantity).sum();
                 psOrder.setInt(4, totalItems);
                 psOrder.setDouble(5, order.getTotalAmount());
+                psOrder.setDouble(6, order.getShippingCosts());
                 psOrder.executeUpdate();
                 
                 try (ResultSet rs = psOrder.getGeneratedKeys()) {
@@ -113,11 +115,7 @@ public class OrderDAO implements OrderDaoInterface{
              ResultSet rs = ps.executeQuery()){
         	
             while (rs.next()) {
-                OrderBean order = new OrderBean();
-                order.setId(rs.getLong("id"));
-                order.setTotalAmount(rs.getDouble("total_price"));
-               
-                orders.add(order);
+                orders.add(extractOrderFromResultSet(rs, connection));
             }
         }
         catch (SQLException e) {
@@ -218,6 +216,7 @@ public class OrderDAO implements OrderDaoInterface{
         OrderBean order = new OrderBean();
         order.setId(rs.getLong("id"));
         order.setTotalAmount(rs.getDouble("total_price"));
+        order.setShippingCosts(rs.getDouble("shipping_costs"));
         
         try {
             order.setStatus(OrderStatus.valueOf(rs.getString("status").toUpperCase().trim()));
@@ -233,17 +232,27 @@ public class OrderDAO implements OrderDaoInterface{
         user.setEmail(rs.getString("user_email"));
         order.setUser(user);
 
-        AddressBean address = new AddressBean();
-        address.setId(rs.getLong("shipping_address_id"));
+        AddressBean address = findAddressById(connection, rs.getLong("shipping_address_id"));
         order.setShippingAddress(address);
+        
 
         order.setItems(findOrderItemsByOrderId(connection, order.getId()));
+		order.setPayment(findPaymentByOrderId(connection, order.getId()));
+		order.setInvoice(findInvoiceByOrderId(connection, order.getId()));
         
         return order;
     }
 
+    
+    /*
+     * HELPER METHODS : Retrieving information
+     * */
     private List<OrderItemBean> findOrderItemsByOrderId(Connection connection, Long orderId) throws SQLException {
-        String query = "SELECT * FROM order_details WHERE order_id = ?";
+        String query = "SELECT od.*, v.sku, v.flavour, v.product_id " +
+                       "FROM order_details od " +
+                       "JOIN variants v ON od.variant_id = v.id " +
+                       "WHERE od.order_id = ?";
+                       
         List<OrderItemBean> items = new ArrayList<>();
         
         try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -251,44 +260,137 @@ public class OrderDAO implements OrderDaoInterface{
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     OrderItemBean item = new OrderItemBean();
-                    item.setOrderId(rs.getLong("id"));
+                    item.setOrderId(rs.getLong("order_id"));
                     item.setQuantity(rs.getInt("quantity"));
                     item.setPriceAtPurchase(rs.getDouble("purchase_price"));
                     item.setVat(rs.getDouble("vat"));
                     
                     VariantBean variant = new VariantBean();
                     variant.setId(rs.getLong("variant_id"));
-                    item.setVariant(variant);
+                    variant.setProductId(rs.getLong("product_id"));
+                    variant.setSku(rs.getString("sku"));
+                    variant.setFlavour(rs.getString("flavour"));
                     
+                    item.setVariant(variant);
                     items.add(item);
                 }
             }
         }
         return items;
     }
+    
+    private PaymentBean findPaymentByOrderId(Connection connection, Long orderId) throws SQLException {
+        String query = "SELECT * FROM payments WHERE order_id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setLong(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    PaymentBean payment = new PaymentBean();
+                    payment.setId(rs.getLong("id"));
+                    payment.setPaymentMethod(rs.getString("payment_method"));
+                    payment.setCardCircuit(rs.getString("card_circuit"));
+                    payment.setLastFourDigits(rs.getString("last_four_digits"));
+                    payment.setTransactionId(rs.getString("transaction_id"));
+                    payment.setTotalPrice(rs.getDouble("total_price"));
+                    String statusStr = rs.getString("payment_status");
+
+                    payment.setStatus(PaymentStatus.valueOf(statusStr.toUpperCase().trim()));      
+     
+                    try {
+                        Timestamp pDate = rs.getTimestamp("payment_date");
+                        if (pDate != null && payment.getClass().getMethod("setPaymentDate", LocalDateTime.class) != null) {
+                            payment.setPaymentDate(pDate.toLocalDateTime());
+                        }
+                    } catch (NoSuchMethodException | SecurityException e) {
+                        
+                    }
+
+                    return payment;
+                }
+            }
+        }
+        return null;
+    }
+
+    private InvoiceBean findInvoiceByOrderId(Connection connection, Long orderId) throws SQLException {
+        String query = "SELECT * FROM invoices WHERE order_id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setLong(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    InvoiceBean invoice = new InvoiceBean();
+                    invoice.setId(rs.getLong("id"));
+                    invoice.setNumber(rs.getString("invoice_number"));
+                    invoice.setHolderFirstName(rs.getString("holder_first_name"));
+                    invoice.setHolderLastName(rs.getString("holder_last_name"));
+                    invoice.setTaxableAmount(rs.getDouble("taxable_total"));
+                    invoice.setTotalAmount(rs.getDouble("total"));
+                    
+                    AddressBean address = findAddressById(connection, rs.getLong("billing_address_id"));
+                    invoice.setBillingAddress(address);
+
+                    
+                    try {
+                        Timestamp issueDate = rs.getTimestamp("issue_date");
+                        if (issueDate != null) {
+                            invoice.setIssueDate(issueDate.toLocalDateTime());
+                        } else {
+                            invoice.setIssueDate(LocalDateTime.now());
+                        }
+                    } catch (SQLException e) {
+                        invoice.setIssueDate(LocalDateTime.now());
+                    }
+
+                    return invoice;
+                }
+            }
+        }
+        return null;
+    }
+    
+    private AddressBean findAddressById(Connection connection, Long id) throws SQLException {
+        String query = "SELECT * FROM addresses WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setLong(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    AddressBean address = new AddressBean();
+                    address.setId(rs.getLong("id"));
+                    address.setStreet(rs.getString("street"));
+                    address.setStreetNumber(rs.getInt("street_number")); 
+                    address.setCity(rs.getString("city"));
+                    address.setZipCode(rs.getString("zip_code"));
+                    address.setProvince(rs.getString("province"));
+                    address.setCountry(rs.getString("country"));
+                    return address;
+                }
+            }
+        }
+        return null;
+    }
 
     private void savePayment(Connection connection, OrderBean order) throws SQLException {
-        String queryPayment = "INSERT INTO payments (order_id, payment_method, transaction_id, total_price, payment_status) VALUES (?, ?, ?, ?, ?)";
+        String queryPayment = "INSERT INTO payments (order_id, payment_method, last_four_digits, card_circuit, transaction_id, total_price, payment_status) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement psPayment = connection.prepareStatement(queryPayment)) {
             psPayment.setLong(1, order.getId());
             psPayment.setString(2, order.getPayment().getPaymentMethod());
-            psPayment.setString(3, order.getPayment().getTransactionId());
-            psPayment.setDouble(4, order.getPayment().getTotalPrice());
-            psPayment.setString(5, "COMPLETED"); 
+            psPayment.setString(3, order.getPayment().getLastFourDigits());
+            psPayment.setString(4, order.getPayment().getCardCircuit());
+            psPayment.setString(5, order.getPayment().getTransactionId());
+            psPayment.setDouble(6, order.getPayment().getTotalPrice());
+            psPayment.setString(7, "COMPLETED"); 
             psPayment.executeUpdate();
         }
     }
 
     private void saveInvoice(Connection connection, OrderBean order) throws SQLException {
-        String queryInvoice = "INSERT INTO invoices (order_id, invoice_number, holder_first_name, holder_last_name, billing_address, taxable_total, total) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String queryInvoice = "INSERT INTO invoices (order_id, invoice_number, holder_first_name, holder_last_name, billing_address_id, taxable_total, total) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement psInvoice = connection.prepareStatement(queryInvoice)) {
             psInvoice.setLong(1, order.getId());
             psInvoice.setString(2, order.getInvoice().getNumber());
             psInvoice.setString(3, order.getInvoice().getHolderFirstName());
             psInvoice.setString(4, order.getInvoice().getHolderLastName());
-            
-            String addr = order.getInvoice().getBillingAddress().getStreet() + " " + order.getInvoice().getBillingAddress().getCity();
-            psInvoice.setString(5, addr); 
+            psInvoice.setLong(5, order.getInvoice().getBillingAddress().getId()); 
             psInvoice.setDouble(6, order.getInvoice().getTaxableAmount());
             psInvoice.setDouble(7, order.getInvoice().getTotalAmount());
             psInvoice.executeUpdate();

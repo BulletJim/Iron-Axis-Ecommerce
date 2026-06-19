@@ -14,6 +14,7 @@ public class OrderBean implements Serializable{
 	private OrderStatus status;
 	private LocalDateTime createdAt;
 	private double totalAmount;
+	private double shippingCosts;
 	private UserBean user;            
     private AddressBean shippingAddress;
     private InvoiceBean invoice;
@@ -24,19 +25,24 @@ public class OrderBean implements Serializable{
     	this.items = new ArrayList<>();
     }
 
-	public OrderBean(long id, OrderStatus status, LocalDateTime createdAt, 
-			double totalAmount, UserBean user, AddressBean shippingAddress, InvoiceBean invoice, 
-			PaymentBean payment, ArrayList<OrderItemBean> items) {
+	
+
+	public OrderBean(long id, OrderStatus status, LocalDateTime createdAt, double totalAmount, double shippingCosts,
+			UserBean user, AddressBean shippingAddress, InvoiceBean invoice, PaymentBean payment,
+			List<OrderItemBean> items) {
 		this.id = id;
 		this.status = status;
 		this.createdAt = createdAt;
 		this.totalAmount = totalAmount;
+		this.shippingCosts = shippingCosts;
 		this.user = user;
 		this.shippingAddress = shippingAddress;
 		this.invoice = invoice;
 		this.payment = payment;
 		this.items = items;
 	}
+
+
 
 	public long getId() {
 		return id;
@@ -108,6 +114,14 @@ public class OrderBean implements Serializable{
 
 	public void setItems(List<OrderItemBean> items) {
 		this.items = items;
+	}
+
+	public double getShippingCosts() {
+		return shippingCosts;
+	}
+
+	public void setShippingCosts(double shippingCosts) {
+		this.shippingCosts = shippingCosts;
 	}
 	
 }
