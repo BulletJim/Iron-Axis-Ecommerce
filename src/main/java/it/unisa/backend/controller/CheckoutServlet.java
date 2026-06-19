@@ -74,6 +74,9 @@ public class CheckoutServlet extends HttpServlet {
 		        request.getRequestDispatcher("/WEB-INF/view/order.jsp").forward(request, response);
 				
 				
+			} else {
+				request.getSession().setAttribute("errorMessage", "Effettua il login per continuare");
+				request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request, response);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
