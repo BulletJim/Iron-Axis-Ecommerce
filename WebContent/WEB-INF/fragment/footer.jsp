@@ -33,6 +33,7 @@
         <div class="payment-methods">
             <i class="fab fa-cc-visa" title="Visa"></i>
             <i class="fab fa-cc-mastercard" title="Mastercard"></i>
+            <i class="fab fa-cc-amex" title="American Express"></i>
             <i class="fab fa-cc-paypal" title="PayPal"></i>
             <i class="fab fa-cc-apple-pay" title="Apple Pay"></i>
         </div>
