@@ -1,7 +1,9 @@
 package it.unisa.backend.controller;
 
 import it.unisa.backend.model.bean.OrderBean;
+import it.unisa.backend.model.bean.ProductBean;
 import it.unisa.backend.model.dao.impl.OrderDAO;
+import it.unisa.backend.model.dao.impl.ProductDAO;
 import it.unisa.backend.model.db.DBManager;
 
 import javax.servlet.ServletException;
@@ -17,7 +19,6 @@ public class AdminOrderServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
         
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
@@ -37,9 +38,13 @@ public class AdminOrderServlet extends HttpServlet {
             orders = orderDao.findAll();
         }
 
+        ProductDAO productDao = new ProductDAO(DBManager.getDataSource());
+        List<ProductBean> products = productDao.findAll();
+
         request.setAttribute("orders", orders);
+        request.setAttribute("products", products); 
         request.setAttribute("activePanel", "panel-orders");
         
-        request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/view/dashboard.jsp").forward(request, response);
     }
 }

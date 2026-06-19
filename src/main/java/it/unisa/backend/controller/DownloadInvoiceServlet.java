@@ -69,11 +69,13 @@ public class DownloadInvoiceServlet extends HttpServlet {
             return;
         }
 		
-		OrderBean order = orderDao.findById(orderId);
-		if (order == null || !order.getUser().getEmail().equals(loggedUser.getEmail())) {
-	        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden.");
-	        return;
-	    }
+        OrderBean order = orderDao.findById(orderId);
+
+     // Controlla se l'ordine non esiste, oppure se l'utente loggato non è il proprietario dell'ordine e non è un admin
+     if (order == null || (!order.getUser().getEmail().equals(loggedUser.getEmail()) && !"admin".equals(loggedUser.getRole()))) {
+         response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden.");
+         return;
+     }
 		
 		if (order.getInvoice() == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Invoice hasn't benn generated");

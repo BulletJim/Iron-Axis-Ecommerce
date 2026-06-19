@@ -5,11 +5,11 @@
     ProductBean editProduct = (ProductBean) request.getAttribute("productToEdit");
     boolean isEdit = (editProduct != null);
     
-    // Recupero dello storico ordini e della persistenza del tab attivo inviati dalla Servlet
     List<OrderBean> ordersList = (List<OrderBean>) request.getAttribute("orders");
     String activePanel = (String) request.getAttribute("activePanel");
+    
     if (activePanel == null) {
-        activePanel = "panel-add"; // Pannello iniziale predefinito
+        activePanel = "panel-add";
     }
 %>
 <!DOCTYPE html>
@@ -56,6 +56,7 @@
                 <h2><%= isEdit ? "Modifica Prodotto Base (ID: #" + editProduct.getId() + ")" : "Inserimento Nuovo Prodotto Base" %></h2>
                 <form id="productForm" action="${pageContext.request.contextPath}/AdminProductServlet" method="POST" class="admin-form" novalidate>
                     <input type="hidden" name="action" value="save">
+       
                     <% if(isEdit) { %>
                         <input type="hidden" name="id" value="<%= editProduct.getId() %>">
                     <% } %>
@@ -179,7 +180,7 @@
                                 <th>ID Auto</th>
                                 <th>Nome prodotto</th>
                                 <th>Categoria collegata</th>
-                                <th style="text-align: center;">Azioni corrents</th>
+                                <th style="text-align: center;">Azioni correnti</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -191,13 +192,13 @@
                                     else if(catId == 2) catLabel = "Energia & Resistenza";
                                     else if(catId == 3) catLabel = "Vitamine e Macro";
                                     else if(catId == 4) catLabel = "Accessori";
-                            %>
+                                %>
                                 <tr class="product-row" data-category-id="<%= catId %>">
                                     <td class="id-cell">#<%= p.getId() %></td>
                                     <td><strong><%= p.getName() %></strong></td>
                                     <td>
                                         <span class="category-badge cat-<%= catId %>">
-                                            <%= catLabel %> (ID: <%= catId %>)
+                                             <%= catLabel %> (ID: <%= catId %>)
                                         </span>
                                     </td>
                                     <td style="text-align: center;">
@@ -214,7 +215,7 @@
                                     </td>
                                 </tr>
                             <% } } else { %>
-                               <tr><td colspan="4" style="text-align:center; padding: 30px;">Nessun prodotto base nel database.</td></tr>
+                                <tr><td colspan="4" style="text-align:center; padding: 30px;">Nessun prodotto base nel database.</td></tr>
                             <% } %>
                         </tbody>
                     </table>
@@ -244,7 +245,7 @@
                     <span id="orderFilterError" class="error-inline"></span>
                     
                     <div class="form-actions">
-                        <button type="submit" class="btn-submit"><i class="fas fa-filter"></i> Applica Filtri</button>
+                        <button type="submit" class="btn-submit"><i class="fas fa-filter"></i> Applica filtri</button>
                         <a href="${pageContext.request.contextPath}/AdminOrderServlet" class="btn-cancel"><i class="fas fa-undo"></i> Ripristina</a>
                     </div>
                 </form>
@@ -257,6 +258,7 @@
                                 <th>Data transazione</th>
                                 <th>Email utente</th>
                                 <th style="text-align: right;">Totale transato</th>
+                                <th style="text-align: center;">Fattura</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -269,11 +271,16 @@
                                         <td><%= o.getCreatedAt() != null ? o.getCreatedAt().toLocalDate() : "N/A" %></td>
                                         <td><%= o.getUser() != null ? o.getUser().getEmail() : "N/A" %></td>
                                         <td style="text-align: right; font-weight: 700; color: var(--iron-orange);">&euro; <%= String.format("%.2f", o.getTotalAmount()) %></td>
+                                        <td class="action-cell">
+                                            <a href="${pageContext.request.contextPath}/DownloadInvoiceServlet?orderId=<%= o.getId() %>" class="btn-invoice" title="Scarica la fattura in formato PDF">
+                                                📄 Scarica PDF
+                                            </a>
+                                        </td>
                                     </tr>
                             <%  } 
                             } else { %>
                                 <tr>
-                                    <td colspan="4" style="text-align:center; padding: 40px; color: var(--iron-muted);">
+                                    <td colspan="5" style="text-align:center; padding: 40px; color: var(--iron-muted);">
                                         <i class="fas fa-search" style="font-size: 1.5rem; margin-bottom: 10px; display: block; opacity: 0.5;"></i>
                                         Nessun ordine trovato. Inizializza o modifica i filtri di ricerca.
                                     </td>
