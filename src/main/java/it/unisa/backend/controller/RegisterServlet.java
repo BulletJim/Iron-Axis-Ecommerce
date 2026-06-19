@@ -19,6 +19,8 @@ import it.unisa.backend.util.PasswordUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,9 +38,27 @@ public class RegisterServlet extends HttpServlet {
 		
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
-		LocalDate dob = LocalDate.parse(request.getParameter("dateOfBirth"));
+		String dobString = request.getParameter("dob");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
+		
+		LocalDate dob = null;
+		try {
+		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		    dob = LocalDate.parse(dobString.trim(), formatter);
+		    
+
+		    if (dob.isAfter(LocalDate.now())) {
+		        request.setAttribute("errorMessage", "La data di nascita non può essere nel futuro.");
+		        request.getRequestDispatcher("/WEB-INF/view/register.jsp").forward(request, response);
+		        return;
+		    }
+		    
+		} catch (DateTimeParseException e) {
+		    request.setAttribute("errorMessage", "Formato data non valido. Utilizzare il formato GG/MM/AAAA.");
+		    request.getRequestDispatcher("/WEB-INF/view/register.jsp").forward(request, response);
+		    return;
+		}
 		
 		
 		//Phone numbers validation

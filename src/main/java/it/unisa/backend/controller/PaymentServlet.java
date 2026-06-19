@@ -52,16 +52,18 @@ public class PaymentServlet extends HttpServlet {
         
     	String addressIdParam = request.getParameter("selectedAddressId");
     	String shippingCost = request.getParameter("shippingCost");
-    	double parsedShippingCost;
-    	if(shippingCost == null) {
-    		parsedShippingCost = 0.00f;
-    	} else {
-    		parsedShippingCost = Double.parseDouble(shippingCost);
-    	}
+    	double parsedShippingCost = 0.0;
+    	if (shippingCost != null && !shippingCost.isEmpty()) {
+            try {
+                parsedShippingCost = Double.parseDouble(shippingCost);
+            } catch (NumberFormatException e) {
+                parsedShippingCost = 5.90; 
+            }
+        }
     		
     	long addressId = Long.parseLong(addressIdParam);
     	
-    	 final UserBean loggedUser = (UserBean)request.getSession().getAttribute("loggedUser");
+    	final UserBean loggedUser = (UserBean)request.getSession().getAttribute("loggedUser");
     	final CartBean cart = cartDao.findByUserEmail(loggedUser.getEmail());
     	if (loggedUser == null || cart == null || cart.getVariants().isEmpty()) {
             response.sendRedirect(request.getContextPath() + "/CartServlet?action=view");

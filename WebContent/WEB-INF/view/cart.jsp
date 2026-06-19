@@ -65,18 +65,22 @@
                                 </td>
                                 
                                 <td data-label="Quantità">
-                                    <form action="${pageContext.request.contextPath}/CartServlet" method="POST">
-                                        <input type="hidden" name="action" value="updateQuantity">
-                                        <input type="hidden" name="productSku" value="<%= variant.getSku() %>">
-                                        <input type="number" name="quantity" value="<%= item.getSelectedQuantity() %>" min="1" max="<%= variant.getQuantity() %>" class="quantity-input" onchange="this.form.submit()">
-                                    </form>
-                                </td>
-                                
-                                <td data-label="Totale">
-                                    <strong> <%= String.format("%.2f", itemTotal) %> &euro;</strong>
-                                </td>
-                                
-                                <td data-label="Azioni">
+    								<input type="number" 
+           							   	value="<%= item.getSelectedQuantity() %>" 
+           							   	min="1" 
+           						   	   	max="<%= variant.getQuantity() %>" 
+           							   	class="quantity-input ajax-quantity" 
+           							   	data-sku="<%= variant.getSku() %>" 
+           							   	data-price="<%= variant.getPrice() %>">
+								</td>
+
+								<td data-label="Totale"><strong> 
+								<span class="item-subtotal" id="subtotal-<%=variant.getSku()%>">
+									<%=String.format(java.util.Locale.US, "%.2f", itemTotal)%>
+									</span> &euro;</strong>
+								</td>
+
+						<td data-label="Azioni">
                                     <form action="${pageContext.request.contextPath}/CartServlet" method="POST">
                                         <input type="hidden" name="action" value="remove">
                                         <input type="hidden" name="productSku" value="<%= variant.getSku() %>">
@@ -89,10 +93,10 @@
                 </table>
 
                 <div class="cart-summary">
-                    <div class="total-price">
-                        Totale Carrello: <%= String.format("%.2f", cart.getTotalPrice()) %> &euro;
-                    </div>
-                    <div>
+					<div class="total-price">
+						Totale Carrello: <span id="cart-grand-total"><%=String.format(java.util.Locale.US, "%.2f", cart.getTotalPrice())%></span>&euro;
+					</div>
+				<div>
                         <a href="${pageContext.request.contextPath}/CheckoutServlet" class="btn">Procedi al Checkout</a>
                     </div>
                 </div>
@@ -102,5 +106,6 @@
 
     <%@ include file="/WEB-INF/fragment/footer.jsp" %>
 
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/cart.js" defer></script>
 </body>
 </html>
