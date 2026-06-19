@@ -3,6 +3,7 @@ package it.unisa.backend.model.dao.impl;
 import it.unisa.backend.model.dao.OrderDaoInterface;
 import it.unisa.backend.model.bean.*;
 import it.unisa.backend.model.bean.util.OrderStatus;
+import it.unisa.backend.model.bean.util.PaymentStatus;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -229,17 +230,27 @@ public class OrderDAO implements OrderDaoInterface{
         user.setEmail(rs.getString("user_email"));
         order.setUser(user);
 
-        AddressBean address = new AddressBean();
-        address.setId(rs.getLong("shipping_address_id"));
+        AddressBean address = findAddressById(connection, rs.getLong("shipping_address_id"));
         order.setShippingAddress(address);
+        
 
         order.setItems(findOrderItemsByOrderId(connection, order.getId()));
+		order.setPayment(findPaymentByOrderId(connection, order.getId()));
+		order.setInvoice(findInvoiceByOrderId(connection, order.getId()));
         
         return order;
     }
 
+    
+    /*
+     * HELPER METHODS : Retrieving information
+     * */
     private List<OrderItemBean> findOrderItemsByOrderId(Connection connection, Long orderId) throws SQLException {
-        String query = "SELECT * FROM order_details WHERE order_id = ?";
+        String query = "SELECT od.*, v.sku, v.flavour, v.product_id " +
+                       "FROM order_details od " +
+                       "JOIN variants v ON od.variant_id = v.id " +
+                       "WHERE od.order_id = ?";
+                       
         List<OrderItemBean> items = new ArrayList<>();
         
         try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -254,13 +265,104 @@ public class OrderDAO implements OrderDaoInterface{
                     
                     VariantBean variant = new VariantBean();
                     variant.setId(rs.getLong("variant_id"));
-                    item.setVariant(variant);
+                    variant.setProductId(rs.getLong("product_id"));
+                    variant.setSku(rs.getString("sku"));
+                    variant.setFlavour(rs.getString("flavour"));
                     
+                    item.setVariant(variant);
                     items.add(item);
                 }
             }
         }
         return items;
+    }
+    
+    private PaymentBean findPaymentByOrderId(Connection connection, Long orderId) throws SQLException {
+        String query = "SELECT * FROM payments WHERE order_id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setLong(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    PaymentBean payment = new PaymentBean();
+                    payment.setId(rs.getLong("id"));
+                    payment.setPaymentMethod(rs.getString("payment_method"));
+                    payment.setTransactionId(rs.getString("transaction_id"));
+                    payment.setTotalPrice(rs.getDouble("total_price"));
+                    String statusStr = rs.getString("payment_status");
+
+                    payment.setStatus(PaymentStatus.valueOf(statusStr.toUpperCase().trim()));      
+     
+                    try {
+                        Timestamp pDate = rs.getTimestamp("payment_date");
+                        if (pDate != null && payment.getClass().getMethod("setPaymentDate", LocalDateTime.class) != null) {
+                            payment.setPaymentDate(pDate.toLocalDateTime());
+                        }
+                    } catch (NoSuchMethodException | SecurityException e) {
+                        
+                    }
+
+                    return payment;
+                }
+            }
+        }
+        return null;
+    }
+
+    private InvoiceBean findInvoiceByOrderId(Connection connection, Long orderId) throws SQLException {
+        String query = "SELECT * FROM invoices WHERE order_id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setLong(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    InvoiceBean invoice = new InvoiceBean();
+                    invoice.setId(rs.getLong("id"));
+                    invoice.setNumber(rs.getString("invoice_number"));
+                    invoice.setHolderFirstName(rs.getString("holder_first_name"));
+                    invoice.setHolderLastName(rs.getString("holder_last_name"));
+                    invoice.setTaxableAmount(rs.getDouble("taxable_total"));
+                    invoice.setTotalAmount(rs.getDouble("total"));
+                    
+                    AddressBean address = findAddressById(connection, rs.getLong("billing_address_id"));
+                    invoice.setBillingAddress(address);
+
+                    
+                    try {
+                        Timestamp issueDate = rs.getTimestamp("issue_date");
+                        if (issueDate != null) {
+                            invoice.setIssueDate(issueDate.toLocalDateTime());
+                        } else {
+                            invoice.setIssueDate(LocalDateTime.now());
+                        }
+                    } catch (SQLException e) {
+                        invoice.setIssueDate(LocalDateTime.now());
+                    }
+
+                    return invoice;
+                }
+            }
+        }
+        return null;
+    }
+    
+    private AddressBean findAddressById(Connection connection, Long id) throws SQLException {
+        String query = "SELECT * FROM addresses WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setLong(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    AddressBean address = new AddressBean();
+                    address.setId(rs.getLong("id"));
+                    address.setStreet(rs.getString("street"));
+                    address.setStreetNumber(rs.getInt("street_number")); 
+                    address.setCity(rs.getString("city"));
+                    address.setZipCode(rs.getString("zip_code"));
+                    address.setProvince(rs.getString("province"));
+                    address.setCountry(rs.getString("country"));
+                    return address;
+                }
+            }
+        }
+        return null;
     }
 
     private void savePayment(Connection connection, OrderBean order) throws SQLException {
