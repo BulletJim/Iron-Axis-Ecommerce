@@ -11,8 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import it.unisa.backend.model.bean.OrderBean;
+import it.unisa.backend.model.bean.ProductBean;
 import it.unisa.backend.model.bean.UserBean;
 import it.unisa.backend.model.dao.impl.OrderDAO;
+import it.unisa.backend.model.dao.impl.ProductDAO;
 import it.unisa.backend.model.db.DBManager;
 
 @WebServlet("/MyOrderServlet")
@@ -29,13 +31,19 @@ public class MyOrderServlet extends HttpServlet {
 
         if (loggedUser == null) {
             response.sendRedirect(request.getContextPath() + "/LoginServlet");
+            
             return;
         }
 
         OrderDAO orderDao = new OrderDAO(DBManager.getDataSource());
         List<OrderBean> orders = orderDao.findByUserEmail(loggedUser.getEmail());
 
+        ProductDAO productDao = new ProductDAO(DBManager.getDataSource());
+        List<ProductBean> products = productDao.findAll();
+
         request.setAttribute("orders", orders);
+        request.setAttribute("products", products); 
+        
         request.getRequestDispatcher("/WEB-INF/view/myorders.jsp").forward(request, response);
     }
 }

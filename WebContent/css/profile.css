@@ -1,72 +1,146 @@
-@charset "UTF-8";
-@import "global.css";
-
-.profile-container {
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: #1a1a1a;
-    color: #fff;
-    border-radius: 8px;
+:root {
+    --prof-dark: #0f0f11;
+    --prof-card: #16161a;
+    --prof-border: #24242b;
+    --prof-text: #ffffff;
+    --prof-muted: #8e8e93;
+    --prof-orange: #ff5722; 
+    --prof-error: #f44336;
+    --prof-success: #4caf50;
 }
 
-.profile-container h1 {
-    color: #e63946;
+.prof-body {
+    background-color: var(--prof-dark);
+    color: var(--prof-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.prof-wrapper {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.prof-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+.prof-header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+.prof-header p {
+    color: var(--prof-muted);
+    font-size: 1.1rem;
+}
+
+/* CARD PRINCIPALE */
+.prof-card {
+    background-color: var(--prof-card);
+    border: 1px solid var(--prof-border);
+    border-radius: 16px; 
+    padding: 35px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
+}
+.prof-card h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 30px;
+    border-left: 5px solid var(--prof-orange);
+    padding-left: 15px;
+}
+
+/* MESSAGGI ALERT */
+.prof-alert {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.prof-alert.error {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: var(--prof-error);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+.prof-alert.success {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--prof-success);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+/* FORM */
+.prof-form-group {
     margin-bottom: 20px;
 }
-
-.profile-alert {
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 15px;
-    color: #fff;
-}
-
-.profile-alert.error {
-    background-color: #5c1f1f;
-}
-
-.profile-alert.success {
-    background-color: #1f5c2f;
-}
-
-.profile-form-group {
-    margin-bottom: 15px;
-}
-
-.profile-form-group:last-of-type {
-    margin-bottom: 25px;
-}
-
-.profile-form-group label {
+.prof-form-group label {
     display: block;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--prof-muted);
+    font-weight: 600;
 }
-
-.profile-form-group input {
+.prof-form-group input {
     width: 100%;
-    padding: 8px;
-    border-radius: 4px;
-    border: none;
+    padding: 12px 15px;
+    background-color: var(--prof-dark);
+    border: 1px solid var(--prof-border);
+    border-radius: 8px;
+    color: var(--prof-text);
+    font-size: 1rem;
     box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+.prof-form-group input:focus {
+    outline: none;
+    border-color: var(--prof-orange);
+    box-shadow: 0 0 0 2px rgba(255, 87, 34, 0.2);
+}
+.prof-input-readonly {
+    background-color: #0a0a0c !important;
+    color: #666 !important;
+    cursor: not-allowed;
+    border-style: dashed !important;
 }
 
-.profile-form-group input[readonly] {
-    background-color: #333;
-    color: #aaa;
+.input-error {
+    border-color: var(--prof-error) !important;
+    background-color: rgba(244, 67, 54, 0.05) !important;
+}
+.prof-error-text {
+    color: var(--prof-error);
+    font-size: 0.85rem;
+    margin-top: 6px;
+    display: block;
+    font-weight: 500;
 }
 
-.profile-submit-btn {
-    width: 100%;
-    padding: 12px;
-    background-color: #e63946;
-    color: #fff;
+.prof-form-actions {
+    margin-top: 35px;
+    text-align: right;
+}
+.prof-btn-submit {
+    background-color: var(--prof-orange);
+    color: #ffffff;
     border: none;
-    border-radius: 4px;
-    font-weight: bold;
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 8px;
     cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
 }
-
-.profile-submit-btn:hover {
-    background-color: #c1121f;
+.prof-btn-submit:hover {
+    background-color: #e64a19;
+}
+.prof-btn-submit:active {
+    transform: scale(0.97);
 }
