@@ -101,7 +101,7 @@ if (dobInput) {
 if (passwordInput) {
     passwordInput.addEventListener("input", function() {
         const passwordValue = passwordInput.value;
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,25}$/;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,25}$/;
         
         if (passwordValue.length === 0) {
             passwordError.textContent = "";
