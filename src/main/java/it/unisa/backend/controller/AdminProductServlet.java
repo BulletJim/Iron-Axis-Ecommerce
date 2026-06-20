@@ -18,7 +18,7 @@ import it.unisa.backend.model.bean.VariantBean;
 import it.unisa.backend.model.dao.impl.ProductDAO;
 import it.unisa.backend.model.db.DBManager;
 
-@WebServlet("/AdminProductServlet")
+@WebServlet("/admin/AdminProductServlet")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, maxFileSize = 1024 * 1024 * 10, maxRequestSize = 1024 * 1024 * 50)
 
 public class AdminProductServlet extends HttpServlet {
@@ -60,7 +60,7 @@ public class AdminProductServlet extends HttpServlet {
         List<ProductBean> products = productDao.findAll(); 
         request.setAttribute("products", products);
 
-        request.getRequestDispatcher("/WEB-INF/view/dashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/view/admin/dashboard.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -93,7 +93,7 @@ public class AdminProductServlet extends HttpServlet {
 
                 if (name == null || name.trim().isEmpty() || description == null || description.trim().isEmpty() || categoryIdStr == null) {
                     request.getSession().setAttribute("errorMessage", "Dati non validi: compila tutti i campi obbligatori.");
-                    response.sendRedirect(request.getContextPath() + "/AdminProductServlet");
+                    response.sendRedirect(request.getContextPath() + "/admin/AdminProductServlet");
                     return;
                 }
 
@@ -128,7 +128,7 @@ public class AdminProductServlet extends HttpServlet {
                 if (productIdStr == null || sku == null || priceStr == null || vatStr == null || quantityStr == null ||
                     sku.trim().isEmpty() || priceStr.trim().isEmpty() || vatStr.trim().isEmpty() || quantityStr.trim().isEmpty()) {
                     request.getSession().setAttribute("errorMessage", "Errore: Compila tutti i campi obbligatori della variante.");
-                    response.sendRedirect(request.getContextPath() + "/AdminProductServlet");
+                    response.sendRedirect(request.getContextPath() + "/admin/AdminProductServlet");
                     return;
                 }
 
@@ -184,6 +184,6 @@ public class AdminProductServlet extends HttpServlet {
             request.getSession().setAttribute("errorMessage", "Si è verificato un errore critico di sistema.");
         }
         
-        response.sendRedirect(request.getContextPath() + "/AdminProductServlet");
+        response.sendRedirect(request.getContextPath() + "/admin/AdminProductServlet");
     }
 }
