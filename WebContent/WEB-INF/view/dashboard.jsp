@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, it.unisa.backend.model.bean.ProductBean, it.unisa.backend.model.bean.OrderBean" %>
+<%@ page import="java.util.List, it.unisa.backend.model.bean.ProductBean, it.unisa.backend.model.bean.OrderBean, it.unisa.backend.model.bean.CategoryBean" %>
 <%
     List<ProductBean> products = (List<ProductBean>) request.getAttribute("products");
     ProductBean editProduct = (ProductBean) request.getAttribute("productToEdit");
@@ -11,6 +11,9 @@
     if (activePanel == null) {
         activePanel = "panel-add";
     }
+
+    @SuppressWarnings("unchecked")
+    List<CategoryBean> adminGlobalCategories = (List<CategoryBean>) application.getAttribute("globalCategories");
 %>
 <!DOCTYPE html>
 <html lang="it">
@@ -70,10 +73,18 @@
                         <label for="categoryId">Categoria del Prodotto *</label>
                         <select id="categoryId" name="categoryId" required>
                             <option value="" disabled <%= !isEdit ? "selected" : "" %>>-- Seleziona Categoria --</option>
-                            <option value="1" <%= (isEdit && editProduct.getCategory().getId() == 1) ? "selected" : "" %>>Proteine (ID: 1)</option>
-                            <option value="2" <%= (isEdit && editProduct.getCategory().getId() == 2) ? "selected" : "" %>>Energia & Resistenza (ID: 2)</option>
-                            <option value="3" <%= (isEdit && editProduct.getCategory().getId() == 3) ? "selected" : "" %>>Vitamine e Macronutrienti (ID: 3)</option>
-                            <option value="4" <%= (isEdit && editProduct.getCategory().getId() == 4) ? "selected" : "" %>>Accessori (ID: 4)</option>
+                            <% 
+                                if (adminGlobalCategories != null) {
+                                    for (CategoryBean category : adminGlobalCategories) {
+                                        boolean isSelected = (isEdit && editProduct.getCategory() != null && editProduct.getCategory().getId() == category.getId());
+                            %>
+                                <option value="<%= category.getId() %>" <%= isSelected ? "selected" : "" %>>
+                                    <%= category.getName() %> (Macro: <%= category.getMacroCategory() %>)
+                                </option>
+                            <% 
+                                    }
+                                } 
+                            %>
                         </select>
                     </div>
 
@@ -165,10 +176,15 @@
                         <label for="tableCategoryFilter"><i class="fas fa-filter"></i> Filtra categoria:</label>
                         <select id="tableCategoryFilter" onchange="filterTableByCategory()">
                             <option value="all">Mostra Tutte</option>
-                            <option value="1">Proteine (ID: 1)</option>
-                            <option value="2">Energia & Resistenza (ID: 2)</option>
-                            <option value="3">Vitamine e Macronutrienti (ID: 3)</option>
-                            <option value="4">Accessori (ID: 4)</option>
+                            <% 
+                                if (adminGlobalCategories != null) {
+                                    for (CategoryBean category : adminGlobalCategories) {
+                            %>
+                                <option value="<%= category.getId() %>"><%= category.getName() %></option>
+                            <% 
+                                    }
+                                } 
+                            %>
                         </select>
                     </div>
                 </div>
@@ -186,12 +202,17 @@
                         <tbody>
                             <% if(products != null && !products.isEmpty()) { 
                                 for(ProductBean p : products) { 
-                                    long catId = p.getCategory().getId();
-                                    String catLabel = "Altro";
-                                    if(catId == 1) catLabel = "Proteine";
-                                    else if(catId == 2) catLabel = "Energia & Resistenza";
-                                    else if(catId == 3) catLabel = "Vitamine e Macro";
-                                    else if(catId == 4) catLabel = "Accessori";
+                                    long catId = p.getCategory() != null ? p.getCategory().getId() : 0;
+                                    String catLabel = "Sconosciuta";
+                                    
+                                    if (adminGlobalCategories != null) {
+                                        for(CategoryBean c : adminGlobalCategories) {
+                                            if(c.getId() == catId) {
+                                                catLabel = c.getName();
+                                                break;
+                                            }
+                                        }
+                                    }
                                 %>
                                 <tr class="product-row" data-category-id="<%= catId %>">
                                     <td class="id-cell">#<%= p.getId() %></td>
