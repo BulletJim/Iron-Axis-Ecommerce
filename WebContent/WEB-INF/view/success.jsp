@@ -26,7 +26,7 @@
             %>
                 <div class="invoice-download-section">
                     <p>La tua fattura è già disponibile.</p>
-                    <a href="<%= request.getContextPath() %>/DownloadInvoiceServlet" class="btn-home">
+                    <a href="<%= request.getContextPath() %>/DownloadInvoiceServlet?orderId=<%= lastOrderId %>" class="btn-home">
                         <i class="fa-solid fa-file-pdf"></i> Scarica Fattura PDF
                     </a>
                 </div>

@@ -24,65 +24,26 @@ import org.openpdf.text.pdf.PdfWriter;
 
 import it.unisa.backend.model.bean.OrderBean;
 import it.unisa.backend.model.bean.OrderItemBean;
-import it.unisa.backend.model.bean.UserBean;
-import it.unisa.backend.model.dao.impl.OrderDAO;
-import it.unisa.backend.model.db.DBManager;
-
 
 @WebServlet("/DownloadInvoiceServlet")
 public class DownloadInvoiceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-	private OrderDAO orderDao;
-	
-	@Override
-	public void init() throws ServletException {
-		orderDao = new OrderDAO(DBManager.getDataSource());
-	}
-
-
+      
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		UserBean loggedUser = (UserBean) request.getSession().getAttribute("loggedUser");
-		if(loggedUser == null) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized, user must be logged in");
+		OrderBean order = (OrderBean) request.getAttribute("authorizedOrder");
+		
+		// Fallback check if filter has been bypassed
+		if (order == null) {
+			response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
 			return;
 		}
 		
-		Long orderId = (Long) request.getSession().getAttribute("lastOrderId");
-		
-		// Fallback: if the request comes from user or admin requesting order history
-        if (orderId == null) {
-            String paramId = request.getParameter("orderId");
-            if (paramId != null && !paramId.isEmpty()) {
-                try {
-                    orderId = Long.parseLong(paramId);
-                } catch (NumberFormatException e) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Format Error");
-                    return;
-                }
-            }
-        }
-
-        if (orderId == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No Order Selected");
-            return;
-        }
-		
-        OrderBean order = orderDao.findById(orderId);
-
-     // TODO: Replace this control with dedicated filter
-        
-     // Controlla se l'ordine non esiste, oppure se l'utente loggato non è il proprietario dell'ordine e non è un admin
-     if (order == null || (!order.getUser().getEmail().equals(loggedUser.getEmail()) && !"admin".equals(loggedUser.getRole()))) {
-         response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden.");
-         return;
-     }
-		
+		// Checks if the invoice is present
 		if (order.getInvoice() == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Invoice hasn't benn generated");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "La fattura per questo ordine non è ancora stata generata.");
             return;
-       }
+        }
 		
 		/*
 		 * Colour and font initialization
@@ -161,7 +122,7 @@ public class DownloadInvoiceServlet extends HttpServlet {
             customerCell.addElement(new Paragraph(address, normalFont));
             customerCell.addElement(new Paragraph(city, normalFont));
             customerCell.addElement(new Paragraph(country, normalFont));
-            customerCell.addElement(new Paragraph(loggedUser.getEmail(), normalFont));
+            customerCell.addElement(new Paragraph(order.getUser().getEmail(), normalFont));
 
             customerInvoiceInfoTable.addCell(customerCell);
 

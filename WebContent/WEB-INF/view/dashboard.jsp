@@ -273,7 +273,7 @@
                                         <td style="text-align: right; font-weight: 700; color: var(--iron-orange);">&euro; <%= String.format("%.2f", o.getTotalAmount()) %></td>
                                         <td class="action-cell">
                                             <a href="${pageContext.request.contextPath}/DownloadInvoiceServlet?orderId=<%= o.getId() %>" class="btn-invoice" title="Scarica la fattura in formato PDF">
-                                                📄 Scarica PDF
+                                                 Scarica PDF
                                             </a>
                                         </td>
                                     </tr>
