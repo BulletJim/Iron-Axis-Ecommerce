@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, it.unisa.backend.model.bean.ProductBean, it.unisa.backend.model.bean.OrderBean" %>
+<%@ page import="java.util.List, it.unisa.backend.model.bean.ProductBean, it.unisa.backend.model.bean.OrderBean, it.unisa.backend.model.bean.CategoryBean" %>
 <%
     List<ProductBean> products = (List<ProductBean>) request.getAttribute("products");
     ProductBean editProduct = (ProductBean) request.getAttribute("productToEdit");
@@ -11,6 +11,9 @@
     if (activePanel == null) {
         activePanel = "panel-add";
     }
+
+    @SuppressWarnings("unchecked")
+    List<CategoryBean> adminGlobalCategories = (List<CategoryBean>) application.getAttribute("globalCategories");
 %>
 <!DOCTYPE html>
 <html lang="it">
@@ -54,7 +57,7 @@
         <div id="panel-add" class="hub-panel <%= "panel-add".equals(activePanel) ? "active" : "" %>">
             <div class="admin-card">
                 <h2><%= isEdit ? "Modifica Prodotto Base (ID: #" + editProduct.getId() + ")" : "Inserimento Nuovo Prodotto Base" %></h2>
-                <form id="productForm" action="${pageContext.request.contextPath}/AdminProductServlet" method="POST" class="admin-form" novalidate>
+                <form id="productForm" action="${pageContext.request.contextPath}/admin/AdminProductServlet" method="POST" class="admin-form" novalidate>
                     <input type="hidden" name="action" value="save">
        
                     <% if(isEdit) { %>
@@ -70,10 +73,18 @@
                         <label for="categoryId">Categoria del Prodotto *</label>
                         <select id="categoryId" name="categoryId" required>
                             <option value="" disabled <%= !isEdit ? "selected" : "" %>>-- Seleziona Categoria --</option>
-                            <option value="1" <%= (isEdit && editProduct.getCategory().getId() == 1) ? "selected" : "" %>>Proteine (ID: 1)</option>
-                            <option value="2" <%= (isEdit && editProduct.getCategory().getId() == 2) ? "selected" : "" %>>Energia & Resistenza (ID: 2)</option>
-                            <option value="3" <%= (isEdit && editProduct.getCategory().getId() == 3) ? "selected" : "" %>>Vitamine e Macronutrienti (ID: 3)</option>
-                            <option value="4" <%= (isEdit && editProduct.getCategory().getId() == 4) ? "selected" : "" %>>Accessori (ID: 4)</option>
+                            <% 
+                                if (adminGlobalCategories != null) {
+                                    for (CategoryBean category : adminGlobalCategories) {
+                                        boolean isSelected = (isEdit && editProduct.getCategory() != null && editProduct.getCategory().getId() == category.getId());
+                            %>
+                                <option value="<%= category.getId() %>" <%= isSelected ? "selected" : "" %>>
+                                    <%= category.getName() %> (Macro: <%= category.getMacroCategory() %>)
+                                </option>
+                            <% 
+                                    }
+                                } 
+                            %>
                         </select>
                     </div>
 
@@ -95,7 +106,7 @@
         <div id="panel-variant" class="hub-panel <%= "panel-variant".equals(activePanel) ? "active" : "" %>">
             <div class="admin-card">
                 <h2>Associa variante specifiche a un prodotto</h2>
-                <form id="variantForm" action="${pageContext.request.contextPath}/AdminProductServlet" method="POST" enctype="multipart/form-data" class="admin-form" novalidate>
+                <form id="variantForm" action="${pageContext.request.contextPath}/admin/AdminProductServlet" method="POST" enctype="multipart/form-data" class="admin-form" novalidate>
                     <input type="hidden" name="action" value="addVariant">
 
                     <div class="form-group">
@@ -165,10 +176,15 @@
                         <label for="tableCategoryFilter"><i class="fas fa-filter"></i> Filtra categoria:</label>
                         <select id="tableCategoryFilter" onchange="filterTableByCategory()">
                             <option value="all">Mostra Tutte</option>
-                            <option value="1">Proteine (ID: 1)</option>
-                            <option value="2">Energia & Resistenza (ID: 2)</option>
-                            <option value="3">Vitamine e Macronutrienti (ID: 3)</option>
-                            <option value="4">Accessori (ID: 4)</option>
+                            <% 
+                                if (adminGlobalCategories != null) {
+                                    for (CategoryBean category : adminGlobalCategories) {
+                            %>
+                                <option value="<%= category.getId() %>"><%= category.getName() %></option>
+                            <% 
+                                    }
+                                } 
+                            %>
                         </select>
                     </div>
                 </div>
@@ -186,12 +202,17 @@
                         <tbody>
                             <% if(products != null && !products.isEmpty()) { 
                                 for(ProductBean p : products) { 
-                                    long catId = p.getCategory().getId();
-                                    String catLabel = "Altro";
-                                    if(catId == 1) catLabel = "Proteine";
-                                    else if(catId == 2) catLabel = "Energia & Resistenza";
-                                    else if(catId == 3) catLabel = "Vitamine e Macro";
-                                    else if(catId == 4) catLabel = "Accessori";
+                                    long catId = p.getCategory() != null ? p.getCategory().getId() : 0;
+                                    String catLabel = "Sconosciuta";
+                                    
+                                    if (adminGlobalCategories != null) {
+                                        for(CategoryBean c : adminGlobalCategories) {
+                                            if(c.getId() == catId) {
+                                                catLabel = c.getName();
+                                                break;
+                                            }
+                                        }
+                                    }
                                 %>
                                 <tr class="product-row" data-category-id="<%= catId %>">
                                     <td class="id-cell">#<%= p.getId() %></td>
@@ -202,10 +223,10 @@
                                         </span>
                                     </td>
                                     <td style="text-align: center;">
-                                        <a href="${pageContext.request.contextPath}/AdminProductServlet?action=edit&id=<%= p.getId() %>" class="btn-edit">
+                                        <a href="${pageContext.request.contextPath}/admin/AdminProductServlet?action=edit&id=<%= p.getId() %>" class="btn-edit">
                                             <i class="fas fa-pen"></i> Modifica
                                         </a>
-                                        <form action="${pageContext.request.contextPath}/AdminProductServlet" method="POST" style="display:inline;" onsubmit="return confirm('Vuoi davvero rimuovere questo prodotto?');">
+                                        <form action="${pageContext.request.contextPath}/admin/AdminProductServlet" method="POST" style="display:inline;" onsubmit="return confirm('Vuoi davvero rimuovere questo prodotto?');">
                                             <input type="hidden" name="action" value="delete">
                                             <input type="hidden" name="id" value="<%= p.getId() %>">
                                             <button type="submit" class="btn-delete">
@@ -228,7 +249,7 @@
                 <h2>Filtra e monitora lo storico ordini</h2>
                 <p style="color: var(--iron-muted); font-size: 0.9rem; margin-bottom: 25px;">Utilizza i filtri combinati sottostanti per analizzare e ispezionare gli ordini effettuati dai clienti della piattaforma.</p>
                 
-                <form id="orderFilterForm" action="${pageContext.request.contextPath}/AdminOrderServlet" method="GET" class="admin-form" novalidate>
+                <form id="orderFilterForm" action="${pageContext.request.contextPath}/admin/AdminOrderServlet" method="GET" class="admin-form" novalidate>
                     <div class="form-group">
                         <label for="startDate">Data inizio intervallo</label>
                         <input type="date" id="startDate" name="startDate" placeholder="Seleziona la data iniziale">
@@ -246,7 +267,7 @@
                     
                     <div class="form-actions">
                         <button type="submit" class="btn-submit"><i class="fas fa-filter"></i> Applica filtri</button>
-                        <a href="${pageContext.request.contextPath}/AdminOrderServlet" class="btn-cancel"><i class="fas fa-undo"></i> Ripristina</a>
+                        <a href="${pageContext.request.contextPath}/admin/AdminOrderServlet" class="btn-cancel"><i class="fas fa-undo"></i> Ripristina</a>
                     </div>
                 </form>
 
@@ -273,7 +294,7 @@
                                         <td style="text-align: right; font-weight: 700; color: var(--iron-orange);">&euro; <%= String.format("%.2f", o.getTotalAmount()) %></td>
                                         <td class="action-cell">
                                             <a href="${pageContext.request.contextPath}/DownloadInvoiceServlet?orderId=<%= o.getId() %>" class="btn-invoice" title="Scarica la fattura in formato PDF">
-                                                📄 Scarica PDF
+                                                 Scarica PDF
                                             </a>
                                         </td>
                                     </tr>

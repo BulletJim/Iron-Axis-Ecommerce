@@ -30,38 +30,8 @@ if (emailInput) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    document.addEventListener("input", function(event) {
-        
-        if (event.target && event.target.name === "phoneNumber") {
-            const phoneInput = event.target;
-            const originalValue = phoneInput.value;
-
-            let sanitizedValue = originalValue.replace(/[^0-9]/g, '');
-
-            sanitizedValue = sanitizedValue.replace(/(?!^)\+/g, '');
-
-
-            if (originalValue !== sanitizedValue) {
-                phoneInput.value = sanitizedValue;
-                phoneInput.classList.add("input-error");
-
-                setTimeout(() => {
-                    phoneInput.classList.remove("input-error");
-                }, 500);
-
-            } else {
-                phoneInput.classList.remove("input-error");
-            }
-        }
-    });
-
-});
-
-
 if (dobInput) {
     dobInput.addEventListener("input", function(e) {
-
         let value = e.target.value.replace(/\D/g, ''); 
         
         if (value.length > 8) {
@@ -96,18 +66,16 @@ if (dobInput) {
     });
 }
 
-
-
 if (passwordInput) {
     passwordInput.addEventListener("input", function() {
         const passwordValue = passwordInput.value;
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,25}$/;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,25}$/;
         
         if (passwordValue.length === 0) {
             passwordError.textContent = "";
             passwordInput.classList.remove("input-error");
         } else if (!passwordRegex.test(passwordValue)) {
-            passwordError.textContent = "Usa 8-25 caratteri, con almeno una lettera e un numero.";
+            passwordError.textContent = "Usa 8-25 caratteri, con almeno una lettera e un numero";
             passwordInput.classList.add("input-error");
         } else {
             passwordError.textContent = "";
@@ -129,7 +97,7 @@ if (confPasswordInput) {
             confPasswordError.textContent = "";
             confPasswordInput.classList.remove("input-error");
         } else if (confPasswordValue !== passwordValue) {
-            confPasswordError.textContent = "Le password non coincidono.";
+            confPasswordError.textContent = "Le password non coincidono";
             confPasswordInput.classList.add("input-error");
         } else {
             confPasswordError.textContent = "";
@@ -180,6 +148,30 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const errorSpan = inputElement.closest('.form-group').querySelector('.phone-error');
 
+        const setDynamicMaxLength = () => {
+            if (window.intlTelInputUtils) {
+                const countryData = iti.getSelectedCountryData();
+                const example = window.intlTelInputUtils.getExampleNumber(countryData.iso2, true, window.intlTelInputUtils.numberType.MOBILE);
+                
+                if (example) {
+                    const maxDigits = example.replace(/\D/g, '').length;
+                    inputElement.maxLength = maxDigits + 1;
+                }
+            } else {
+                inputElement.maxLength = 15; 
+            }
+        };
+
+        inputElement.addEventListener('countrychange', setDynamicMaxLength);
+        setTimeout(setDynamicMaxLength, 600);
+
+        inputElement.addEventListener("input", function() {
+            let sanitized = inputElement.value.replace(/\D/g, '');
+            if (inputElement.value !== sanitized) {
+                inputElement.value = sanitized;
+            }
+        });
+
         const validate = () => {
             if (inputElement.value.trim() === "") {
                 if(errorSpan) errorSpan.textContent = "";
@@ -191,14 +183,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 inputElement.classList.remove("input-error");
                 return true;
             } else {
-                if(errorSpan) errorSpan.textContent = "Numero non valido.";
+                if(errorSpan) errorSpan.textContent = "Numero non valido per il paese selezionato.";
                 inputElement.classList.add("input-error");
                 return false;
             }
         };
 
         inputElement.addEventListener('blur', validate);
-        inputElement.addEventListener('countrychange', validate);
     }
 
     document.querySelectorAll(".phone-input").forEach(initPhoneField);
@@ -254,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.addEventListener("click", function(e) {
         if (e.target.classList.contains("btn-remove")) {
+            
             const phoneRow = e.target.closest(".phone-row");
             if (phoneRow) {
                 const inputToRemove = phoneRow.querySelector('.phone-input');

@@ -38,6 +38,32 @@ public class ProductDAO implements ProductDaoInterface {
             return false;
         }
     }
+    
+    @Override
+    public boolean saveVariant(VariantBean variant) {
+    	
+    	String query = "INSERT INTO variants (sku, product_id, size, price, vat, quantity, image_url, flavour, nutr_tabl_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    	
+    	try(Connection conn = dataSource.getConnection();
+    		PreparedStatement prepStat = conn.prepareStatement(query)){
+    		
+    		prepStat.setString(1, variant.getSku());
+    		prepStat.setLong(2, variant.getProductId());
+    		prepStat.setString(3, variant.getSize());
+    		prepStat.setDouble(4, variant.getPrice());
+    		prepStat.setDouble(5, variant.getVat());
+    		prepStat.setInt(6, variant.getQuantity());
+    		prepStat.setString(7, variant.getImageUrl());
+    		prepStat.setString(8, variant.getFlavour());
+    		prepStat.setString(9, variant.getNutrTablUrl());
+    		
+    		return prepStat.executeUpdate() > 0;
+    		
+    	}catch(SQLException e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+    }
 
     @Override
     public ProductBean findById(Long id) {
@@ -81,6 +107,32 @@ public class ProductDAO implements ProductDaoInterface {
             e.printStackTrace();
         }
         return products;
+    }
+    
+    @Override
+    public List<CategoryBean> findAllCategories(){
+    	
+    	String query = "SELECT * FROM categories";
+        
+        List<CategoryBean> categories = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            
+            while (resultSet.next()) {
+                categories.add( new CategoryBean(
+                		resultSet.getLong("id"),
+                		resultSet.getString("name"),
+                		resultSet.getString("macro_category"),
+                		resultSet.getString("description")
+                		));
+            }
+        } 
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return categories;
     }
 
     @Override
@@ -148,30 +200,30 @@ public class ProductDAO implements ProductDaoInterface {
         return products;
     }
 
-    @Override
     public List<ProductBean> searchProducts(String searchQuery) {
-      
-        String query = "SELECT * FROM products WHERE (name LIKE ? OR description LIKE ?) AND is_deleted = false";
-        
         List<ProductBean> products = new ArrayList<>();
-
+        
+        String query = "SELECT * FROM products WHERE name LIKE ? AND is_deleted = false LIMIT 6";
+        
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             
-            String searchPattern = "%" + searchQuery + "%";
+            preparedStatement.setString(1, "%" + searchQuery + "%");
             
-            preparedStatement.setString(1, searchPattern);
-            preparedStatement.setString(2, searchPattern);
-            
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    products.add(extractProductFromResultSet(resultSet, connection));
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+            	
+                while (rs.next()) {
+                    ProductBean product = new ProductBean();
+                    product.setId(rs.getLong("id"));
+                    product.setName(rs.getString("name"));
+                    
+                    products.add(product);
                 }
             }
-        } 
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
+        
         return products;
     }
     
@@ -351,7 +403,7 @@ public class ProductDAO implements ProductDaoInterface {
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (rs.next()){
                 	
-                    return new CategoryBean(rs.getLong("id"), rs.getString("name"), rs.getString("description"));
+                    return new CategoryBean(rs.getLong("id"), rs.getString("macro_category"), rs.getString("name"), rs.getString("description"));
                 }
             }
         }

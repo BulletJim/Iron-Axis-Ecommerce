@@ -1,0 +1,98 @@
+@charset "UTF-8";
+@import 'global.css';
+
+.review-container {
+    max-width: 600px;
+    margin: 60px auto; 
+    padding: 40px 30px;
+    background-color: var(--text-light); 
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); 
+    border-top: 4px solid var(--primary-color); 
+}
+
+.review-container h2 {
+    text-align: center;
+    color: var(--text-dark);
+    margin-bottom: 25px;
+    font-weight: 800;
+}
+
+.review-container .form-group {
+    margin-bottom: 20px;
+}
+
+.review-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.95em;
+    color: var(--text-dark);
+}
+
+.review-container input[type="text"],
+.review-container select,
+.review-container textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text-dark);
+    background-color: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.review-container input[type="text"]:focus,
+.review-container select:focus,
+.review-container textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15); 
+}
+
+.review-container textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.review-container button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border: none;
+    border-radius: 4px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.review-container button[type="submit"]:hover {
+    background-color: #c62828;
+}
+
+.review-container button[type="submit"]:active {
+    transform: scale(0.98);
+}
+
+.cancel-link-wrapper {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.cancel-link-wrapper a {
+    color: #666;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.cancel-link-wrapper a:hover {
+    color: var(--primary-color);
+}

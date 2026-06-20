@@ -8,13 +8,15 @@ private static final long serialVersionUID = 1L;
 
 	private long id;
 	private String name;
+	private String macroCategory;
 	private String description;
 	
 	public CategoryBean() {}
 
-	public CategoryBean(long id, String name, String description) {
+	public CategoryBean(long id, String name, String macroCategory, String description) {
 		this.id = id;
 		this.name = name;
+		this.macroCategory = macroCategory;
 		this.description = description;
 	}
 
@@ -32,6 +34,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getMacroCategory() {
+	    return macroCategory;
+	}
+
+	public void setMacroCategory(String macroCategory) {
+	    this.macroCategory = macroCategory;
 	}
 
 	public String getDescription() {

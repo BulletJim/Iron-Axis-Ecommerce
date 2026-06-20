@@ -65,7 +65,7 @@
 					<% } %>
                     
                     <% if ("admin".equalsIgnoreCase(loggedUser.getRole())) { %>
-                        <a href="${pageContext.request.contextPath}/AdminProductServlet" class="admin-link">
+                        <a href="${pageContext.request.contextPath}/admin/AdminProductServlet" class="admin-link">
                             <i class="fas fa-cogs"></i> Gestione sito (Admin)
                         </a>
                     <% } %>

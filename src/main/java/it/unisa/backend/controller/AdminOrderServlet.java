@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/AdminOrderServlet")
+@WebServlet("/admin/AdminOrderServlet")
 public class AdminOrderServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -45,6 +45,11 @@ public class AdminOrderServlet extends HttpServlet {
         request.setAttribute("products", products); 
         request.setAttribute("activePanel", "panel-orders");
         
-        request.getRequestDispatcher("/WEB-INF/view/dashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/view/admin/dashboard.jsp").forward(request, response);
     }
+
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Method Not Allowed");
+	}
 }
