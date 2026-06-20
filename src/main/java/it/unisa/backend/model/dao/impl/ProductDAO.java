@@ -108,6 +108,32 @@ public class ProductDAO implements ProductDaoInterface {
         }
         return products;
     }
+    
+    @Override
+    public List<CategoryBean> findAllCategories(){
+    	
+    	String query = "SELECT * FROM categories";
+        
+        List<CategoryBean> categories = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            
+            while (resultSet.next()) {
+                categories.add( new CategoryBean(
+                		resultSet.getLong("id"),
+                		resultSet.getString("name"),
+                		resultSet.getString("macro_category"),
+                		resultSet.getString("description")
+                		));
+            }
+        } 
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return categories;
+    }
 
     @Override
     public boolean update(ProductBean product) {
@@ -377,7 +403,7 @@ public class ProductDAO implements ProductDaoInterface {
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (rs.next()){
                 	
-                    return new CategoryBean(rs.getLong("id"), rs.getString("name"), rs.getString("description"));
+                    return new CategoryBean(rs.getLong("id"), rs.getString("macro_category"), rs.getString("name"), rs.getString("description"));
                 }
             }
         }

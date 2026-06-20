@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-
         if (landingSections) landingSections.classList.add("initially-hidden");
         if (searchResultsWrapper) searchResultsWrapper.classList.remove("initially-hidden");
 		
@@ -45,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		console.log("Sending AJAX Request to: ", url);
 		
         try {
-            const response = await fetch(`CatalogServlet?${params.toString()}`);
+            const response = await fetch(url);
             
             if (!response.ok) {
                 throw new Error("Network response error");

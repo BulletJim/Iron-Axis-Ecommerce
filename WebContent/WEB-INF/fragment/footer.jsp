@@ -1,17 +1,51 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%
+    java.util.List<String> footerMacros = new java.util.ArrayList<>();
+    java.util.List<Long> footerFirstIds = new java.util.ArrayList<>();
+    
+    @SuppressWarnings("unchecked")
+    java.util.List<it.unisa.backend.model.bean.CategoryBean> footerGlobalCategories = 
+        (java.util.List<it.unisa.backend.model.bean.CategoryBean>) application.getAttribute("globalCategories");
+        
+    if (footerGlobalCategories != null) {
+        for (it.unisa.backend.model.bean.CategoryBean cat : footerGlobalCategories) {
+            String macro = cat.getMacroCategory();
+            
+            if (macro != null && !footerMacros.contains(macro)) {
+                footerMacros.add(macro);
+                footerFirstIds.add(cat.getId());
+            }
+        }
+    }
+%>
+
 <footer class="site-footer">
     <div class="footer-container">
         <div class="footer-section">
             <h3>Chi Siamo</h3>
-            <p>Siamo leader nella vendita di integratori<br>e attrezzatura sportiva di altissima qualit‡.<br>Raggiungi i
+            <p>Siamo leader nella vendita di integratori<br>e attrezzatura sportiva di altissima qualit√†.<br>Raggiungi i
                 tuoi obiettivi con Iron Axis.</p>
         </div>
 
         <div class="footer-section">
             <h3>Prodotti</h3>
             <ul>
-                <li><a href="${pageContext.request.contextPath}/CatalogServlet?categoryId=1">Proteine</a></li>
-                <li><a href="${pageContext.request.contextPath}/CatalogServlet?categoryId=10">Vitamine</a></li>
-                <li><a href="${pageContext.request.contextPath}/CatalogServlet?categoryId=16">Accessori</a></li>
+                <% 
+                    if (!footerMacros.isEmpty()) {
+                        for (int i = 0; i < footerMacros.size(); i++) { 
+                %>
+                    <li>
+                        <a href="${pageContext.request.contextPath}/CatalogServlet?categoryId=<%= footerFirstIds.get(i) %>">
+                            <%= footerMacros.get(i) %>
+                        </a>
+                    </li>
+                <% 
+                        }
+                    } else { 
+                %>
+                    <li><a href="#">Catalogo in aggiornamento</a></li>
+                <%  } %>
             </ul>
         </div>
 

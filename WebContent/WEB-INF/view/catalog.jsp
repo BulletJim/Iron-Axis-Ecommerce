@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="it.unisa.backend.model.bean.ProductBean, it.unisa.backend.model.bean.VariantBean, java.util.List" %>
+<%@ page import="it.unisa.backend.model.bean.ProductBean, it.unisa.backend.model.bean.VariantBean, it.unisa.backend.model.bean.CategoryBean, java.util.List" %>
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -20,8 +20,11 @@
 	    List<ProductBean> suggested = (List<ProductBean>) request.getAttribute("suggested");
 	    List<ProductBean> recents = (List<ProductBean>) request.getAttribute("recents"); 
 	    Long selectedCategoryId = (Long) request.getAttribute("selectedCategoryId");
-
 	    boolean hasInitialFilter = (selectedCategoryId != null);
+
+	    // Recupera la lista globale per la select dei filtri
+	    @SuppressWarnings("unchecked")
+	    List<CategoryBean> filterCategories = (List<CategoryBean>) application.getAttribute("globalCategories");
 	%>
 	
 	<main class="catalog-container">
@@ -41,16 +44,18 @@
                         <select id="filter-category" name="categoryId">
                             <option value="" <%= (selectedCategoryId == null) ? "selected" : "" %>>Tutti i prodotti</option>
                             
-                            <optgroup label="Proteine">
-                                <option value="1" <%= Long.valueOf(1).equals(selectedCategoryId) ? "selected" : "" %>>Siero del latte</option>
-                                <option value="2" <%= Long.valueOf(2).equals(selectedCategoryId) ? "selected" : "" %>>Proteine vegetali</option>
-                                <option value="4" <%= Long.valueOf(4).equals(selectedCategoryId) ? "selected" : "" %>>Barrette proteiche</option>
-                            </optgroup>
-                            
-                            <optgroup label="Energia & Performance">
-                                <option value="5" <%= Long.valueOf(5).equals(selectedCategoryId) ? "selected" : "" %>>Pre-workout</option>
-                                <option value="8" <%= Long.valueOf(8).equals(selectedCategoryId) ? "selected" : "" %>>Creatina</option>
-                            </optgroup>
+                            <% 
+                                if (filterCategories != null) {
+                                    for (CategoryBean category : filterCategories) {
+                                        boolean isSelected = (selectedCategoryId != null && selectedCategoryId.equals(category.getId()));
+                            %>
+                                <option value="<%= category.getId() %>" <%= isSelected ? "selected" : "" %>>
+                                    <%= category.getName() %>
+                                </option>
+                            <% 
+                                    }
+                                }
+                            %>
                         </select>
                     </div>
 
@@ -102,19 +107,14 @@
 							%>
 							<div class="product-card">
 								<div class="product-image">
-									<img
-										src="${pageContext.request.contextPath}/images/products/placeholder.jpg"
-										alt="<%= p.getName() %>">
+									<img src="${pageContext.request.contextPath}/images/products/placeholder.jpg" alt="<%= p.getName() %>">
 								</div>
-								<span class="product-category">Top Rated</span> <a
-									class="product-title"
-									href="${pageContext.request.contextPath}/ProductServlet?id=<%= p.getId() %>"><%=p.getName()%></a>
+								<span class="product-category">Top Rated</span> 
+                                <a class="product-title" href="${pageContext.request.contextPath}/ProductServlet?id=<%= p.getId() %>"><%=p.getName()%></a>
 								<p class="product-price"><%= String.format(java.util.Locale.US, "%.2f", variant.getPrice()) %> &euro;</p>
 								<p class="product-size"><%= variant.getSize() %></p>
 
-								<form class="product-cart-form"
-									action="${pageContext.request.contextPath}/CartServlet"
-									method="POST">
+								<form class="product-cart-form" action="${pageContext.request.contextPath}/CartServlet" method="POST">
 									<input type="hidden" name="productSku" value="<%= variant.getSku() %>" required> 
 									<input type="hidden" name="action" value="add">
 								    <input type="hidden" name="quantity" value="1">
@@ -124,11 +124,10 @@
 								</form>
 							</div>
 							<%
-							}
+								}
 							} else {
 							%>
-							<p class="no-data-msg">Nessun prodotto in evidenza al
-								momento.</p>
+							<p class="no-data-msg">Nessun prodotto in evidenza al momento.</p>
 							<% } %>
 						</div>
                     </section>
@@ -143,17 +142,17 @@
                                 if (suggested != null && !suggested.isEmpty()) {
                                     for (ProductBean p : suggested) {
                                     	VariantBean variant = new VariantBean();
-    									if (p.getVariants() != null && !p.getVariants().isEmpty()) {
+                                        if (p.getVariants() != null && !p.getVariants().isEmpty()) {
     										variant = p.getVariants().get(0);
-    									}
+                                        }
                             %>
                                 <div class="product-card">
                                     <div class="product-image">
-                                        <img src="${pageContext.request.contextPath}/images/products/placeholder.jpg" alt="<%= p.getName() %>">
+                                       <img src="${pageContext.request.contextPath}/images/products/placeholder.jpg" alt="<%= p.getName() %>">
                                     </div>
                                     <span class="product-category">Most Suggested</span>
                                     <a class="product-title" href="${pageContext.request.contextPath}/ProductServlet?id=<%= p.getId() %>"><%= p.getName() %></a>
-                                   <p class="product-price"><%= String.format(java.util.Locale.US, "%.2f", variant.getPrice()) %> &euro;</p>
+                                    <p class="product-price"><%= String.format(java.util.Locale.US, "%.2f", variant.getPrice()) %> &euro;</p>
                                     <p class="product-size"><%= variant.getSize() %></p>
                                     
                                     <form class="product-cart-form" action="${pageContext.request.contextPath}/CartServlet" method="POST">
@@ -185,13 +184,13 @@
                                 if (recents != null && !recents.isEmpty()) {
                                     for (ProductBean p : recents) {
                                     	VariantBean variant = new VariantBean();
-    									if (p.getVariants() != null && !p.getVariants().isEmpty()) {
+                                        if (p.getVariants() != null && !p.getVariants().isEmpty()) {
     										variant = p.getVariants().get(0);
-    									}
+                                        }
                             %>
                                 <div class="product-card">
                                     <div class="product-image">
-                                        <img src="${pageContext.request.contextPath}/images/products/placeholder.jpg" alt="<%= p.getName() %>">
+                                       <img src="${pageContext.request.contextPath}/images/products/placeholder.jpg" alt="<%= p.getName() %>">
                                     </div>
                                     <span class="product-category">Visto di recente</span>
                                     <a class="product-title" href="${pageContext.request.contextPath}/ProductServlet?id=<%= p.getId() %>"><%= p.getName() %></a>
@@ -199,7 +198,7 @@
                                     <p class="product-size"><%= variant.getSize() %></p>
                                     
                                     <form class="product-cart-form" action="${pageContext.request.contextPath}/CartServlet" method="POST">
-                                        <input type="hidden" name="productSku" value="<%= variant.getSku() %>>" required>
+                                        <input type="hidden" name="productSku" value="<%= variant.getSku() %>" required>
                                         <input type="hidden" name="action" value="add">
                                         <input type="hidden" name="quantity" value="1">
                                         <button class="btn-add-cart" type="submit">
