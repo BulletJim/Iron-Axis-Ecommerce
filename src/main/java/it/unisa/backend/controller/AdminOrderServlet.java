@@ -47,4 +47,9 @@ public class AdminOrderServlet extends HttpServlet {
         
         request.getRequestDispatcher("/WEB-INF/view/dashboard.jsp").forward(request, response);
     }
+
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Method Not Allowed");
+	}
 }

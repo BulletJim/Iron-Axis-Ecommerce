@@ -2,8 +2,6 @@ package it.unisa.backend.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -16,6 +14,7 @@ import javax.servlet.http.Part;
 import it.unisa.backend.model.bean.CategoryBean;
 import it.unisa.backend.model.bean.ProductBean;
 import it.unisa.backend.model.bean.UserBean;
+import it.unisa.backend.model.bean.VariantBean;
 import it.unisa.backend.model.dao.impl.ProductDAO;
 import it.unisa.backend.model.db.DBManager;
 
@@ -25,8 +24,15 @@ import it.unisa.backend.model.db.DBManager;
 public class AdminProductServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final String UPLOAD_DIR = "images" + File.separator + "products";
+    
+    private ProductDAO productDao;
+    
+    @Override
+	public void init() throws ServletException {
+		productDao = new ProductDAO(DBManager.getDataSource());
+	}
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         UserBean user = (UserBean) request.getSession().getAttribute("loggedUser");
         
@@ -67,7 +73,6 @@ public class AdminProductServlet extends HttpServlet {
         }
 
         String action = request.getParameter("action");
-        ProductDAO productDao = new ProductDAO(DBManager.getDataSource());
 
         try {
          
@@ -111,7 +116,6 @@ public class AdminProductServlet extends HttpServlet {
                 }
             }
             
-            // OPERAZIONE 3: AGGIUNTA VARIANTE DETTAGLIATA (CON DOPPIO UPLOAD DI FILE)
             else if ("addVariant".equals(action)) {
                 String productIdStr = request.getParameter("productId");
                 String sku = request.getParameter("sku");
@@ -154,28 +158,25 @@ public class AdminProductServlet extends HttpServlet {
                     nutrPart.write(uploadPath + File.separator + nutrName);
                     nutrTablUrl = "images/products/" + nutrName; 
                 }
-
-                String insertVariantSQL = "INSERT INTO variants (product_id, sku, size, vat, price, quantity, flavour, image_url, nutr_tabl_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 
-                try (Connection connection = DBManager.getDataSource().getConnection();
-                     PreparedStatement ps = connection.prepareStatement(insertVariantSQL)) {
-                    
-                    ps.setLong(1, productId);
-                    ps.setString(2, sku.trim());
-                    ps.setString(3, (size != null && !size.trim().isEmpty()) ? size.trim() : null);
-                    ps.setDouble(4, vat);
-                    ps.setDouble(5, price);
-                    ps.setInt(6, quantity);
-                    ps.setString(7, (flavour != null && !flavour.trim().isEmpty()) ? flavour.trim() : null);
-                    ps.setString(8, imageUrl);
-                    ps.setString(9, nutrTablUrl);
-
-                    if (ps.executeUpdate() > 0) {
-                        request.getSession().setAttribute("successMessage", "Variante tecnica associata con successo!");
-                    } else {
-                        request.getSession().setAttribute("errorMessage", "Errore nel salvataggio della variante nel database.");
-                    }
+                VariantBean variant = new VariantBean();
+                variant.setProductId(productId);
+                variant.setSku(sku.trim());
+                variant.setSize(size.trim());
+                variant.setFlavour(flavour.trim());
+                variant.setPrice(price);
+                variant.setVat(vat);
+                variant.setQuantity(quantity);
+                variant.setImageUrl(imageUrl);
+                variant.setNutrTablUrl(nutrTablUrl);
+                
+                if(productDao.saveVariant(variant)) {
+                	request.getSession().setAttribute("successMessage", "Variante aggiubta con successo");
+                } else {
+                	request.getSession().setAttribute("errorMessage", "Errore di inserimento variante");
                 }
+
+                
             }
         } 
         catch (Exception e) {

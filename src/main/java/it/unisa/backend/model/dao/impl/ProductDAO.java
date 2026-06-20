@@ -38,6 +38,32 @@ public class ProductDAO implements ProductDaoInterface {
             return false;
         }
     }
+    
+    @Override
+    public boolean saveVariant(VariantBean variant) {
+    	
+    	String query = "INSERT INTO variants (sku, product_id, size, price, vat, quantity, image_url, flavour, nutr_tabl_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    	
+    	try(Connection conn = dataSource.getConnection();
+    		PreparedStatement prepStat = conn.prepareStatement(query)){
+    		
+    		prepStat.setString(1, variant.getSku());
+    		prepStat.setLong(2, variant.getProductId());
+    		prepStat.setString(3, variant.getSize());
+    		prepStat.setDouble(4, variant.getPrice());
+    		prepStat.setDouble(5, variant.getVat());
+    		prepStat.setInt(6, variant.getQuantity());
+    		prepStat.setString(7, variant.getImageUrl());
+    		prepStat.setString(8, variant.getFlavour());
+    		prepStat.setString(9, variant.getNutrTablUrl());
+    		
+    		return prepStat.executeUpdate() > 0;
+    		
+    	}catch(SQLException e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+    }
 
     @Override
     public ProductBean findById(Long id) {

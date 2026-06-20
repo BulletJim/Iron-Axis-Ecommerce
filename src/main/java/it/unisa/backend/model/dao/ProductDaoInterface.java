@@ -19,4 +19,6 @@ public interface ProductDaoInterface extends CrudDao<ProductBean, Long> {
 
 	List<ProductBean> doRetrieveTopRated(int limit);
 
+	boolean saveVariant(VariantBean variant);
+
 }
