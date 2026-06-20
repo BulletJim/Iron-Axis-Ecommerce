@@ -71,6 +71,8 @@ public class DownloadInvoiceServlet extends HttpServlet {
 		
         OrderBean order = orderDao.findById(orderId);
 
+     // TODO: Replace this control with dedicated filter
+        
      // Controlla se l'ordine non esiste, oppure se l'utente loggato non è il proprietario dell'ordine e non è un admin
      if (order == null || (!order.getUser().getEmail().equals(loggedUser.getEmail()) && !"admin".equals(loggedUser.getRole()))) {
          response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden.");
