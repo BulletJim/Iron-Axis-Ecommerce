@@ -129,7 +129,7 @@ public class DownloadInvoiceServlet extends HttpServlet {
             // Invoice (On the right)
             PdfPCell invoiceCell = new PdfPCell();
             invoiceCell.setBorder(PdfPCell.NO_BORDER);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
             String dataStr = order.getInvoice().getIssueDate().format(formatter);
             
             Paragraph invoiceTitle = new Paragraph("FATTURA", titleFont);
@@ -230,8 +230,7 @@ public class DownloadInvoiceServlet extends HttpServlet {
             String lastFourDigits = order.getPayment().getLastFourDigits() != null ? order.getPayment().getLastFourDigits() : "N/A";
             String pTransId = order.getPayment().getTransactionId() != null ? order.getPayment().getTransactionId() : "N/A";
             String pStatus = order.getPayment().getStatus() != null ? order.getPayment().getStatus().toString() : "N/A";
-            String paymentDate = order.getPayment().getPaymentDate() != null ? DateTimeFormatter.ofPattern("dd/MM/yyyy")
-            		.format(order.getPayment().getPaymentDate()) : "N/A";
+            String paymentDate = order.getPayment().getPaymentDate() != null ? order.getPayment().getPaymentDate().format(formatter) : "N/A";
             
             paymentDetails.addElement(new Paragraph("Metodo di pagamento: " + pMethod + " - " + cardCircuit + " ****" + lastFourDigits, normalFont));
 

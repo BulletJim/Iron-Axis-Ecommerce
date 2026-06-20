@@ -7,6 +7,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Set" %>
 <%@ page import="java.util.TreeSet" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
 
 <%
 
@@ -72,7 +73,7 @@
 					
 					<span class="review-count">(<%=reviews != null ? reviews.size() : 0%>)
 					</span> <span class="separator">|</span> <a class="write-review-link"
-						href="${pageContext.request.contextPath}/ReviewServlet?id=<%= product.getId() %>">
+						href="${pageContext.request.contextPath}/ReviewServlet?id=<%= product.getId() %>&name=<%= java.net.URLEncoder.encode(product.getName(), "UTF-8") %>">
 						<i class="fa-solid fa-pen"></i> Scrivi una recensione
 					</a>
 				</div>
@@ -108,6 +109,7 @@
 					<h3>Recensioni del prodotto</h3>
 					<div class="reviews-list">
 						<%
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 						if (reviews != null && !reviews.isEmpty()) {
 							for (ReviewBean review : reviews) {
 								String email = review.getUserEmail();
@@ -123,7 +125,7 @@
 							
 							<div class="review-header">
 								<span class="review-user"><i class="fa-solid fa-user"></i><%=maskedEmail%></span>
-								<span class="review-date"><%= review.getReviewDate() %></span>
+								<span class="review-date"><%= review.getReviewDate().format(formatter) %></span>
 							</div>
 							
 							<div class="review-stars">
