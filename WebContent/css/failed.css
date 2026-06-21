@@ -1,0 +1,102 @@
+@charset "UTF-8";
+@import "global.css";
+
+.failed-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px;
+    background-color: var(--light-bg);
+    flex-grow: 1;
+}
+
+.failed-card {
+    background-color: var(--light-bg);
+    width: 100%;
+    max-width: 550px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+    padding: 50px 40px;
+    text-align: center;
+    border-top: 5px solid var(--error-color);
+}
+
+.failed-icon {
+    font-size: 4.5rem;
+    color: var(--error-color);
+    margin-bottom: 20px;
+    animation: shake 0.5s ease-in-out;
+}
+
+.failed-card h2 {
+    font-size: 1.8rem;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.failed-card p {
+    color: #555555;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 35px;
+}
+
+.failed-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-retry {
+    display: inline-block;
+    padding: 14px 28px;
+    background-color: var(--error-color);
+    color: var(--text-light);
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-retry:hover {
+    background-color: #dc2626;
+    transform: translateY(-2px);
+}
+
+.btn-home {
+    display: inline-block;
+    padding: 14px 28px;
+    background-color: var(--dark-bg);
+    color: var(--text-light);
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-home:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+}
+
+@media (max-width: 576px) {
+    .failed-card {
+        padding: 35px 20px;
+    }
+    
+    .failed-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .btn-retry, .btn-home {
+        width: 100%;
+    }
+}

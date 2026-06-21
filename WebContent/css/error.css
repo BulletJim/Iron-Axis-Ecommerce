@@ -1,0 +1,55 @@
+@import "global.css";
+
+.error-container {
+    flex-grow: 1; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    background-color: var(--light-bg); 
+}
+
+.error-content {
+    text-align: center;
+    max-width: 500px;
+    background-color: var(--light-bg);
+    padding: 60px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
+    border-top: 5px solid var(--primary-color); 
+}
+
+.error-content h1 {
+    font-size: 6rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    letter-spacing: -2px;
+}
+
+
+.error-content p {
+    font-size: 1.4rem;
+    color: var(--text-dark);
+    margin-bottom: 40px;
+    line-height: 1.5;
+}
+
+.btn-primary {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    padding: 14px 35px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 30px; 
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px); 
+    box-shadow: 0 6px 15px rgba(229, 57, 53, 0.4); 
+    color: var(--text-light);
+}
