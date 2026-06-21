@@ -22,7 +22,7 @@
 
 <nav class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <span class="sidebar-title">Menu</span>
+        <span class="sidebar-title"></span>
         <button id="sidebar-close-btn" class="sidebar-close-btn" aria-label="Chiudi menu">&times;</button> 
     </div>
 

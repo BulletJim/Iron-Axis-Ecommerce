@@ -11,18 +11,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CartDAO implements CartDaoInterface{
+public class CartDAO implements CartDaoInterface {
 
     private final DataSource dataSource;
 
-    public CartDAO(DataSource dataSource){
+    public CartDAO(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
     @Override
-    public boolean save(CartBean cart){
-    	
-    	String queryCart = "INSERT INTO carts (user_email, total_price) VALUES (?, ?)";
+    public boolean save(CartBean cart) {
+        String queryCart = "INSERT INTO carts (user_email, total_price) VALUES (?, ?)";
         String queryItems = "INSERT INTO cart_variants (cart_id, variant_id, quantity) VALUES (?, ?, ?)";
 
         try (Connection connection = dataSource.getConnection()) {
@@ -65,42 +64,37 @@ public class CartDAO implements CartDaoInterface{
     }
 
     @Override
-    public CartBean findByUserEmail(String email){
-    	
+    public CartBean findByUserEmail(String email) {
         String query = "SELECT * FROM carts WHERE user_email = ?";
         CartBean cart = null;
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(query)){
+             PreparedStatement ps = connection.prepareStatement(query)) {
             
             ps.setString(1, email);
-            try (ResultSet rs = ps.executeQuery()){
-            	
-                if (rs.next()){
-                	
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
                     cart = new CartBean();
                     cart.setId(rs.getLong("id"));
                     cart.setUserEmail(rs.getString("user_email"));
                     cart.setTotalPrice(rs.getDouble("total_price"));
                     
-                    if (rs.getTimestamp("creation_date") != null){
+                    if (rs.getTimestamp("creation_date") != null) {
                         cart.setCreationDate(rs.getTimestamp("creation_date").toLocalDateTime());
                     }
                     
                     cart.setVariants(findCartItemsByCartId(connection, cart.getId()));
                 }
             }
-        } 
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return cart;
     }
 
     @Override
-    public boolean update(CartBean cart){
-    	
-    	String queryCart = "UPDATE carts SET total_price = ? WHERE id = ?";
+    public boolean update(CartBean cart) {
+        String queryCart = "UPDATE carts SET total_price = ? WHERE id = ?";
         String queryDeleteOld = "DELETE FROM cart_variants WHERE cart_id = ?";
         String queryItems = "INSERT INTO cart_variants (cart_id, variant_id, quantity) VALUES (?, ?, ?)";
 
@@ -143,28 +137,23 @@ public class CartDAO implements CartDaoInterface{
 
     @Override
     public boolean delete(Long id) {
-     
         String query = "DELETE FROM carts WHERE id = ?";
         
         try (Connection connection = dataSource.getConnection();
-        		
-             PreparedStatement ps = connection.prepareStatement(query)){
+             PreparedStatement ps = connection.prepareStatement(query)) {
+             
             ps.setLong(1, id);
-            
             return ps.executeUpdate() > 0;
             
-        } 
-        catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
-            
             return false;
         }
     }
 
     @Override
-    public boolean clearCart(long cartId){
-    	
-    	String queryDelete = "DELETE FROM cart_variants WHERE cart_id = ?";
+    public boolean clearCart(long cartId) {
+        String queryDelete = "DELETE FROM cart_variants WHERE cart_id = ?";
         String queryUpdate = "UPDATE carts SET total_price = 0.0 WHERE id = ?";
 
         try (Connection connection = dataSource.getConnection()) {
@@ -194,40 +183,44 @@ public class CartDAO implements CartDaoInterface{
 
     @Override
     public CartBean findById(Long id) { 
-    	return null; 
-    	}
+        return null; 
+    }
 
     @Override
     public List<CartBean> findAll() { 
-    	return new ArrayList<>(); 
-    	}
+        return new ArrayList<>(); 
+    }
 
-    private Map<Long, CartItemBean> findCartItemsByCartId(Connection connection, long cartId) throws SQLException{
-
+    private Map<Long, CartItemBean> findCartItemsByCartId(Connection connection, long cartId) throws SQLException {
         String query = "SELECT cv.quantity as selected_qty, v.* FROM cart_variants cv JOIN variants v ON cv.variant_id = v.id WHERE cv.cart_id = ?";
         
         Map<Long, CartItemBean> itemsMap = new HashMap<>();
         
-        try (PreparedStatement ps = connection.prepareStatement(query)){
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setLong(1, cartId);
             
-            try (ResultSet rs = ps.executeQuery()){
-                while (rs.next()){
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    
+                    String skuParam = rs.getString("sku");
+                    
+                    String imageUrl = "DisplayFileServlet?type=image&sku=" + skuParam;
+                    String nutrUrl = "DisplayFileServlet?type=nutr&sku=" + skuParam;
+
                     VariantBean variant = new VariantBean(
                         rs.getLong("id"), 
                         rs.getLong("product_id"), 
-                        rs.getString("sku"),
+                        skuParam,
                         rs.getString("size"), 
                         rs.getDouble("vat"),
                         rs.getDouble("price"),
                         rs.getInt("quantity"),
                         rs.getString("flavour"),
-                        rs.getString("image_url"),
-                        rs.getString("nutr_tabl_url")
+                        imageUrl,
+                        nutrUrl
                     );
                     
                     CartItemBean item = new CartItemBean(variant, rs.getInt("selected_qty"));
-                    
                     itemsMap.put(variant.getId(), item);
                 }
             }

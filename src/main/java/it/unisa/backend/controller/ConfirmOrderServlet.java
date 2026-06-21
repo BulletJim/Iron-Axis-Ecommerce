@@ -10,6 +10,7 @@ import it.unisa.backend.model.bean.util.OrderStatus;
 import it.unisa.backend.model.bean.util.PaymentStatus;
 import it.unisa.backend.model.dao.impl.CartDAO;
 import it.unisa.backend.model.dao.impl.OrderDAO;
+import it.unisa.backend.model.dao.impl.ProductDAO;
 import it.unisa.backend.model.db.DBManager;
 
 import java.io.IOException;
@@ -22,43 +23,49 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 @WebServlet("/ConfirmOrderServlet")
 public class ConfirmOrderServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private OrderDAO orderDao;
     private CartDAO cartDao;
+    private ProductDAO productDao;
 
     @Override
-	public void init() throws ServletException {
-		orderDao = new OrderDAO(DBManager.getDataSource());
-		cartDao = new CartDAO(DBManager.getDataSource());
-	}
+    public void init() throws ServletException {
+        orderDao = new OrderDAO(DBManager.getDataSource());
+        cartDao = new CartDAO(DBManager.getDataSource());
+        productDao = new ProductDAO(DBManager.getDataSource());
+    }
     
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		String result = request.getParameter("result");
-		if("success".equals(result)) {
-			request.setAttribute("successMessage", "Ordine Effettua Con Successo");
-			request.getRequestDispatcher("/WEB-INF/view/success.jsp").forward(request, response);
-			return;
-		}
-		if("failed".equals(result)) {
-			request.setAttribute("errorMessage", "L'ordine non è stato effettuato");
-			request.getRequestDispatcher("/WEB-INF/view/failed.jsp").forward(request, response);
-			return;
-		}
-		
-		response.sendRedirect(request.getContextPath() + "/index.jsp");
-	}
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        String result = request.getParameter("result");
+        if("success".equals(result)) {
+            request.setAttribute("successMessage", "Ordine Effettuato Con Successo");
+            request.getRequestDispatcher("/WEB-INF/view/success.jsp").forward(request, response);
+            return;
+        }
+        if("failed".equals(result)) {
+            String reason = request.getParameter("reason");
+            if ("stock".equals(reason)) {
+                request.setAttribute("errorMessage", "Siamo spiacenti, alcuni prodotti nel tuo carrello sono esauriti.");
+            } else {
+                request.setAttribute("errorMessage", "L'ordine non è stato effettuato per un errore di sistema.");
+            }
+            request.getRequestDispatcher("/WEB-INF/view/failed.jsp").forward(request, response);
+            return;
+        }
+        
+        response.sendRedirect(request.getContextPath() + "/index.jsp");
+    }
 
-	@Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-    	
-	   request.setCharacterEncoding("UTF-8");
-	   
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+       request.setCharacterEncoding("UTF-8");
+       
        OrderBean pendingOrder = (OrderBean) request.getSession().getAttribute("pendingOrder");
        UserBean loggedUser = (UserBean) request.getSession().getAttribute("loggedUser");
        
@@ -69,15 +76,15 @@ public class ConfirmOrderServlet extends HttpServlet {
        
        String paymentMethod = request.getParameter("paymentMethod");
        if(paymentMethod == null || paymentMethod.isEmpty()) {
-    	   response.sendRedirect(request.getContextPath() + "/PaymentServlet");
-    	   return;
+           response.sendRedirect(request.getContextPath() + "/PaymentServlet");
+           return;
        }
+       
        String cardCircuit = null;
        String lastFourDigits = null;
        
-       
        if("CreditCard".equals(paymentMethod.trim())) {
-    	   String cardNumber = request.getParameter("cardNumber");
+           String cardNumber = request.getParameter("cardNumber");
            if (cardNumber != null && !cardNumber.isEmpty()) {
                String cleanNumber = cardNumber.replaceAll("\\s+", "");
                
@@ -96,12 +103,11 @@ public class ConfirmOrderServlet extends HttpServlet {
            }
        // This section is simulated because there is no payment provider request
        } else if ("PayPal".equals(paymentMethod.trim())) {
-    	   cardCircuit = "PayPal";
-    	   lastFourDigits = "1234";
+           cardCircuit = "PayPal";
+           lastFourDigits = "1234";
        } else if ("ApplePay".equals(paymentMethod.trim())) {
-    	   cardCircuit = "ApplePay";
-    	   lastFourDigits = "1234";
-    	   
+           cardCircuit = "ApplePay";
+           lastFourDigits = "1234";
        }
        
        // Prepare Payment
@@ -131,7 +137,7 @@ public class ConfirmOrderServlet extends HttpServlet {
        for (OrderItemBean item : pendingOrder.getItems()) {
            double priceGross = item.getPriceAtPurchase(); 
            int quantity = item.getQuantity();
-           double vatRate = item.getVat();               
+           double vatRate = item.getVat();              
            
            double lineGross = priceGross * quantity;
            
@@ -150,10 +156,31 @@ public class ConfirmOrderServlet extends HttpServlet {
        
        pendingOrder.setInvoice(invoice);
        
+       boolean allStockUpdated = true;
+
+       for (OrderItemBean item : pendingOrder.getItems()) {
+           long variantId = item.getVariant().getId(); 
+           int qtyToBuy = item.getQuantity();
+           
+
+           boolean stockUpdated = productDao.decreaseVariantQuantity(variantId, qtyToBuy);
+           
+           if (!stockUpdated) {
+               allStockUpdated = false;
+               break; 
+           }
+       }
+       
+       if (!allStockUpdated) {
+           response.sendRedirect(request.getContextPath() + "/ConfirmOrderServlet?result=failed&reason=stock");
+           return;
+       }
+
+
        if (orderDao.save(pendingOrder)) {
            
-    	   request.getSession().setAttribute("lastOrderId", pendingOrder.getId());
-    	   request.getSession().removeAttribute("pendingOrder");
+           request.getSession().setAttribute("lastOrderId", pendingOrder.getId());
+           request.getSession().removeAttribute("pendingOrder");
            
            CartBean cart = cartDao.findByUserEmail(loggedUser.getEmail());
            if (cart != null) {
@@ -166,5 +193,4 @@ public class ConfirmOrderServlet extends HttpServlet {
        }
        
     }
-    
 }

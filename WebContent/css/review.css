@@ -1,84 +1,107 @@
 @charset "UTF-8";
 @import 'global.css';
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 .review-container {
     max-width: 600px;
     margin: 60px auto; 
-    padding: 40px 30px;
-    background-color: var(--text-light); 
-    border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); 
-    border-top: 4px solid var(--primary-color); 
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
+    border-top: 5px solid var(--primary-color); 
 }
 
 .review-container h2 {
     text-align: center;
     color: var(--text-dark);
-    margin-bottom: 25px;
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 1.8em;
     font-weight: 800;
 }
 
 .review-container .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 24px; 
 }
 
 .review-container label {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    font-size: 0.95em;
-    color: var(--text-dark);
+    font-size: 0.95rem;
+    color: #4a5568; 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px;
 }
 
 .review-container input[type="text"],
 .review-container select,
 .review-container textarea {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 14px 16px;
+    border: 2px solid var(--border-color); 
+    border-radius: 8px;
     font-family: inherit;
     font-size: 1rem;
     color: var(--text-dark);
-    background-color: #fff;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: var(--light-bg, #f8f9fa);
+    transition: all 0.3s ease;
+}
+
+.review-container select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 16px;
+    cursor: pointer;
 }
 
 .review-container input[type="text"]:focus,
 .review-container select:focus,
 .review-container textarea:focus {
     border-color: var(--primary-color);
+    background-color: #ffffff;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15); 
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05); 
 }
 
 .review-container textarea {
     resize: vertical;
-    min-height: 120px;
+    min-height: 140px;
+    line-height: 1.5;
 }
 
 .review-container button[type="submit"] {
     width: 100%;
-    padding: 14px;
+    padding: 16px;
     background-color: var(--primary-color);
-    color: var(--text-light);
+    color: #ffffff;
     border: none;
-    border-radius: 4px;
-    font-size: 1.05rem;
-    font-weight: 700;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-top: 10px;
-    transition: background-color 0.3s ease, transform 0.1s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+    transition: all 0.3s ease;
 }
 
 .review-container button[type="submit"]:hover {
-    background-color: #c62828;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15); 
+    opacity: 0.95;
 }
 
 .review-container button[type="submit"]:active {
-    transform: scale(0.98);
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .cancel-link-wrapper {
@@ -87,12 +110,47 @@
 }
 
 .cancel-link-wrapper a {
+    display: inline-block;
     color: #666;
-    font-size: 0.9rem;
-    text-decoration: underline;
-    transition: color 0.2s ease;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
 }
 
 .cancel-link-wrapper a:hover {
     color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+
+@media (max-width: 600px) {
+    .review-container {
+        margin: 30px 15px;
+        padding: 30px 20px; 
+        border-radius: 8px; 
+    }
+
+    .review-container h2 {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+    }
+    
+    .review-container .form-group {
+        margin-bottom: 18px;
+    }
+    
+    .review-container input[type="text"],
+    .review-container select,
+    .review-container textarea {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+    
+    .review-container button[type="submit"] {
+        padding: 14px;
+        font-size: 1rem;
+    }
 }

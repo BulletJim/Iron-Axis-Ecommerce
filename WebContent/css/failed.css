@@ -11,19 +11,19 @@
 }
 
 .failed-card {
-    background-color: #ffffff;
+    background-color: var(--light-bg);
     width: 100%;
     max-width: 550px;
     border-radius: 12px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
     padding: 50px 40px;
     text-align: center;
-    border-top: 5px solid #ef4444;
+    border-top: 5px solid var(--error-color);
 }
 
 .failed-icon {
     font-size: 4.5rem;
-    color: #ef4444;
+    color: var(--error-color);
     margin-bottom: 20px;
     animation: shake 0.5s ease-in-out;
 }
@@ -51,8 +51,8 @@
 .btn-retry {
     display: inline-block;
     padding: 14px 28px;
-    background-color: #ef4444;
-    color: #ffffff;
+    background-color: var(--error-color);
+    color: var(--text-light);
     border-radius: 6px;
     font-weight: 700;
     font-size: 1rem;

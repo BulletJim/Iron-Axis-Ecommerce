@@ -1,20 +1,9 @@
-/* PALETTE DARK SPORT - IRON AXIS */
-:root {
-    --iron-dark: #0f0f11;
-    --iron-card: #16161a;
-    --iron-border: #24242b;
-    --iron-text: #ffffff;
-    --iron-muted: #8e8e93;
-    --iron-orange: #ff5722; 
-    --iron-orange-hover: #e64a19;
-    --btn-edit-color: #2196f3;
-    --btn-delete-color: #f44336;
-}
+@charset "UTF-8";
+@import "global.css";
 
 .admin-body {
-    background-color: var(--iron-dark);
-    color: var(--iron-text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text-dark);
     margin: 0;
     padding: 0;
 }
@@ -25,11 +14,11 @@
     padding: 0 20px;
 }
 
-/* HUB HEADER */
 .hub-header {
     text-align: center;
     margin-bottom: 35px;
 }
+
 .hub-header h1 {
     font-size: 2.2rem;
     font-weight: 800;
@@ -37,12 +26,12 @@
     letter-spacing: 1px;
     margin-bottom: 10px;
 }
+
 .hub-header p {
-    color: var(--iron-muted);
+    color: var(--text-dark);
     font-size: 1.1rem;
 }
 
-/* STRUTTURA DEI 3 BOTTONI DI SELEZIONE */
 .hub-navigation {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -51,11 +40,11 @@
 }
 
 .hub-btn {
-    background: var(--iron-card);
-    border: 2px solid var(--iron-border);
+    background: var(--light-bg);
+    border: 2px solid var(--border-color);
     border-radius: 12px;
     padding: 25px 15px;
-    color: var(--iron-text);
+    color: var(--text-dark);
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -66,7 +55,7 @@
 
 .hub-btn i {
     font-size: 2rem;
-    color: var(--iron-muted);
+    color: var(--text-dark);
     transition: color 0.25s;
 }
 
@@ -78,34 +67,32 @@
 }
 
 .hub-btn:hover {
-    border-color: #3b3b45;
+    border-color: var(--primary-color);
     transform: translateY(-3px);
-    background: #1c1c22;
 }
 
 .hub-btn.active {
-    border-color: var(--iron-orange);
-    background: linear-gradient(145deg, #1d1d24, #16161a);
-    box-shadow: 0 8px 24px rgba(255, 87, 34, 0.15);
+    border-color: var(--primary-color);
+    background: var(--light-bg);
+    box-shadow: 0 8px 24px rgba(128, 128, 0, 0.15);
 }
 
 .hub-btn.active i {
-    color: var(--iron-orange);
+    color: var(--primary-color);
 }
 
-/* GESTIONE VISIBILITÀ PANNELLI */
 .hub-panel {
     display: none;
 }
+
 .hub-panel.active {
     display: block;
     animation: fadeIn 0.4s ease forwards;
 }
 
-/* CARDS ED ELEMENTI DEI FORM */
 .admin-card {
-    background-color: var(--iron-card);
-    border: 1px solid var(--iron-border);
+    background-color: var(--light-bg);
+    border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 35px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
@@ -116,7 +103,7 @@
     font-weight: 700;
     margin-top: 0;
     margin-bottom: 30px;
-    border-left: 5px solid var(--iron-orange);
+    border-left: 5px solid var(--primary-color);
     padding-left: 15px;
 }
 
@@ -140,39 +127,70 @@
     font-size: 0.85rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: var(--iron-muted);
+    color: var(--text-dark);
     letter-spacing: 0.5px;
 }
 
 .admin-form input[type="text"],
 .admin-form input[type="number"],
-.admin-form select,
 .admin-form textarea {
-    background-color: var(--iron-dark);
-    border: 1px solid var(--iron-border);
+    background-color: var(--light-bg);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 14px;
-    color: white;
+    color: var(--text-dark);
     font-size: 1rem;
     transition: border-color 0.2s;
 }
 
+.admin-form select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    
+    background-color: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    
+    padding: 14px 45px 14px 14px;
+    color: var(--text-dark);
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
 .admin-form input:focus,
-.admin-form select:focus,
 .admin-form textarea:focus {
     outline: none;
-    border-color: var(--iron-orange);
+    border-color: var(--primary-color);
+}
+
+.admin-form select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(128, 128, 0, 0.4);
+}
+
+.admin-form select:hover {
+    border-color: var(--primary-color);
+}
+
+.admin-form select option {
+    background-color: var(--light-bg);
+    color: var(--text-dark);
 }
 
 .admin-form input[type="file"] {
-    background: var(--iron-dark);
+    background: var(--lightk-bg);
     padding: 10px;
-    border: 1px dashed var(--iron-border);
+    border: 1px dashed var(--border-color);
     border-radius: 8px;
-    color: var(--iron-muted);
+    color: var(--border-color);
 }
 
-/* BOTTONI ED AZIONI */
 .form-actions {
     grid-column: span 2;
     display: flex;
@@ -181,8 +199,8 @@
 }
 
 .btn-submit {
-    background-color: var(--iron-orange);
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--text-light);
     border: none;
     border-radius: 8px;
     padding: 16px 32px;
@@ -194,13 +212,14 @@
 }
 
 .btn-submit:hover {
-    background-color: var(--iron-orange-hover);
+    background-color: var(--primary-color);
+    transform: scale(1.05);
 }
 
 .btn-cancel {
     background: transparent;
-    color: white;
-    border: 1px solid var(--iron-border);
+    color: var(--primary-color);
+    border: 0.5px solid var(--border-color);
     border-radius: 8px;
     padding: 16px 32px;
     text-decoration: none;
@@ -209,10 +228,9 @@
 }
 
 .btn-cancel:hover {
-    background: rgba(255,255,255,0.05);
+    text-decoration: underline;
 }
 
-/* TABELLA PRODOTTI */
 .table-container {
     overflow-x: auto;
 }
@@ -224,29 +242,69 @@
 }
 
 .admin-table th {
-    background-color: var(--iron-dark);
-    color: var(--iron-muted);
+    background-color: var(--primary-color);
+    color: var(--text-light);
     font-weight: 700;
     text-transform: uppercase;
     font-size: 0.8rem;
     padding: 18px;
     text-align: left;
-    border-bottom: 2px solid var(--iron-border);
 }
 
 .admin-table td {
     padding: 18px;
-    border-bottom: 1px solid var(--iron-border);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.inline-form {
+    display: inline;
+}
+
+.panel-description {
+    color: var(--text-dark);
+    font-size: 0.9rem;
+    margin-bottom: 25px;
+}
+
+.empty-table-msg {
+    text-align: center;
+    padding: 30px;
+}
+
+.empty-table-msg-large {
+    text-align: center;
+    padding: 40px;
+    color: var(--border-color);
+}
+
+.amount-cell {
+    text-align: right;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.empty-icon {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    display: block;
+    opacity: 0.5;
 }
 
 .id-cell {
     font-family: monospace;
     font-size: 1.05rem;
-    color: var(--iron-orange);
+    color: var(--primary-color);
     font-weight: bold;
 }
 
-/* BADGES CATEGORIA */
 .category-badge {
     padding: 6px 12px;
     border-radius: 20px;
@@ -254,22 +312,37 @@
     font-weight: 700;
     text-transform: uppercase;
 }
-.cat-1 {
-	background: rgba(33, 150, 243, 0.15);
-	color: #2196f3;
-	 }
-	 
-.cat-5 { 
-	background: rgba(156, 39, 176, 0.15); 
-	color: #9c27b0; 
-	}
-	
-.cat-10 { 
-	background: rgba(76, 175, 80, 0.15); 
-	color: #4caf50; 
-	}
 
-/* PULSANTI OPERATIVI NELLA TABELLA */
+.cat-1 {
+    background: rgba(33, 150, 243, 0.15);
+    color: #2196f3;
+}
+     
+.cat-5 { 
+    background: rgba(156, 39, 176, 0.15); 
+    color: #9c27b0; 
+}
+    
+.cat-10 { 
+    background: rgba(76, 175, 80, 0.15); 
+    color: #4caf50; 
+}
+
+.cat-2 { 
+    background: rgba(255, 152, 0, 0.15);
+    color: #ff9800; 
+} 
+
+.cat-3 { 
+    background: rgba(76, 175, 80, 0.15); 
+    color: #4caf50; 
+}  
+
+.cat-4 { 
+    background: rgba(158, 158, 158, 0.15); 
+    color: #9e9e9e; 
+} 
+
 .btn-edit, .btn-delete {
     padding: 8px 16px;
     border-radius: 6px;
@@ -282,26 +355,25 @@
 }
 
 .btn-edit {
-	background: rgba(33, 150, 243, 0.1);
-    color: var(--btn-edit-color); 
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--primary-color); 
 }
 
 .btn-edit:hover { 
-	background: var(--btn-edit-color); 
-	color: white;
+    background: var(--primary-color); 
+    color: var(--text-light);
 }
 
 .btn-delete { 
-	background: rgba(244, 67, 54, 0.1);
-	color: var(--btn-delete-color); 
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--error-color); 
 }
 
 .btn-delete:hover { 
-	background: var(--btn-delete-color);
-	color: white; 
+    background: var(--error-color);
+    color: var(--text-light); 
 }
 
-/* ALLINEAMENTO FILTRO IN TABELLA */
 .table-header-flex {
     display: flex;
     justify-content: space-between;
@@ -319,23 +391,22 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: var(--iron-dark);
+    background: var(--primary-color);
     padding: 8px 16px;
     border-radius: 8px;
-    border: 1px solid var(--iron-border);
 }
 
 .filter-wrapper label {
     font-size: 0.85rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: var(--iron-muted);
+    color: var(--text-light);
 }
 
 .filter-wrapper select {
     background: transparent;
     border: none;
-    color: white;
+    color: var(--text-light);
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
@@ -343,28 +414,13 @@
 }
 
 .filter-wrapper select option {
-    background-color: var(--iron-card);
-    color: white;
+    background-color: var(--dark-bg);
+    color: var(--text-light);
 }
-
-.cat-2 { 
-	background: rgba(255, 152, 0, 0.15);
-	color: #ff9800; 
-} 
-
-.cat-3 { 
-	background: rgba(76, 175, 80, 0.15); 
-	color: #4caf50; 
-}  
-
-.cat-4 { 
-	background: rgba(158, 158, 158, 0.15); 
-	color: #9e9e9e; 
-} 
-	
+    
 #orderFilterForm {
-    background-color: var(--iron-card);
-    border: 1px solid var(--iron-border);
+    background-color: var(--light-bg);
+    border: 1px solid var(--border-color);
     padding: 25px;
     border-radius: 8px;
     margin-bottom: 35px;
@@ -387,15 +443,14 @@
     font-size: 0.85rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: var(--iron-muted);
+    color: var(--text-dark);
     letter-spacing: 0.5px;
 }
 
-#orderFilterForm input[type="date"],
 #orderFilterForm input[type="text"] {
-    background-color: var(--iron-dark);
-    border: 1px solid var(--iron-border);
-    color: var(--iron-text);
+    background-color: var(--light-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-dark);
     padding: 12px 16px;
     border-radius: 6px;
     font-size: 0.95rem;
@@ -407,18 +462,17 @@
 }
 
 #orderFilterForm input::placeholder {
-    color: var(--iron-muted);
+    color: var(--border-color);
     opacity: 0.6;
     font-size: 0.9rem;
 }
 
 #orderFilterForm input[type="date"]:focus,
 #orderFilterForm input[type="text"]:focus {
-    border-color: var(--iron-orange);
-    box-shadow: 0 0 8px rgba(255, 87, 34, 0.4);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(128, 128, 0, 0.4);
 }
 
-/* Fix per visibilità icona calendario su temi dark */
 #orderFilterForm input[type="date"] {
     color-scheme: dark; 
 }
@@ -437,7 +491,7 @@
 #orderFilterForm .error-inline {
     grid-column: span 2;
     font-size: 0.85rem;
-    color: var(--btn-delete-color); 
+    color: var(--error-color); 
     font-weight: 600;
     min-height: 18px;
     display: block;
@@ -454,8 +508,8 @@
 }
 
 #orderFilterForm .btn-submit {
-    background-color: var(--iron-orange);
-    color: var(--iron-text);
+    background-color: var(--primary-color);
+    color: var(--text-light);
     border: none;
     padding: 12px 24px;
     font-size: 0.95rem;
@@ -467,7 +521,8 @@
 }
 
 #orderFilterForm .btn-submit:hover {
-    background-color: var(--iron-orange-hover);
+    background-color: var(--primary-color);
+    opacity: 0.9;
 }
 
 #orderFilterForm .btn-submit:active {
@@ -476,8 +531,8 @@
 
 #orderFilterForm .btn-cancel {
     background-color: transparent;
-    color: var(--iron-muted);
-    border: 1px solid var(--iron-border);
+    color: var(--border-color);
+    border: 1px solid var(--border-color);
     padding: 12px 24px;
     font-size: 0.95rem;
     font-weight: 600;
@@ -489,8 +544,8 @@
 }
 
 #orderFilterForm .btn-cancel:hover {
-    background-color: var(--iron-border);
-    color: var(--iron-text);
+    background-color: var(--border-color);
+    color: var(--text-light);
 }
 
 @media (max-width: 768px) {
@@ -522,17 +577,16 @@
 }
 
 @media(max-width: 768px) {
-
     .hub-navigation { 
-    	grid-template-columns: 1fr;
+        grid-template-columns: 1fr;
     }
 
     .admin-form {
-     	grid-template-columns: 1fr; 
+        grid-template-columns: 1fr; 
     }
 
     .form-group.full-width, .form-actions {
-     	grid-column: span 1;
+        grid-column: span 1;
     }
 }
 
@@ -545,8 +599,8 @@
     display: inline-block;
     padding: 6px 14px;
     background-color: transparent;
-    color: #f39c12;
-    border: 1px solid #f39c12;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
     border-radius: 6px;
     text-decoration: none;
     font-size: 0.85rem;
@@ -556,9 +610,9 @@
 }
 
 .btn-invoice:hover {
-    background-color: #f39c12;
-    color: #1a1a1a; 
-    box-shadow: 0 0 12px rgba(243, 156, 18, 0.4); 
+    background-color: var(--primary-color);
+    color: var(--dark-bg); 
+    box-shadow: 0 0 12px rgba(128, 128, 0, 0.4); 
     cursor: pointer;
 }
 

@@ -62,7 +62,7 @@ public class ProfileServlet extends HttpServlet {
         if (firstName == null || firstName.trim().isEmpty()
                 || lastName == null || lastName.trim().isEmpty()) {
         	
-            request.setAttribute("errorMessage", "Nome e Cognome sono obbligatori");
+            request.getSession().setAttribute("errorMessage", "Nome e Cognome sono obbligatori");
             request.setAttribute("user", loggedUser);
             request.getRequestDispatcher("/WEB-INF/view/profile.jsp").forward(request, response);
             return;
@@ -87,7 +87,7 @@ public class ProfileServlet extends HttpServlet {
                     parsedDate = LocalDate.parse(dateToParse, formatter);
                 } catch (DateTimeParseException e2) {
        
-                    request.setAttribute("errorMessage", "Formato data di nascita non valido. Usa GG/MM/AAAA");
+                    request.getSession().setAttribute("errorMessage", "Formato data di nascita non valido. Usa GG/MM/AAAA");
                     request.setAttribute("user", loggedUser);
                     request.getRequestDispatcher("/WEB-INF/view/profile.jsp").forward(request, response);
                     return;
@@ -111,13 +111,12 @@ public class ProfileServlet extends HttpServlet {
         if (success) {
          
             session.setAttribute("loggedUser", userToUpdate);
-            request.setAttribute("successMessage", "Profilo aggiornato con successo");
+            request.getSession().setAttribute("successMessage", "Profilo aggiornato con successo");
         } 
         else {
-            request.setAttribute("errorMessage", "Errore durante l'aggiornamento del profilo");
+            request.getSession().setAttribute("errorMessage", "Errore durante l'aggiornamento del profilo");
         }
 
-        request.setAttribute("user", userToUpdate);
         request.getRequestDispatcher("/WEB-INF/view/profile.jsp").forward(request, response);
     }
 }

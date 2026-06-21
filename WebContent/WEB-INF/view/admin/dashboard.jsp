@@ -20,7 +20,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Console Admin - Iron Axis</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/global.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -96,7 +95,7 @@
                     <div class="form-actions">
                         <button type="submit" class="btn-submit"><%= isEdit ? "Salva Modifiche" : "Crea Prodotto" %></button>
                         <% if(isEdit) { %>
-                            <a href="${pageContext.request.contextPath}/AdminProductServlet" class="btn-cancel">Annulla modifica</a>
+                            <a href="${pageContext.request.contextPath}/admin/AdminProductServlet" class="btn-cancel">Annulla modifica</a>
                         <% } %>
                     </div>
                 </form>
@@ -196,7 +195,7 @@
                                 <th>ID Auto</th>
                                 <th>Nome prodotto</th>
                                 <th>Categoria collegata</th>
-                                <th style="text-align: center;">Azioni correnti</th>
+                                <th class="text-center">Azioni correnti</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -222,11 +221,11 @@
                                              <%= catLabel %> (ID: <%= catId %>)
                                         </span>
                                     </td>
-                                    <td style="text-align: center;">
+                                    <td class="text-center">
                                         <a href="${pageContext.request.contextPath}/admin/AdminProductServlet?action=edit&id=<%= p.getId() %>" class="btn-edit">
                                             <i class="fas fa-pen"></i> Modifica
                                         </a>
-                                        <form action="${pageContext.request.contextPath}/admin/AdminProductServlet" method="POST" style="display:inline;" onsubmit="return confirm('Vuoi davvero rimuovere questo prodotto?');">
+                                        <form action="${pageContext.request.contextPath}/admin/AdminProductServlet" method="POST" class="inline-form" onsubmit="return confirm('Vuoi davvero rimuovere questo prodotto?');">
                                             <input type="hidden" name="action" value="delete">
                                             <input type="hidden" name="id" value="<%= p.getId() %>">
                                             <button type="submit" class="btn-delete">
@@ -236,7 +235,7 @@
                                     </td>
                                 </tr>
                             <% } } else { %>
-                                <tr><td colspan="4" style="text-align:center; padding: 30px;">Nessun prodotto base nel database.</td></tr>
+                                <tr><td colspan="4" class="empty-table-msg">Nessun prodotto base nel database.</td></tr>
                             <% } %>
                         </tbody>
                     </table>
@@ -247,16 +246,16 @@
         <div id="panel-orders" class="hub-panel <%= "panel-orders".equals(activePanel) ? "active" : "" %>">
             <div class="admin-card">
                 <h2>Filtra e monitora lo storico ordini</h2>
-                <p style="color: var(--iron-muted); font-size: 0.9rem; margin-bottom: 25px;">Utilizza i filtri combinati sottostanti per analizzare e ispezionare gli ordini effettuati dai clienti della piattaforma.</p>
+                <p class="panel-description">Utilizza i filtri combinati sottostanti per analizzare e ispezionare gli ordini effettuati dai clienti della piattaforma.</p>
                 
                 <form id="orderFilterForm" action="${pageContext.request.contextPath}/admin/AdminOrderServlet" method="GET" class="admin-form" novalidate>
                     <div class="form-group">
                         <label for="startDate">Data inizio intervallo</label>
-                        <input type="date" id="startDate" name="startDate" placeholder="Seleziona la data iniziale">
+                        <input type="text" id="startDate" name="startDate" placeholder="GG/MM/YYYY">
                     </div>
                     <div class="form-group">
                         <label for="endDate">Data fine intervallo</label>
-                        <input type="date" id="endDate" name="endDate" placeholder="Seleziona la data finale">
+                        <input type="text" id="endDate" name="endDate" placeholder="GG/MM/YYYY">
                     </div>
                     <div class="form-group full-width">
                         <label for="customerQuery">Filtro cliente (Email, Nome o Cognome)</label>
@@ -278,8 +277,8 @@
                                 <th>ID ordine</th>
                                 <th>Data transazione</th>
                                 <th>Email utente</th>
-                                <th style="text-align: right;">Totale transato</th>
-                                <th style="text-align: center;">Fattura</th>
+                                <th class="text-right">Totale transato</th>
+                                <th class="text-center">Fattura</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -291,7 +290,7 @@
                                         <td><strong>#<%= o.getId() %></strong></td>
                                         <td><%= o.getCreatedAt() != null ? o.getCreatedAt().toLocalDate() : "N/A" %></td>
                                         <td><%= o.getUser() != null ? o.getUser().getEmail() : "N/A" %></td>
-                                        <td style="text-align: right; font-weight: 700; color: var(--iron-orange);">&euro; <%= String.format("%.2f", o.getTotalAmount()) %></td>
+                                        <td class="amount-cell">&euro; <%= String.format("%.2f", o.getTotalAmount()) %></td>
                                         <td class="action-cell">
                                             <a href="${pageContext.request.contextPath}/DownloadInvoiceServlet?orderId=<%= o.getId() %>" class="btn-invoice" title="Scarica la fattura in formato PDF">
                                                  Scarica PDF
@@ -301,8 +300,8 @@
                             <%  } 
                             } else { %>
                                 <tr>
-                                    <td colspan="5" style="text-align:center; padding: 40px; color: var(--iron-muted);">
-                                        <i class="fas fa-search" style="font-size: 1.5rem; margin-bottom: 10px; display: block; opacity: 0.5;"></i>
+                                    <td colspan="5" class="empty-table-msg-large">
+                                        <i class="fas fa-search empty-icon"></i>
                                         Nessun ordine trovato. Inizializza o modifica i filtri di ricerca.
                                     </td>
                                 </tr>

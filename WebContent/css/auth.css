@@ -53,7 +53,7 @@
 .register-container input[type="number"] {
     width: 100%;
     padding: 12px; 
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     box-sizing: border-box; 
     transition: border-color 0.3s, box-shadow 0.3s;
@@ -65,9 +65,9 @@
 .input-phone-type {
     height: 44.4px; 
     padding: 0 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
-    background-color: #fff;
+    background-color: var(--light-bg);
     color: var(--text-dark);
     font-family: inherit;
     font-size: 0.95rem;
@@ -86,7 +86,8 @@
 .login-container input:focus, 
 .register-container input:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15); 
+    border-width: 2px;
+    box-shadow: 0 0 3px 3px rgba(229, 57, 53, 0.15); 
     outline: none;
 }
 
@@ -111,7 +112,7 @@
 /* HOVER & ACTIVE STATE */
 .login-container button[type="submit"]:hover, 
 .register-container button[type="submit"]:hover {
-    background-color: #c62828; 
+    transform: scale(1.02);
 }
 
 .login-container button[type="submit"]:active, 
@@ -122,7 +123,7 @@
 /* JS ERROR MESSAGES */
 .login-container .error-message, 
 .register-container .error-message {
-    color: var(--primary-color); 
+    color: var(--error-color); 
     font-size: 0.85em;
     margin-top: 4px;
     display: block;
@@ -133,8 +134,8 @@
 /* JS RED ERROR BORDER */
 .login-container .input-error, 
 .register-container .input-error {
-    border: 2px solid var(--primary-color) !important;
-    background-color: #ffebee;
+    border: 2px solid var(--error-color) !important;
+    background-color: var(--light-bg);
 }
 
 /* LOGIN/REGISTER LINK */
@@ -143,7 +144,7 @@
     text-align: center;
     margin-top: 25px;
     font-size: 0.9em;
-    color: #666;
+    color: var(--border-color);
 }
 
 .login-container .link-container a, 
@@ -155,7 +156,7 @@
 
 .login-container .link-container a:hover, 
 .register-container p a:hover {
-    color: #c62828;
+    color: var(--text-dark);
     text-decoration: underline;
 }
 
@@ -173,8 +174,8 @@
     flex-direction: column;
     gap: 8px;
     padding: 15px;
-    background-color: #f8f9fa;
-    border: 1px dashed #ccc;
+    background-color: var(--light-bg);
+    border: 1px dashed var(--border-color);
     border-radius: 6px;
     margin-top: 10px;
     position: relative;
@@ -198,9 +199,9 @@
 .iti--separate-dial-code input[type="tel"], 
 .iti input[type="tel"] {
     height: 44.4px !important; 
-    border: 1px solid #ccc !important;
+    border: 1px solid var(--border-color) !important;
     border-radius: 4px !important;
-    background-color: #fff !important;
+    background-color: var(--light-bg) !important;
     box-sizing: border-box !important;
     
 
@@ -219,7 +220,8 @@
 .iti--separate-dial-code input[type="tel"]:focus, 
 .iti input[type="tel"]:focus {
     border-color: var(--primary-color) !important;
-    box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15) !important;
+    border-width: 2px !important;
+    box-shadow: 0 0 3px 3px rgba(229, 57, 53, 0.15) !important;
     outline: none !important;
 }
 
@@ -242,11 +244,11 @@
 
 .btn-add-dynamic:hover {
     text-decoration: underline;
-    color: #c62828; 
+    color: var(--error-color); 
 }
 
 .btn-remove {
-    background-color: #777;
+    background-color: var(--border-color);
     color: var(--text-light);
     border: none;
     border-radius: 4px;
@@ -278,11 +280,11 @@
 .input-zip-code { width: 120px; flex-shrink: 0; }
 
 .input-error {
-    border-color: #e53935 !important;
+    border-color: var(--error-color) !important;
     box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.1) !important;
 }
 .error-message {
-    color: #e53935;
+    color: var(--error-color);
     font-size: 0.8em;
     display: block;
     margin-top: 4px;
@@ -303,9 +305,9 @@
 .phone-row select {
     height: 44.4px; 
     padding: 0 10px;
-    border: 1px solid #ccc;
+    border: 0.5px solid var(--border-color);
     border-radius: 4px;
-    background-color: #fff;
+    background-color: var(--light-gb);
     font-family: inherit;
     font-size: 0.95rem;
     color: var(--text-dark);

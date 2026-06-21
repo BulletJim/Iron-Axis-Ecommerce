@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @WebServlet("/admin/AdminOrderServlet")
 public class AdminOrderServlet extends HttpServlet {
@@ -20,19 +23,22 @@ public class AdminOrderServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
+        String startDateStr = request.getParameter("startDate");
+        String endDateStr = request.getParameter("endDate");
         String customerQuery = request.getParameter("customerQuery");
+
+        String sqlStartDate = convertDateToSqlFormat(startDateStr);
+        String sqlEndDate = convertDateToSqlFormat(endDateStr);
 
         OrderDAO orderDao = new OrderDAO(DBManager.getDataSource());
         List<OrderBean> orders;
 
-        boolean hasFilters = (startDate != null && !startDate.isEmpty()) || 
-                             (endDate != null && !endDate.isEmpty()) || 
-                             (customerQuery != null && !customerQuery.isEmpty());
+        boolean hasFilters = (sqlStartDate != null) || 
+                             (sqlEndDate != null) || 
+                             (customerQuery != null && !customerQuery.trim().isEmpty());
 
         if (hasFilters) {
-            orders = orderDao.findOrdersByFilters(startDate, endDate, customerQuery);
+            orders = orderDao.findOrdersByFilters(sqlStartDate, sqlEndDate, customerQuery);
         } 
         else {
             orders = orderDao.findAll();
@@ -48,8 +54,22 @@ public class AdminOrderServlet extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/view/admin/dashboard.jsp").forward(request, response);
     }
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Method Not Allowed");
-	}
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Method Not Allowed");
+    }
+
+    private String convertDateToSqlFormat(String dateStr) {
+        if (dateStr == null || dateStr.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate date = LocalDate.parse(dateStr, inputFormatter);
+            return date.toString(); 
+        } catch (DateTimeParseException e) {
+            System.err.println("Errore di parsing della data: " + dateStr);
+            return null; 
+        }
+    }
 }

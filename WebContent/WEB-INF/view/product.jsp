@@ -186,9 +186,13 @@
 				<input type="hidden" id="selected-sku" name="productSku" value="" required>
 				<input type="hidden" name="action" value="add">
 				<div class="quantity-wrapper">
-        			<label for="quantity-input">Quantità:</label>
-        			<input type="number" id="quantity-input" name="quantity" value="1" min="1" max="10" required>
-    			</div>
+    				<label>Quantità:</label>
+    				<div class="quantity-controls">
+        				<button type="button" class="qty-btn minus-btn"><i class="fa-solid fa-minus"></i></button>
+        				<input type="number" id="quantity-input" name="quantity" value="1" min="1" max="10" readonly required>
+        				<button type="button" class="qty-btn plus-btn"><i class="fa-solid fa-plus"></i></button>
+    				</div>
+				</div>
 				<button class="add-cart-btn" id="add-to-cart-btn" type="submit">Aggiungi al carrello</button>
 			</form>
 			

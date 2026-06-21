@@ -1,5 +1,33 @@
 document.addEventListener("DOMContentLoaded", () => {
     
+    const quantityControls = document.querySelectorAll('.quantity-controls');
+    
+    quantityControls.forEach(control => {
+        const minusBtn = control.querySelector('.minus-btn');
+        const plusBtn = control.querySelector('.plus-btn');
+        const input = control.querySelector('.ajax-quantity');
+
+        if (minusBtn && plusBtn && input) {
+            minusBtn.addEventListener('click', () => {
+                let currentValue = parseInt(input.value);
+                let min = parseInt(input.min) || 1;
+                if (currentValue > min) {
+                    input.value = currentValue - 1;
+                    input.dispatchEvent(new Event('change'));
+                }
+            });
+
+            plusBtn.addEventListener('click', () => {
+                let currentValue = parseInt(input.value);
+                let max = parseInt(input.max) || 99;
+                if (currentValue < max) {
+                    input.value = currentValue + 1;
+                    input.dispatchEvent(new Event('change'));
+                }
+            });
+        }
+    });
+
     const quantityInputs = document.querySelectorAll('.ajax-quantity');
     
     quantityInputs.forEach(input => {
@@ -27,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     },
                     body: formData.toString()
                 });
+                
                 if (!response.ok) {
                     throw new Error(`HTTP Error: ${response.status}`);
                 }
