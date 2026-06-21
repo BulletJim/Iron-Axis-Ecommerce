@@ -47,30 +47,59 @@ document.addEventListener("DOMContentLoaded", function() {
     const orderForm = document.getElementById("orderFilterForm");
 
     if (orderForm) {
-        orderForm.addEventListener("submit", function(event) {
-            let isValid = true;
-            const errorSpan = document.getElementById("orderFilterError");
+        const errorSpan = document.getElementById("orderFilterError");
+        const startDateInput = document.getElementById("startDate");
+        const endDateInput = document.getElementById("endDate");
+        const customerInput = document.getElementById("customerQuery");
+
+        function formatData(e) {
+            let val = e.target.value.replace(/\D/g, '');
+            if (val.length > 2 && val.length <= 4) {
+                val = val.substring(0, 2) + '/' + val.substring(2);
+            } else if (val.length > 4) {
+                val = val.substring(0, 2) + '/' + val.substring(2, 4) + '/' + val.substring(4, 8);
+            }
+            e.target.value = val;
+        }
+
+        function parseDate(dateStr) {
+            const parts = dateStr.split('/');
+            if (parts.length === 3) {
+                return new Date(parts[2], parts[1] - 1, parts[0]);
+            }
+            return null;
+        }
+
+        function validateDates() {
             errorSpan.textContent = ""; 
-            
-            const startDateInput = document.getElementById("startDate");
-            const endDateInput = document.getElementById("endDate");
-            const customerInput = document.getElementById("customerQuery");
-            
             startDateInput.style.borderColor = "";
             endDateInput.style.borderColor = "";
-            customerInput.style.borderColor = "";
+            
+            if (startDateInput.value.length === 10 && endDateInput.value.length === 10) {
+                const dStart = parseDate(startDateInput.value);
+                const dEnd = parseDate(endDateInput.value);
 
-            if (startDateInput.value && endDateInput.value) {
-                if (new Date(startDateInput.value) > new Date(endDateInput.value)) {
+                if (dStart && dEnd && dStart > dEnd) {
                     errorSpan.textContent = "Errore: La data di inizio non può essere successiva alla data di fine.";
-                    startDateInput.style.borderColor = "red";
-                    endDateInput.style.borderColor = "red";
-                    startDateInput.focus(); 
-                    isValid = false;
+                    startDateInput.style.borderColor = "var(--error-color)";
+                    endDateInput.style.borderColor = "var(--error-color)";
+                    return false;
                 }
             }
+            return true;
+        }
 
-            if (!isValid) {
+        startDateInput.addEventListener("input", formatData);
+        endDateInput.addEventListener("input", formatData);
+
+        startDateInput.addEventListener("change", validateDates);
+        endDateInput.addEventListener("change", validateDates);
+
+        orderForm.addEventListener("submit", function(event) {
+            customerInput.style.borderColor = "";
+            
+            if (!validateDates()) {
+                startDateInput.focus(); 
                 event.preventDefault(); 
             }
         });
@@ -79,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		
         formInputs.forEach(input => {
             input.addEventListener('focus', function() {
-                this.style.boxShadow = "0 0 5px #ff7b00";
+                this.style.boxShadow = "0 0 5px var(--primary-color)";
             });
             input.addEventListener('blur', function() {
                 this.style.boxShadow = "";
