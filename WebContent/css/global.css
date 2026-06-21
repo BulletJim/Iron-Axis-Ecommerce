@@ -1,11 +1,11 @@
 /* RESET, FONT AND GLOBAL VARIABLES (Iron Axis) */
 :root {
-    --primary-color: #e53935;    
-    --dark-bg: #1a1a1a;          
+    --primary-color: #808000;  /* I love this colour*/ 
+    --dark-bg: #0D0D0D;          
     --light-bg: #f8f9fa;         
     --text-light: #ffffff;
     --text-dark: #212529;
-    --border-color: #333333;
+    --border-color: #C3C6C3;
 }
 
 * {
@@ -30,7 +30,7 @@ a {
 
 /* SITE HEADER */
 .site-header {
-    background-color: var(--dark-bg);
+    background-color: var(--light-bg);
     color: var(--text-light);
     height: 75px;
     display: flex;
@@ -39,14 +39,14 @@ a {
     padding: 0 30px;
     position: relative;
     z-index: 1000;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: none;
 }
 
 /* Hamburger Menu Button */
 .menu-btn {
     background: none;
     border: none;
-    color: var(--text-light);
+    color: var(--text-dark);
     font-size: 1.6rem;
     cursor: pointer;
     transition: color 0.2s;
@@ -55,6 +55,110 @@ a {
 
 .menu-btn:hover {
     color: var(--primary-color);
+}
+
+.menu-item > a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    font-size: 15px;
+    font-weight: 500;
+    border-bottom: 0.5px solid var(--border-color);
+    transition: background 0.2s, color 0.2s;
+}
+
+.menu-item > a:hover {
+    background-color: rgba(255, 255, 255, 0.04);
+    color: var(--primary-color);
+}
+
+.menu-item.submenu-open .arrow {
+    transform: rotate(180deg);
+    color: var(--primary-color);
+}
+
+.submenu {
+    list-style: none;
+    background-color: var(--light-bg);
+    display: none; 
+    padding-left: 10px;
+}
+
+.menu-item.submenu-open .submenu {
+    display: block;
+}
+
+.submenu li a {
+    display: block;
+    padding: 12px 20px;
+    font-size: 0.8rem;
+    color: var(--text-dark);
+    border-bottom: none;
+    transition: color 0.2s, padding-left 0.2s;
+}
+
+.submenu li a:hover {
+    color: var(--primary-color);
+    padding-left: 25px; 
+}
+
+/* SIDEBAR */
+.sidebar {
+    display: block; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 290px;
+    height: 100vh;
+    background-color: var(--text-light); 
+    color: var(--text-dark);
+    z-index: 1200; 
+    box-shadow: none;
+    border-right: 1px solid var(--border-color);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    overflow-y: auto;
+    padding-bottom: 40px;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--primary-color);
+    letter-spacing: 1px;
+}
+
+.sidebar-close-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.sidebar-close-btn:hover {
+    transform: scale(1.10);
+}
+
+.sidebar.sidebar-open {
+    transform: translateX(0);
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 10px 0;
 }
 
 /* Logo Brand */
@@ -78,10 +182,10 @@ a {
     width: 100%;
     padding: 10px 15px;
     padding-right: 45px; 
-    border: 1px solid #444;
+    border: 1px solid var(--border-color);
     border-radius: 25px; 
-    background-color: #2b2b2b;
-    color: var(--text-light);
+    background-color: var(--light-bg);
+    color: var(--text-dark);
     font-size: 0.95rem;
     outline: none;
     transition: border-color 0.3s, background-color 0.3s;
@@ -89,7 +193,6 @@ a {
 
 .search-bar input:focus {
     border-color: var(--primary-color);
-    background-color: #333;
 }
 
 .search-bar button {
@@ -97,7 +200,7 @@ a {
     right: 5px;
     background: none;
     border: none;
-    color: #aaa;
+    color: var(--border-color);
     font-size: 1.1rem;
     padding: 8px 12px;
     cursor: pointer;
@@ -106,6 +209,7 @@ a {
 
 .search-bar button:hover {
     color: var(--primary-color);
+    transform: scale(1.10);
 }
 
 .site-header form {
@@ -117,7 +221,7 @@ a {
     top: calc(100% + 5px);
     left: 0;
     width: 100%;
-    background-color: var(--dark-bg);
+    background-color: var(--light-bg);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
@@ -178,121 +282,18 @@ a {
 }
 
 .icon-btn {
-    color: var(--text-light);
+    color: var(--primary-color);
     font-size: 1.4rem;
     transition: color 0.2s, transform 0.2s;
     padding: 5px;
 }
 
 .icon-btn:hover {
-    color: var(--primary-color);
-    transform: scale(1.05);
+    transform: scale(1.10);
 }
 
 
-/* SIDEBAR */
-.sidebar {
-    display: block; 
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 290px;
-    height: 100vh;
-    background-color: #151515; 
-    color: var(--text-light);
-    z-index: 1200; 
-    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.5);
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
-    overflow-y: auto;
-    padding-bottom: 40px;
-}
-
-.sidebar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.sidebar-title {
-    font-size: 1.2rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: var(--primary-color);
-    letter-spacing: 1px;
-}
-
-.sidebar-close-btn {
-    background: none;
-    border: none;
-    color: var(--text-light);
-    font-size: 1.8rem;
-    cursor: pointer;
-    line-height: 1;
-    transition: color 0.2s;
-}
-
-.sidebar-close-btn:hover {
-    color: var(--primary-color);
-}
-
-.sidebar.sidebar-open {
-    transform: translateX(0);
-}
-
-.sidebar-menu {
-    list-style: none;
-    padding: 10px 0;
-}
-
-.menu-item > a {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    font-size: 1rem;
-    font-weight: 600;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    transition: background 0.2s, color 0.2s;
-}
-
-.menu-item > a:hover {
-    background-color: rgba(255, 255, 255, 0.04);
-    color: var(--primary-color);
-}
-
-.menu-item.submenu-open .arrow {
-    transform: rotate(180deg);
-    color: var(--primary-color);
-}
-
-.submenu {
-    list-style: none;
-    background-color: #0f0f0f;
-    display: none; 
-    padding-left: 10px;
-}
-
-.menu-item.submenu-open .submenu {
-    display: block;
-}
-
-.submenu li a {
-    display: block;
-    padding: 12px 20px;
-    font-size: 0.9rem;
-    color: #aaaaaa;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.01);
-    transition: color 0.2s, padding-left 0.2s;
-}
-
-.submenu li a:hover {
-    color: var(--text-light);
-    padding-left: 25px; 
-}
-
+/* Desktop */
 @media (min-width: 992px) {
  
     .menu-btn {
@@ -310,9 +311,10 @@ a {
         left: auto;
         width: 100%;
         height: auto;
-        background-color: #111111; 
+        background-color: var(--light-bg); 
         transform: translateX(0); 
-        box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+        box-shadow: none;
+        border-top: 2px solid var(--border-color); 
         padding-bottom: 0;
         z-index: 950;
         overflow: visible !important;
@@ -333,7 +335,8 @@ a {
 
     .menu-item > a {
         padding: 16px 22px;
-        font-size: 0.9rem;
+        font-size: 14px;
+        font-weight: 400;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         border-bottom: none;
@@ -348,12 +351,13 @@ a {
         position: absolute;
         top: 100%;
         left: 0;
-        background-color: var(--dark-bg);
+        background-color: var(--light-bg);
         min-width: 250px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
         border-top: 3px solid var(--primary-color);
         padding-left: 0;
         z-index: 1500;
+        border-radius: 3%;
     }
 
     /* Attivazione del CSS al passaggio mouse */
@@ -362,16 +366,15 @@ a {
     }
 
     .submenu li a {
+        color: var(--text-dark);
         padding: 12px 20px;
-        border-bottom: 1px solid #252525;
         text-transform: none;
         letter-spacing: normal;
     }
 
     .submenu li a:hover {
-        background-color: #222222;
         color: var(--primary-color);
-        padding-left: 20px;     /* Ripristina il padding standard su desktop */
+        padding-left: 20px;     
     }
 
     .menu-item .arrow {
@@ -391,11 +394,11 @@ a {
 /* FOOTER  */
 .site-footer {
     background-color: var(--dark-bg);
-    color: #b0b0b0; 
+    color: var(--border-color); 
     margin-top: auto;
     padding-top: 40px;
     font-size: 0.95rem;
-    border-top: 3px solid var(--primary-color);
+    border-top: 2px solid var(--primary-color);
 }
 
 .footer-container {

@@ -46,7 +46,7 @@ public class AdminFilter extends HttpFilter implements Filter {
 		} else {
 			//Not an admin
 			if(session != null && session.getAttribute("loggedUser") != null) {
-				httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Acces Denied: logged user is not an admin");
+				httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied: logged user is not an admin");
 			} else {
 				// not a logged user
 				request.setAttribute("errorMessage", "Autenticazione richiesta!");
