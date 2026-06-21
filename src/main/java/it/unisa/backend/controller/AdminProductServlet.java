@@ -1,6 +1,5 @@
 package it.unisa.backend.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -23,7 +22,6 @@ import it.unisa.backend.model.db.DBManager;
 
 public class AdminProductServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final String UPLOAD_DIR = "images" + File.separator + "products";
     
     private ProductDAO productDao;
     
@@ -137,28 +135,6 @@ public class AdminProductServlet extends HttpServlet {
                 double vat = Double.parseDouble(vatStr);
                 int quantity = Integer.parseInt(quantityStr);
 
-                String uploadPath = request.getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
-                File uploadDir = new File(uploadPath);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdirs();
-                }
-
-                String imageUrl = null;
-                Part imgPart = request.getPart("productImage");
-                if (imgPart != null && imgPart.getSize() > 0) {
-                    String imgName = imgPart.getSubmittedFileName();
-                    imgPart.write(uploadPath + File.separator + imgName);
-                    imageUrl = "images/products/" + imgName; 
-                }
-
-                String nutrTablUrl = null;
-                Part nutrPart = request.getPart("nutritionalTable");
-                if (nutrPart != null && nutrPart.getSize() > 0) {
-                    String nutrName = nutrPart.getSubmittedFileName();
-                    nutrPart.write(uploadPath + File.separator + nutrName);
-                    nutrTablUrl = "images/products/" + nutrName; 
-                }
-                
                 VariantBean variant = new VariantBean();
                 variant.setProductId(productId);
                 variant.setSku(sku.trim());
@@ -167,16 +143,22 @@ public class AdminProductServlet extends HttpServlet {
                 variant.setPrice(price);
                 variant.setVat(vat);
                 variant.setQuantity(quantity);
-                variant.setImageUrl(imageUrl);
-                variant.setNutrTablUrl(nutrTablUrl);
-                
-                if(productDao.saveVariant(variant)) {
-                	request.getSession().setAttribute("successMessage", "Variante aggiubta con successo");
-                } else {
-                	request.getSession().setAttribute("errorMessage", "Errore di inserimento variante");
+
+                Part imgPart = request.getPart("productImage");
+                if (imgPart != null && imgPart.getSize() > 0) {
+                    variant.setImageStream(imgPart.getInputStream());
                 }
 
+                Part nutrPart = request.getPart("nutritionalTable");
+                if (nutrPart != null && nutrPart.getSize() > 0) {
+                    variant.setNutrTablStream(nutrPart.getInputStream());
+                }
                 
+                if (productDao.saveVariant(variant)) {
+                    request.getSession().setAttribute("successMessage", "Variante aggiunta con successo");
+                } else {
+                    request.getSession().setAttribute("errorMessage", "Errore di inserimento variante");
+                }
             }
         } 
         catch (Exception e) {

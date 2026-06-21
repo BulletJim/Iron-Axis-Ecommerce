@@ -113,7 +113,7 @@
 							%>
 							<div class="product-card">
 								<div class="product-image">
-									<img src="${pageContext.request.contextPath}/images/products/placeholder.jpg" alt="<%= p.getName() %>">
+									<img src="${pageContext.request.contextPath}/<%= variant != null ? variant.getImageUrl() : "image/default-image.png" %>" alt="<%= p.getName() %>">
 								</div>
 								<span class="product-category">Top Rated</span> 
                                 <a class="product-title" href="${pageContext.request.contextPath}/ProductServlet?id=<%= p.getId() %>"><%=p.getName()%></a>
@@ -154,7 +154,7 @@
                             %>
                                 <div class="product-card">
                                     <div class="product-image">
-                                       <img src="${pageContext.request.contextPath}/images/products/placeholder.jpg" alt="<%= p.getName() %>">
+                                       <img src="${pageContext.request.contextPath}/<%= variant != null ? variant.getImageUrl() : "image/default-image.png" %>" alt="<%= p.getName() %>">
                                     </div>
                                     <span class="product-category">Most Suggested</span>
                                     <a class="product-title" href="${pageContext.request.contextPath}/ProductServlet?id=<%= p.getId() %>"><%= p.getName() %></a>
@@ -196,7 +196,7 @@
                             %>
                                 <div class="product-card">
                                     <div class="product-image">
-                                       <img src="${pageContext.request.contextPath}/images/products/placeholder.jpg" alt="<%= p.getName() %>">
+                                       <img src="${pageContext.request.contextPath}/<%= variant != null ? variant.getImageUrl() : "image/default-image.png" %>" alt="<%= p.getName() %>">
                                     </div>
                                     <span class="product-category">Visto di recente</span>
                                     <a class="product-title" href="${pageContext.request.contextPath}/ProductServlet?id=<%= p.getId() %>"><%= p.getName() %></a>

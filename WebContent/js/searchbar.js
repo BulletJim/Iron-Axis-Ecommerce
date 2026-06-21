@@ -1,11 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const searchBox = document.getElementById('searchBox');
     const searchSuggestions = document.getElementById('searchSuggestions');
+    
+    const searchButton = document.getElementById('searchButton');
 
     if (searchBox && searchSuggestions) {
         
         searchBox.addEventListener('input', function() {
             const query = this.value.trim();
+
+            if (searchButton) {
+                searchButton.disabled = (query.length === 0);
+            }
 
             if (query.length < 3) {
                 searchSuggestions.style.display = 'none';
@@ -18,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(products => {
                     searchSuggestions.innerHTML = ''; 
 
-                    // Se non ci sono prodotti pertinenti, nascondi il menu
                     if (products.length === 0) {
                         searchSuggestions.style.display = 'none';
                         return;

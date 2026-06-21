@@ -39,7 +39,7 @@
 
     <form action="${pageContext.request.contextPath}/SearchServlet" method="get" class="search-bar">
         <input type="text" name="query" id="searchBox" placeholder="Cerca integratori, accessori..." autocomplete="off">
-        <button type="submit" aria-label="Cerca">
+        <button class = "searchButton" type="submit" aria-label="Cerca" disabled>
             <i class="fas fa-search"></i> </button>
         <div id="searchSuggestions" class="suggestions-box"></div>
     </form>

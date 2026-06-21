@@ -24,4 +24,8 @@ public interface ProductDaoInterface extends CrudDao<ProductBean, Long> {
 
 	List<CategoryBean> findAllCategories();
 
+	byte[] findVariantNutrBySku(String sku);
+
+	byte[] findVariantImageBySku(String sku);
+
 }

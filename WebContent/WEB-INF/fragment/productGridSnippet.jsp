@@ -13,7 +13,7 @@
     <div class="product-card">
         
         <div class="product-image">
-            <img src="${pageContext.request.contextPath}/images/products/placeholder.jpg" alt="<%= p.getName() %>">
+            <img src="${pageContext.request.contextPath}/<%= variant != null ? variant.getImageUrl() : "image/default-image.png" %>" alt="<%= p.getName() %>">
         </div>
         
         <div class="product-info">
