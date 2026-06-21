@@ -28,4 +28,6 @@ public interface ProductDaoInterface extends CrudDao<ProductBean, Long> {
 
 	byte[] findVariantImageBySku(String sku);
 
+	boolean decreaseVariantQuantity(long variantId, int purchasedQuantity);
+
 }

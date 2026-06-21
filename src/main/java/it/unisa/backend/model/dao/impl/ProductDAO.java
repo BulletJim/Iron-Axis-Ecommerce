@@ -192,6 +192,27 @@ public class ProductDAO implements ProductDaoInterface {
             return false;
         }
     }
+    
+
+    @Override
+    public boolean decreaseVariantQuantity(long variantId, int purchasedQuantity) {
+    	
+        String query = "UPDATE variants SET quantity = quantity - ? WHERE id = ? AND quantity >= ?";
+        
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+            
+            ps.setInt(1, purchasedQuantity);
+            ps.setLong(2, variantId);
+            ps.setInt(3, purchasedQuantity);
+            
+            return ps.executeUpdate() > 0;
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     @Override
     public List<ProductBean> findByCategory(long categoryId) {
