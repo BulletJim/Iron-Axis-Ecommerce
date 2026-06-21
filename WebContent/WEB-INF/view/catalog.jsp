@@ -15,14 +15,12 @@
 	<%@ include file="/WEB-INF/fragment/menu.jsp"%>
 	
 	<%
-	    // Recupero delle liste per la Landing Page
 	    List<ProductBean> topRated = (List<ProductBean>) request.getAttribute("topRated");
 	    List<ProductBean> suggested = (List<ProductBean>) request.getAttribute("suggested");
 	    List<ProductBean> recents = (List<ProductBean>) request.getAttribute("recents"); 
 	    Long selectedCategoryId = (Long) request.getAttribute("selectedCategoryId");
 	    boolean hasInitialFilter = (selectedCategoryId != null);
 
-	    // Recupera la lista globale per la select dei filtri
 	    @SuppressWarnings("unchecked")
 	    List<CategoryBean> filterCategories = (List<CategoryBean>) application.getAttribute("globalCategories");
 	%>
@@ -34,62 +32,70 @@
         </header>
 
         <div class="catalog-layout">
-            
-            <aside class="filter-sidebar">
-                <div class="sidebar-sticky-content">
-                    <h3><i class="fas fa-sliders-h"></i> Filtra Prodotti</h3>
-                    
-                    <div class="filter-group">
-                        <label for="filter-category">Categoria</label>
-                        <select id="filter-category" name="categoryId">
-                            <option value="" <%= (selectedCategoryId == null) ? "selected" : "" %>>Tutti i prodotti</option>
-                            
-                            <% 
-                                if (filterCategories != null) {
-                                    for (CategoryBean category : filterCategories) {
-                                        boolean isSelected = (selectedCategoryId != null && selectedCategoryId.equals(category.getId()));
-                            %>
-                                <option value="<%= category.getId() %>" <%= isSelected ? "selected" : "" %>>
-                                    <%= category.getName() %>
-                                </option>
-                            <% 
-                                    }
-                                }
-                            %>
-                        </select>
-                    </div>
 
-                    <div class="filter-group">
-                        <label for="filter-max-price">Prezzo Massimo (€)</label>
-                        <div class="price-input-wrapper">
-                            <input type="number" id="filter-max-price" name="maxPrice" min="0" placeholder="Es. 50">
-                        </div>
-                    </div>
+			<aside class="filter-sidebar">
+				<div class="sidebar-sticky-content">
+					<h3>
+						<i class="fas fa-sliders-h"></i> Filtra Prodotti
+					</h3>
 
-                    <div class="filter-group">
-                        <label for="filter-sort">Ordina Per</label>
-                        <select id="filter-sort" name="sortBy">
-                            <option value="default">In Evidenza</option>
-                            <option value="price_asc">Prezzo: dal più basso</option>
-                            <option value="price_desc">Prezzo: dal più alto</option>
-                            <option value="rating">Recensioni migliori</option>
-                        </select>
-                    </div>
+					<div class="filter-group">
+						<label for="filter-category">Categoria</label> <select
+							id="filter-category" name="categoryId" class="custom-select">
+							<option value=""
+								<%=(selectedCategoryId == null) ? "selected" : ""%>>Tutti
+								i prodotti</option>
 
-                    <div class="filter-group checkbox-group">
-                        <label class="pure-material-checkbox">
-                            <input type="checkbox" id="filter-available" name="onlyAvailable" value="true">
-                            <span>Solo prodotti disponibili</span>
-                        </label>
-                    </div>
-                    
-                    <button id="btn-clear-filters" class="btn-secondary">Azzera Filtri</button>
-                </div>
-            </aside>
+							<%
+							if (filterCategories != null) {
+								for (CategoryBean category : filterCategories) {
+									boolean isSelected = (selectedCategoryId != null && selectedCategoryId.equals(category.getId()));
+							%>
+							<option value="<%=category.getId()%>"
+								<%=isSelected ? "selected" : ""%>>
+								<%=category.getName()%>
+							</option>
+							<%
+							}
+							}
+							%>
+						</select>
+					</div>
 
-            <div class="catalog-main-content">
+					<div class="filter-group">
+						<label for="filter-max-price">Prezzo Massimo</label>
+						<div class="price-input-wrapper">
+							<input type="number" id="filter-max-price" name="maxPrice"
+								min="0" placeholder="0.00">
+						</div>
+					</div>
+
+					<div class="filter-group">
+						<label for="filter-sort">Ordina Per</label> <select
+							id="filter-sort" name="sortBy" class="custom-select">
+							<option value="default">In Evidenza</option>
+							<option value="price_asc">Prezzo: dal più basso</option>
+							<option value="price_desc">Prezzo: dal più alto</option>
+							<option value="rating">Recensioni migliori</option>
+						</select>
+					</div>
+
+					<div class="filter-group toggle-group">
+						<span class="toggle-label">Solo prodotti disponibili</span> <label
+							class="toggle-switch"> <input type="checkbox"
+							id="filter-available" name="onlyAvailable" value="true">
+							<span class="toggle-slider"></span>
+						</label>
+					</div>
+
+					<button id="btn-clear-filters" class="btn-clear">Azzera
+						Filtri</button>
+				</div>
+			</aside>
+
+			<div class="catalog-main-content">
                 
-                <div id="landing-sections-wrapper" class="<%= hasInitialFilter ? "initially-hidden" : "" %>">
+                <div id="landing-sections-wrapper" class="<%=hasInitialFilter ? "initially-hidden" : ""%>">
                     
                     <section class="horizontal-area">
                         <div class="area-header">

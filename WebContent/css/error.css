@@ -12,7 +12,7 @@
 .error-content {
     text-align: center;
     max-width: 500px;
-    background-color: #ffffff;
+    background-color: var(--light-bg);
     padding: 60px 40px;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
@@ -49,8 +49,7 @@
 }
 
 .btn-primary:hover {
-    background-color: #c62828; 
     transform: translateY(-3px); 
     box-shadow: 0 6px 15px rgba(229, 57, 53, 0.4); 
-    color: #ffffff;
+    color: var(--text-light);
 }

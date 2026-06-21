@@ -65,13 +65,18 @@
                                 </td>
                                 
                                 <td data-label="Quantità">
-    								<input type="number" 
-           							   	value="<%= item.getSelectedQuantity() %>" 
-           							   	min="1" 
-           						   	   	max="<%= variant.getQuantity() %>" 
-           							   	class="quantity-input ajax-quantity" 
-           							   	data-sku="<%= variant.getSku() %>" 
-           							   	data-price="<%= variant.getPrice() %>">
+    								<div class="quantity-controls">
+        								<button type="button" class="qty-btn minus-btn"><i class="fa-solid fa-minus"></i></button>
+        								<input type="number" 
+               										value="<%= item.getSelectedQuantity() %>" 
+              										min="1" 
+               										max="<%= variant.getQuantity() %>" 
+               										class="quantity-input ajax-quantity" 
+               										data-sku="<%= variant.getSku() %>" 
+               										data-price="<%= variant.getPrice() %>"
+               										readonly>
+        								<button type="button" class="qty-btn plus-btn"><i class="fa-solid fa-plus"></i></button>
+    								</div>
 								</td>
 
 								<td data-label="Totale"><strong> 
