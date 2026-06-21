@@ -33,13 +33,13 @@
 
 			<div class="form-group">
 				<label for="firstName">Nome:</label> <input type="text"
-					id="firstName" name="firstName" placeholder="Inserisci il tuo nome" required>
+					id="firstName" name="firstName" placeholder="Inserisci il tuo nome" maxlength="30" required>
 			</div>
 
 			<div class="form-group">
 				<label for="LastName">Cognome:</label> <input type="text"
 					id="lastName" name="lastName"
-					placeholder="Inserisci il tuo cognome" required>
+					placeholder="Inserisci il tuo cognome" maxlength="30" required>
 			</div>
 
 			<div class="form-group">
@@ -75,11 +75,11 @@
 				<div id="addresses-container">
 					<div class="address-group">
 						<div class="input-row">
-							<input type="text" name="street" placeholder="Via/Piazza" class="addr-street input-flex-1" required>
+							<input type="text" name="street" placeholder="Via/Piazza" class="addr-street input-flex-1" maxlength="50" required>
 							<input type="number" name="streetNumber" placeholder="N°" class="addr-civic input-civic" min="0" onkeydown="if(event.key === '-') event.preventDefault()" required>
 						</div>
 						<div class="input-row">
-							<input type="text" name="city" placeholder="Città" class="addr-city input-flex-1" required>
+							<input type="text" name="city" placeholder="Città" class="addr-city input-flex-1" maxlength="50" required>
 							<input type="text" name="prov" placeholder="Prov" class="addr-prov input-prov" required>
 						</div>
 						<div class="input-row">
