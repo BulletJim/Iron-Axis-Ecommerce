@@ -47,15 +47,15 @@ a {
 .menu-btn {
     background: none;
     border: none;
-    color: var(--text-dark);
+    color: var(--primary-color);
     font-size: 1.6rem;
     cursor: pointer;
+    margin-left: -15px;
     transition: color 0.2s;
-    padding: 5px;
 }
 
 .menu-btn:hover {
-    color: var(--primary-color);
+    transform: scale(1.05);
 }
 
 .menu-item > a {

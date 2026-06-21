@@ -111,13 +111,12 @@ public class ProfileServlet extends HttpServlet {
         if (success) {
          
             session.setAttribute("loggedUser", userToUpdate);
-            request.setAttribute("successMessage", "Profilo aggiornato con successo");
+            request.getSession().setAttribute("successMessage", "Profilo aggiornato con successo");
         } 
         else {
-            request.setAttribute("errorMessage", "Errore durante l'aggiornamento del profilo");
+            request.getSession().setAttribute("errorMessage", "Errore durante l'aggiornamento del profilo");
         }
 
-        request.setAttribute("user", userToUpdate);
         request.getRequestDispatcher("/WEB-INF/view/profile.jsp").forward(request, response);
     }
 }
