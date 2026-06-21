@@ -218,11 +218,15 @@ public class OrderDAO implements OrderDaoInterface{
         
         StringBuilder query = new StringBuilder("SELECT o.* FROM orders o JOIN users u ON o.user_email = u.email WHERE 1=1");
         
-        boolean hasDateFilter = (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty());
+        boolean hasStartDate = (startDate != null && !startDate.trim().isEmpty());
+        boolean hasEndDate = (endDate != null && !endDate.trim().isEmpty());
         boolean hasCustomerFilter = (customerQuery != null && !customerQuery.trim().isEmpty());
 
-        if (hasDateFilter) {
-            query.append(" AND DATE(o.order_date) BETWEEN ? AND ?");
+        if (hasStartDate) {
+            query.append(" AND DATE(o.order_date) >= ?");
+        }
+        if (hasEndDate) {
+            query.append(" AND DATE(o.order_date) <= ?");
         }
         if (hasCustomerFilter) {
             query.append(" AND (o.user_email LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ?)");
@@ -235,12 +239,13 @@ public class OrderDAO implements OrderDaoInterface{
              
             int paramIndex = 1;
             
-            if (hasDateFilter) {
+            if (hasStartDate) {
                 ps.setString(paramIndex++, startDate);
+            }
+            if (hasEndDate) {
                 ps.setString(paramIndex++, endDate);
             }
             if (hasCustomerFilter) {
-            	
                 String searchPattern = "%" + customerQuery.trim() + "%";
                 ps.setString(paramIndex++, searchPattern);
                 ps.setString(paramIndex++, searchPattern);
@@ -248,9 +253,7 @@ public class OrderDAO implements OrderDaoInterface{
             }
             
             try (ResultSet rs = ps.executeQuery()) {
-            	
                 while (rs.next()) {
-                	
                     OrderBean order = new OrderBean();
                     order.setId(rs.getLong("id"));
                     order.setTotalAmount(rs.getDouble("total_price"));

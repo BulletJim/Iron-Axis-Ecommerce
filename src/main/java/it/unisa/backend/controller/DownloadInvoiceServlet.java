@@ -49,15 +49,14 @@ public class DownloadInvoiceServlet extends HttpServlet {
 		 * Colour and font initialization
 		 * Global variables declared
 		 * */
-		Color primaryColour = new Color(229, 57, 53);   // --primary-color: #e53935
-        Color darkBg = new Color(26, 26, 26);          // --dark-bg: #1a1a1a
+		Color primaryColour = new Color(34, 139, 34);   // --primary-color: #228B22
         Color lightBg = new Color(248, 249, 250);      // --light-bg: #f8f9fa
         Color textLight = new Color(255, 255, 255);    // --text-light: #ffffff
         Color textDark = new Color(33, 37, 41);        // --text-dark: #212529
-        Color borderColour = new Color(51, 51, 51);     // --border-color: #333333
+        Color borderColour = new Color(195, 198, 195);     // --border-color: #C3C6C3
         
         Font brandFont = new Font(Font.HELVETICA, 22, Font.BOLD, primaryColour);
-        Font headerTextFont = new Font(Font.HELVETICA, 10, Font.NORMAL, textLight);
+        Font headerTextFont = new Font(Font.HELVETICA, 10, Font.NORMAL, textDark);
         Font titleFont = new Font(Font.HELVETICA, 16, Font.BOLD, textDark);
         Font tableHeaderFont = new Font(Font.HELVETICA, 11, Font.BOLD, textLight);
         Font normalFont = new Font(Font.HELVETICA, 10, Font.NORMAL, textDark);
@@ -80,7 +79,7 @@ public class DownloadInvoiceServlet extends HttpServlet {
 			header.setWidthPercentage(100);
 			
 			PdfPCell brandCell = new PdfPCell();
-			brandCell.setBackgroundColor(darkBg);
+			brandCell.setBackgroundColor(lightBg);
 			brandCell.setBorder(PdfPCell.NO_BORDER);
             brandCell.setPadding(20f);
             brandCell.setPaddingLeft(40f);
@@ -89,7 +88,7 @@ public class DownloadInvoiceServlet extends HttpServlet {
             header.addCell(brandCell);
             
             PdfPCell infoCell = new PdfPCell();
-            infoCell.setBackgroundColor(darkBg);
+            infoCell.setBackgroundColor(lightBg);
             infoCell.setBorder(PdfPCell.NO_BORDER);
             infoCell.setPadding(20f);
             infoCell.setPaddingRight(40f);
@@ -149,10 +148,10 @@ public class DownloadInvoiceServlet extends HttpServlet {
             itemsInfoTable.setWidthPercentage(100);
 
             // Product Header
-            addCell(itemsInfoTable, "Prodotto", tableHeaderFont, darkBg, Element.ALIGN_LEFT, borderColour);
-            addCell(itemsInfoTable, "Q.tà", tableHeaderFont, darkBg, Element.ALIGN_CENTER, borderColour);
-            addCell(itemsInfoTable, "Prezzo Unitario", tableHeaderFont, darkBg, Element.ALIGN_RIGHT, borderColour);
-            addCell(itemsInfoTable, "Totale", tableHeaderFont, darkBg, Element.ALIGN_RIGHT, borderColour);
+            addCell(itemsInfoTable, "Prodotto", tableHeaderFont, primaryColour, Element.ALIGN_LEFT, borderColour);
+            addCell(itemsInfoTable, "Q.tà", tableHeaderFont, primaryColour, Element.ALIGN_CENTER, borderColour);
+            addCell(itemsInfoTable, "Prezzo Unitario", tableHeaderFont, primaryColour, Element.ALIGN_RIGHT, borderColour);
+            addCell(itemsInfoTable, "Totale", tableHeaderFont, primaryColour, Element.ALIGN_RIGHT, borderColour);
 
             // Takes all OrderItems
             for (OrderItemBean item : order.getItems()) {

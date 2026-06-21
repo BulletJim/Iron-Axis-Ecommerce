@@ -11,7 +11,7 @@
 }
 
 .payment-wrapper {
-    background-color: #ffffff;
+    background-color: var(--light-bg);
     width: 100%;
     max-width: 550px;
     border-radius: 12px;
@@ -38,8 +38,8 @@
 }
 
 .total-banner {
-    background-color: var(--dark-bg);
-    color: var(--text-light);
+    background-color: var(--light-bg);
+    color: var(--text-dark);
     padding: 20px 25px;
     border-radius: 8px;
     display: flex;
@@ -169,7 +169,6 @@
 }
 
 .btn-submit:hover {
-    background-color: #c62828;
     transform: translateY(-2px);
 }
 

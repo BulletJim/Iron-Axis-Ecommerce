@@ -1,6 +1,6 @@
 /* RESET, FONT AND GLOBAL VARIABLES (Iron Axis) */
 :root {
-    --primary-color: #808000;  /* I love this colour*/ 
+    --primary-color: #228B22;  /* I love this colour*/ 
     --dark-bg: #0D0D0D;          
     --light-bg: #f8f9fa;         
     --text-light: #ffffff;
@@ -335,8 +335,8 @@ a {
 
     .menu-item > a {
         padding: 16px 22px;
-        font-size: 14px;
-        font-weight: 400;
+        font-size: 15px;
+        font-weight: 500;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         border-bottom: none;

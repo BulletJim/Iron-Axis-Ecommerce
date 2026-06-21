@@ -297,7 +297,6 @@
 }
 
 .btn-add-cart:hover {
-    background-color: var(--text-dark); 
     transform: scale(1.03);
 }
 
